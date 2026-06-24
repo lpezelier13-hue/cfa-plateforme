@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CFA Compagnons du Devoir — Troyes</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#F7F6F3;--surface:#fff;--border:#E4E1DA;--text:#1C1A17;--muted:#8A8680;
+  --accent:#1B4FD8;--accent-lt:#EBF0FD;
+  --warn:#D97706;--warn-lt:#FEF3C7;
+  --danger:#DC2626;--danger-lt:#FEE2E2;
+  --ok:#16A34A;--ok-lt:#DCFCE7;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+/* HEADER */
+header{background:var(--text);color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:300;}
+.logo{display:flex;align-items:center;gap:9px;font-size:.88rem;font-weight:700;}
+.logo-icon{width:28px;height:28px;background:var(--accent);border-radius:6px;display:grid;place-items:center;font-size:.9rem;}
+.role-switcher{display:flex;align-items:center;gap:8px;}
+.role-select{background:#2a2a2a;color:#fff;border:1.5px solid #3a3a3a;border-radius:7px;padding:5px 9px;font-size:.78rem;font-family:'Inter',sans-serif;cursor:pointer;outline:none;}
+.role-pill{font-size:.65rem;padding:3px 9px;border-radius:20px;font-weight:700;}
+.pill-responsable{background:#14532d;color:#86efac;}
+.pill-formateur{background:#1e3a5f;color:#93c5fd;}
+.pill-secretariat{background:#4c1d95;color:#c4b5fd;}
+.pill-direction{background:#78350f;color:#fcd34d;}
+.year-badge{font-size:.72rem;color:#aaa;font-family:'DM Mono',monospace;background:#2a2a2a;padding:3px 9px;border-radius:20px;}
+/* NAV */
+nav{background:var(--surface);border-bottom:1.5px solid var(--border);display:flex;padding:0 24px;position:sticky;top:56px;z-index:200;overflow-x:auto;}
+.nav-tab{padding:13px 18px;font-size:.83rem;font-weight:600;cursor:pointer;border-bottom:2.5px solid transparent;color:var(--muted);transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.nav-tab:hover{color:var(--text);}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-badge{background:var(--danger);color:#fff;font-size:.6rem;padding:1px 5px;border-radius:10px;font-weight:700;min-width:16px;text-align:center;}
+/* ROLE INFO BAND */
+#role-info-band{padding:7px 24px;font-size:.76rem;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+/* MAIN */
+main{max-width:1200px;margin:0 auto;padding:24px 20px;}
+.page{display:none;}.page.active{display:block;}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:7px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:opacity .15s,transform .1s;}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--text);}
+.btn-ok{background:var(--ok-lt);color:var(--ok);border:none;}
+.btn-danger{background:var(--danger-lt);color:var(--danger);border:1.5px solid transparent;}
+.btn-warn{background:var(--warn-lt);color:var(--warn);border:none;}
+.btn-sm{padding:4px 10px;font-size:.73rem;}
+/* PAGE HEADER */
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px;}
+.page-header h1{font-size:1.4rem;font-weight:700;}
+.page-header p{color:var(--muted);font-size:.83rem;margin-top:3px;}
+/* RECAP BAND */
+.recap-band{background:var(--text);color:#fff;border-radius:13px;padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:18px;margin-bottom:24px;}
+.recap-item label{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:#999;display:block;margin-bottom:4px;}
+.recap-item .val{font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:500;}
+.val.ok{color:#4ade80;}.val.warn{color:#fbbf24;}.val.danger{color:#f87171;}
+.recap-sep{width:1px;background:#333;}
+/* SECTION CARDS */
+.sections-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:28px;}
+.sec-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden;}
+.sec-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--c);}
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sec-name{font-weight:700;font-size:.92rem;}
+.sec-icon{width:32px;height:32px;border-radius:8px;background:color-mix(in srgb,var(--c) 12%,transparent);color:var(--c);display:grid;place-items:center;font-size:1rem;}
+.progress-wrap{margin:10px 0 8px;}
+.progress-label{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-bottom:4px;}
+.progress-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.sec-amounts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:10px;}
+.amount-box{text-align:center;}
+.amount-box small{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:block;}
+.amount-box strong{font-family:'DM Mono',monospace;font-size:.84rem;}
+/* CARD BOX */
+.card-box{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;}
+.card-box-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.card-box-header h2{font-size:.92rem;font-weight:700;}
+.filter-tabs{display:flex;gap:4px;}
+.tab{padding:4px 10px;border-radius:5px;font-size:.73rem;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--muted);transition:all .15s;}
+.tab.active{background:var(--text);color:#fff;border-color:var(--text);}
+/* TABLE */
+table{width:100%;border-collapse:collapse;}
+thead th{padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border);background:var(--bg);}
+tbody tr{transition:background .1s;}
+tbody tr:hover{background:var(--bg);}
+tbody td{padding:10px 12px;font-size:.81rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:.68rem;font-weight:600;}
+.badge.attente{background:var(--warn-lt);color:var(--warn);}
+.badge.valide{background:var(--ok-lt);color:var(--ok);}
+.badge.refuse{background:var(--danger-lt);color:var(--danger);}
+.metier-tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.68rem;font-weight:600;color:#fff;}
+.montant{font-family:'DM Mono',monospace;font-weight:500;}
+/* TIMELINE */
+.months-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;}
+.month-col{text-align:center;}
+.month-bar-wrap{height:66px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--bg);border-radius:4px;overflow:hidden;margin-bottom:3px;}
+.month-bar{border-radius:4px 4px 0 0;transition:height .5s ease;}
+.month-label{font-size:.6rem;color:var(--muted);font-family:'DM Mono',monospace;}
+.month-amount{font-size:.57rem;color:var(--muted);}
+/* À COMMANDER */
+.commander-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:start;transition:box-shadow .2s;}
+.commander-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);}
+.commander-card .bc-num{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--muted);}
+.commander-card .objet{font-weight:600;font-size:.92rem;margin-bottom:4px;}
+.commander-card .fourn{font-size:.8rem;color:var(--muted);}
+.commander-card .montant-bc{font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--ok);text-align:right;}
+.commander-card .montant-bc small{font-size:.68rem;color:var(--muted);display:block;font-weight:400;}
+.commander-card .actions-bc{display:flex;flex-direction:column;gap:6px;align-items:flex-end;margin-top:6px;}
+.bc-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+.bc-meta span{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:3px;}
+.empty-state{text-align:center;padding:48px;color:var(--muted);}
+.empty-state .icon{font-size:2.5rem;margin-bottom:10px;}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;place-items:center;padding:16px;}
+.modal-bg.open{display:grid;}
+.modal{background:var(--surface);border-radius:14px;padding:24px;width:100%;max-width:520px;box-shadow:0 24px 60px rgba(0,0,0,.22);max-height:90vh;overflow-y:auto;}
+.modal h2{font-size:1rem;font-weight:700;margin-bottom:16px;}
+.form-row{margin-bottom:11px;}
+.form-row label{display:block;font-size:.72rem;font-weight:600;margin-bottom:3px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.83rem;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);transition:border-color .15s;}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:none;border-color:var(--accent);}
+.form-row textarea{resize:vertical;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+/* FICHE DEMANDE */
+.fiche-highlight{background:var(--accent-lt);border:1.5px solid var(--accent);border-radius:9px;padding:14px;margin-bottom:14px;}
+.fiche-montant-big{font-family:'DM Mono',monospace;font-size:1.7rem;font-weight:700;color:var(--accent);}
+.fiche-section{margin-bottom:16px;}
+.fiche-section h3{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.fiche-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.fiche-item label{font-size:.68rem;color:var(--muted);display:block;margin-bottom:2px;}
+.fiche-item strong{font-size:.84rem;}
+.statut-banner{padding:8px 12px;border-radius:7px;font-size:.8rem;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.statut-banner.attente{background:var(--warn-lt);color:var(--warn);}
+.statut-banner.valide{background:var(--ok-lt);color:var(--ok);}
+.statut-banner.refuse{background:var(--danger-lt);color:var(--danger);}
+.btn-valider-big{background:var(--ok);color:#fff;padding:10px 20px;font-size:.88rem;font-weight:700;border:none;border-radius:8px;cursor:pointer;transition:opacity .15s;}
+.btn-valider-big:hover{opacity:.88;}
+.btn-refuser-big{background:var(--danger-lt);color:var(--danger);padding:10px 20px;font-size:.88rem;font-weight:700;border:1.5px solid var(--danger);border-radius:8px;cursor:pointer;transition:opacity .15s;}
+.btn-refuser-big:hover{opacity:.88;}
+.devis-joint{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;font-size:.78rem;color:var(--accent);text-decoration:none;}
+/* BC */
+.bc-preview{background:#fff;border:2px solid var(--accent);border-radius:11px;padding:20px;margin-top:14px;font-size:.8rem;}
+.bc-preview h3{font-size:.95rem;font-weight:700;color:var(--accent);margin-bottom:12px;}
+.bc-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.bc-table th,.bc-table td{padding:6px 9px;border:1px solid var(--border);font-size:.76rem;}
+.bc-table th{background:var(--accent-lt);font-weight:600;}
+/* TROMBI */
+.trombi-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center;}
+.trombi-controls select{padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.82rem;background:var(--surface);color:var(--text);}
+.classe-section{margin-bottom:28px;}
+.classe-title{font-size:.95rem;font-weight:700;}
+.classe-subtitle{font-size:.76rem;color:var(--muted);}
+.eleves-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:12px;}
+.eleve-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;transition:box-shadow .2s;}
+.eleve-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.eleve-avatar{width:64px;height:64px;border-radius:50%;margin:0 auto 8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:2.5px solid var(--border);}
+.eleve-avatar img{width:100%;height:100%;object-fit:cover;}
+.eleve-nom{font-weight:600;font-size:.79rem;margin-bottom:1px;}
+.eleve-info{font-size:.67rem;color:var(--muted);}
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;padding:10px 16px;border-radius:8px;font-size:.81rem;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* GESTION BUDGETS */
+.metier-block{background:var(--surface);border:1.5px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:18px;}
+.metier-block-header{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+.metier-color-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.metier-block-title{font-weight:700;font-size:1rem;flex:1;}
+.metier-block-total{font-family:'DM Mono',monospace;font-size:.88rem;color:var(--muted);}
+.budget-line{display:grid;grid-template-columns:1fr 140px 110px 80px 36px;gap:10px;align-items:center;padding:10px 18px;border-bottom:1px solid var(--border);font-size:.83rem;}
+.budget-line:last-child{border-bottom:none;}
+.budget-line-label{font-weight:500;}
+.budget-line input[type=number]{padding:5px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:.81rem;width:100%;font-family:'DM Mono',monospace;}
+.budget-line input[type=number]:focus{outline:none;border-color:var(--accent);}
+.budget-engage{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--muted);}
+.budget-restant{font-family:'DM Mono',monospace;font-size:.78rem;font-weight:600;}
+.btn-delete{width:28px;height:28px;border-radius:6px;border:none;background:var(--danger-lt);color:var(--danger);cursor:pointer;font-size:.85rem;display:grid;place-items:center;}
+.btn-delete:hover{background:var(--danger);color:#fff;}
+.add-budget-line{padding:10px 18px;display:flex;gap:8px;align-items:center;background:var(--bg);}
+.add-budget-line input{padding:6px 9px;border:1.5px solid var(--border);border-radius:6px;font-size:.81rem;font-family:'Inter',sans-serif;background:var(--surface);}
+.add-budget-line input:focus{outline:none;border-color:var(--accent);}
+.color-picker-row{display:flex;gap:6px;align-items:center;margin-top:8px;}
+.color-swatch{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s;}
+.color-swatch:hover,.color-swatch.selected{transform:scale(1.2);border-color:var(--text);}
+
+@media(max-width:600px){main{padding:12px;}nav{overflow-x:auto;}.months-grid{grid-template-columns:repeat(6,1fr);}.form-grid-2{grid-template-columns:1fr;}.fiche-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><div class="logo-icon">⚙</div>CFA Compagnons du Devoir — Troyes</div>
+  <div class="role-switcher">
+    <span style="font-size:.7rem;color:#888">Vue :</span>
+    <select class="role-select" id="role-select" onchange="applyRole(this.value)">
+      <option value="responsable">👔 Responsable</option>
+      <option value="formateur">🎓 Formateur</option>
+      <option value="secretariat">📁 Secrétariat</option>
+      <option value="direction">📊 Direction</option>
+    </select>
+    <span class="role-pill pill-responsable" id="role-pill">RESPONSABLE</span>
+    <span class="year-badge">2025–2026</span>
+  </div>
+</header>
+
+<div id="role-info-band"></div>
+
+<nav>
+  <div class="nav-tab active" onclick="showPage('budget',this)">📊 Budget</div>
+  <div class="nav-tab" onclick="showPage('demandes',this)">📋 Demandes <span class="nav-badge" id="badge-attente" style="display:none">0</span></div>
+  <div class="nav-tab" onclick="showPage('commander',this)">🛒 À commander <span class="nav-badge" id="badge-commander" style="display:none;background:var(--ok)">0</span></div>
+  <div class="nav-tab" onclick="showPage('trombi',this)">👥 Trombinoscope</div>
+  <div class="nav-tab" id="nav-tab-gestion" style="display:none;margin-left:auto;color:var(--accent)" onclick="showPage('gestion',this)">⚙️ Gérer les budgets</div>
+</nav>
+
+<main>
+
+<!-- ══ PAGE BUDGET ══ -->
+<div class="page active" id="page-budget">
+  <div class="page-header">
+    <div><h1>Vue budgétaire</h1><p>Enveloppes par métier · Année 2025–2026</p></div>
+    <button class="btn btn-primary" id="btn-new-demande-budget" onclick="showPage('demandes');openModalDemande()">+ Nouvelle demande</button>
+  </div>
+  <div class="recap-band">
+    <div class="recap-item"><label>Budget total</label><div class="val" id="total-budget">—</div></div>
+    <div class="recap-sep"></div>
+    <div class="recap-item"><label>Engagé (validé)</label><div class="val warn" id="total-engage">—</div></div>
+    <div class="recap-sep"></div>
+    <div class="recap-item"><label>Restant</label><div class="val ok" id="total-restant">—</div></div>
+    <div class="recap-sep"></div>
+    <div class="recap-item"><label>En attente</label><div class="val" id="total-attente">—</div></div>
+  </div>
+  <div class="sections-grid" id="sections-grid"></div>
+  <div class="card-box">
+    <div class="card-box-header"><h2>📅 Dépenses mensuelles (BC validés)</h2></div>
+    <div style="padding:18px"><div class="months-grid" id="months-grid"></div></div>
+  </div>
+</div>
+
+<!-- ══ PAGE DEMANDES ══ -->
+<div class="page" id="page-demandes">
+  <div class="page-header">
+    <div><h1>Demandes & Devis</h1><p>Cycle : Demande → Devis fournisseur → Validation responsable → Bon de commande</p></div>
+    <button class="btn btn-primary" id="btn-new-demande" onclick="openModalDemande()">+ Nouvelle demande</button>
+  </div>
+  <div class="card-box">
+    <div class="card-box-header">
+      <h2>Toutes les demandes</h2>
+      <div class="filter-tabs">
+        <button class="tab active" onclick="filterD('tous',this)">Toutes</button>
+        <button class="tab" onclick="filterD('attente',this)">⏳ En attente</button>
+        <button class="tab" onclick="filterD('valide',this)">✅ Validées</button>
+        <button class="tab" onclick="filterD('refuse',this)">❌ Refusées</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Réf.</th><th>Métier</th><th>Objet</th><th>Fournisseur</th><th>Formateur</th><th>Budget</th><th>Montant HT</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
+        <tbody id="demandes-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE À COMMANDER ══ -->
+<div class="page" id="page-commander">
+  <div class="page-header">
+    <div><h1>🛒 À commander</h1><p>Bons de commande validés — prêts à envoyer aux fournisseurs</p></div>
+  </div>
+  <div id="commander-list"></div>
+</div>
+
+<!-- ══ PAGE TROMBI ══ -->
+<div class="page" id="page-trombi">
+  <div class="page-header">
+    <div><h1>Trombinoscope</h1><p>Apprentis par métier, formation et année</p></div>
+    <button class="btn btn-primary" id="btn-new-eleve" onclick="openModalEleve()">+ Ajouter un apprenti</button>
+  </div>
+  <div class="trombi-controls">
+    <select id="filter-metier-t" onchange="renderTrombi()"><option value="">Tous les métiers</option><option value="elec">Électricité</option><option value="plomb">Plomberie</option><option value="menu">Menuiserie</option><option value="autre">Autre</option></select>
+    <select id="filter-formation-t" onchange="renderTrombi()"><option value="">Toutes les formations</option><option value="CAP">CAP</option><option value="BAC PRO">BAC PRO</option><option value="BTS">BTS</option><option value="TITRE PRO">TITRE PRO</option></select>
+    <select id="filter-annee-t" onchange="renderTrombi()"><option value="">Toutes les années</option><option value="1">1ère année</option><option value="2">2ème année</option><option value="3">3ème année</option></select>
+  </div>
+  <div id="trombi-container"></div>
+</div>
+
+
+<!-- ══ PAGE GESTION BUDGETS (RESPONSABLE) ══ -->
+<div class="page" id="page-gestion">
+  <div class="page-header">
+    <div><h1>⚙️ Gestion des budgets</h1><p>Créez vos métiers, formations et enveloppes budgétaires</p></div>
+    <button class="btn btn-primary" onclick="openModalNouveauMetier()">+ Nouveau métier</button>
+  </div>
+
+  <!-- LISTE MÉTIERS + BUDGETS -->
+  <div id="gestion-metiers-list"></div>
+</div>
+
+</main>
+
+<!-- ══ MODAL NOUVELLE DEMANDE ══ -->
+<div class="modal-bg" id="modal-demande" onclick="closeMBg(event,'modal-demande')">
+  <div class="modal">
+    <h2>📋 Nouvelle demande d'achat</h2>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Métier / Section *</label>
+        <select id="f-metier" onchange="updateBudgetSelect()"><option value="elec">Électricité</option><option value="plomb">Plomberie</option><option value="menu">Menuiserie</option><option value="autre">Autre</option></select>
+      </div>
+      <div class="form-row"><label>Formateur demandeur *</label><input type="text" id="f-formateur" placeholder="Nom du formateur"></div>
+    </div>
+    <div class="form-row"><label>Objet de la demande *</label><input type="text" id="f-objet" placeholder="Ex : Câbles HO7V-R 2.5mm² pour atelier automatisme"></div>
+    <div class="form-row"><label>Justification / Pourquoi ce besoin ?</label><textarea id="f-justif" rows="2" placeholder="Ex : Renouvellement stock atelier, TP semaine 12..."></textarea></div>
+    <div class="form-row"><label>Budget concerné *</label>
+      <select id="f-budget-select"></select>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Fournisseur *</label><input type="text" id="f-fournisseur" placeholder="Rexel, Sonepar..."></div>
+      <div class="form-row"><label>Réf. devis fournisseur</label><input type="text" id="f-ref-fournisseur" placeholder="N° devis"></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Montant HT (€) *</label><input type="number" id="f-montant" placeholder="0.00" step="0.01" min="0"></div>
+      <div class="form-row"><label>Date souhaitée</label><input type="date" id="f-date"></div>
+    </div>
+    <div class="form-row"><label>📎 Devis fournisseur (PDF/image)</label><input type="file" id="f-fichier" accept=".pdf,.jpg,.jpeg,.png"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-demande')">Annuler</button>
+      <button class="btn btn-primary" onclick="ajouterDemande()">Envoyer la demande</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL FICHE DEMANDE ══ -->
+<div class="modal-bg" id="modal-fiche" onclick="closeMBg(event,'modal-fiche')">
+  <div class="modal" style="max-width:570px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <h2 style="margin:0">🔍 Analyse de la demande</h2>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-fiche')">✕</button>
+    </div>
+    <div id="fiche-statut-banner"></div>
+    <div class="fiche-highlight">
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">Montant HT demandé</div>
+      <div class="fiche-montant-big" id="fiche-montant">—</div>
+      <div style="margin-top:4px;font-size:.76rem;color:var(--muted)">TTC : <strong id="fiche-ttc">—</strong> &nbsp;·&nbsp; Restant budget après : <strong id="fiche-restant-apres">—</strong></div>
+      <div style="margin-top:8px">
+        <div style="font-size:.68rem;color:var(--muted);margin-bottom:3px">Impact sur le budget métier</div>
+        <div style="height:6px;background:rgba(255,255,255,.3);border-radius:99px;overflow:hidden"><div id="fiche-prog" style="height:100%;border-radius:99px;transition:width .4s"></div></div>
+        <div style="font-size:.66rem;color:var(--muted);margin-top:2px" id="fiche-prog-label"></div>
+      </div>
+    </div>
+    <div class="fiche-section">
+      <h3>📋 Détail</h3>
+      <div class="fiche-grid">
+        <div class="fiche-item"><label>Référence</label><strong id="fiche-id">—</strong></div>
+        <div class="fiche-item"><label>Date</label><strong id="fiche-date">—</strong></div>
+        <div class="fiche-item"><label>Formateur</label><strong id="fiche-formateur">—</strong></div>
+        <div class="fiche-item"><label>Métier</label><strong id="fiche-metier">—</strong></div>
+      </div>
+      <div style="margin-top:8px"><div class="fiche-item"><label>Objet</label><strong id="fiche-objet" style="font-size:.9rem">—</strong></div></div>
+      <div style="margin-top:8px"><div class="fiche-item"><label>Justification</label><div id="fiche-justif" style="font-size:.82rem;padding:7px;background:var(--bg);border-radius:5px;margin-top:2px">—</div></div></div>
+      <!-- Budget modifiable par le responsable -->
+      <div style="margin-top:8px" id="fiche-budget-zone"></div>
+    </div>
+    <div class="fiche-section">
+      <h3>🏢 Fournisseur</h3>
+      <div class="fiche-grid">
+        <div class="fiche-item"><label>Fournisseur</label><strong id="fiche-fournisseur">—</strong></div>
+        <div class="fiche-item"><label>Réf. devis</label><strong id="fiche-ref-fourn">—</strong></div>
+      </div>
+      <div style="margin-top:6px" id="fiche-fichier-zone"></div>
+    </div>
+    <div id="fiche-actions-zone"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL MOTIF REFUS ══ -->
+<div class="modal-bg" id="modal-motif" onclick="closeMBg(event,'modal-motif')">
+  <div class="modal" style="max-width:400px">
+    <h2>❌ Motif du refus</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Ce motif sera transmis au formateur.</p>
+    <div class="form-row"><label>Motif obligatoire *</label><textarea id="motif-refus-text" rows="4" placeholder="Ex : Budget insuffisant ce trimestre. À reprogrammer en janvier..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-motif')">Annuler</button>
+      <button class="btn btn-danger" onclick="confirmerRefus()">Confirmer le refus</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL BC ══ -->
+<div class="modal-bg" id="modal-bc" onclick="closeMBg(event,'modal-bc')">
+  <div class="modal" style="max-width:600px">
+    <h2>✅ Bon de commande généré</h2>
+    <div id="bc-content"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-bc')">Fermer</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL GESTION BUDGETS ══ -->
+<div class="modal-bg" id="modal-budgets" onclick="closeMBg(event,'modal-budgets')">
+  <div class="modal">
+    <h2>⚙️ Gestion des budgets</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Définissez les enveloppes budgétaires par métier et ligne.</p>
+    <div id="budgets-list"></div>
+    <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
+      <div style="font-size:.8rem;font-weight:600;margin-bottom:10px">+ Ajouter une ligne budgétaire</div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>Métier</label><select id="nb-metier"><option value="elec">Électricité</option><option value="plomb">Plomberie</option><option value="menu">Menuiserie</option><option value="autre">Autre</option></select></div>
+        <div class="form-row"><label>Libellé</label><input type="text" id="nb-label" placeholder="Ex : Matériel pédagogique"></div>
+      </div>
+      <div class="form-row"><label>Montant alloué (€)</label><input type="number" id="nb-montant" placeholder="0" min="0"></div>
+      <button class="btn btn-primary btn-sm" onclick="ajouterBudget()">Ajouter</button>
+    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-budgets')">Fermer</button></div>
+  </div>
+</div>
+
+<!-- ══ MODAL ÉLÈVE ══ -->
+<div class="modal-bg" id="modal-eleve" onclick="closeMBg(event,'modal-eleve')">
+  <div class="modal">
+    <h2>👤 Ajouter un apprenti</h2>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Prénom *</label><input type="text" id="e-prenom" placeholder="Prénom"></div>
+      <div class="form-row"><label>Nom *</label><input type="text" id="e-nom" placeholder="NOM"></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Métier *</label><select id="e-metier"><option value="elec">Électricité</option><option value="plomb">Plomberie</option><option value="menu">Menuiserie</option><option value="autre">Autre</option></select></div>
+      <div class="form-row"><label>Formation *</label><select id="e-formation"><option value="CAP">CAP</option><option value="BAC PRO">BAC PRO</option><option value="BTS">BTS</option><option value="TITRE PRO">TITRE PRO</option></select></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Année *</label><select id="e-annee"><option value="1">1ère année</option><option value="2">2ème année</option><option value="3">3ème année</option></select></div>
+      <div class="form-row"><label>Âge</label><input type="number" id="e-age" placeholder="17" min="14" max="30"></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Téléphone</label><input type="tel" id="e-tel" placeholder="06 XX XX XX XX"></div>
+      <div class="form-row"><label>Entreprise</label><input type="text" id="e-entreprise" placeholder="Nom de l'entreprise"></div>
+    </div>
+    <div class="form-row"><label>📷 Photo</label><input type="file" id="e-photo" accept="image/*" onchange="previewPhoto(this)">
+      <div id="photo-preview" style="margin-top:6px;display:none"><img id="photo-img" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--border)"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-eleve')">Annuler</button>
+      <button class="btn btn-primary" onclick="ajouterEleve()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ MODAL NOUVEAU MÉTIER ══ -->
+<div class="modal-bg" id="modal-nouveau-metier" onclick="closeMBg(event,'modal-nouveau-metier')">
+  <div class="modal" style="max-width:440px">
+    <h2>🏗️ Nouveau métier / section</h2>
+    <div class="form-row"><label>Nom du métier *</label><input type="text" id="nm-label" placeholder="Ex : Maçonnerie, Maison, Peinture..."></div>
+    <div class="form-row"><label>Icône (emoji)</label><input type="text" id="nm-icon" placeholder="🏠" maxlength="2" style="width:70px"></div>
+    <div class="form-row">
+      <label>Couleur</label>
+      <div class="color-picker-row" id="color-picker-row">
+        <!-- généré par JS -->
+      </div>
+      <input type="hidden" id="nm-color" value="#6366f1">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-nouveau-metier')">Annuler</button>
+      <button class="btn btn-primary" onclick="creerMetier()">Créer le métier</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+let METIERS = {
+  elec: {label:'Électricité',icon:'⚡',color:'#1B4FD8'},
+  plomb:{label:'Plomberie',  icon:'💧',color:'#0891B2'},
+  menu: {label:'Menuiserie', icon:'🪵',color:'#7C3AED'},
+  autre:{label:'Autre',      icon:'📦',color:'#D97706'},
+};
+const MOIS = ['Sep','Oct','Nov','Déc','Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû'];
+const TVA = 1.20;
+
+// Budgets : liste gérable par le responsable
+let budgets = [
+  {id:'B01',metier:'elec', label:'Matériel pédagogique', montant:8000},
+  {id:'B02',metier:'elec', label:'Équipement atelier',    montant:6000},
+  {id:'B03',metier:'elec', label:'Consommables',          montant:4000},
+  {id:'B04',metier:'plomb',label:'Matériel pédagogique', montant:6000},
+  {id:'B05',metier:'plomb',label:'Équipement atelier',    montant:4000},
+  {id:'B06',metier:'plomb',label:'Consommables',          montant:2000},
+  {id:'B07',metier:'menu', label:'Matériel pédagogique', montant:5000},
+  {id:'B08',metier:'menu', label:'Machines atelier',      montant:3000},
+  {id:'B09',metier:'menu', label:'Consommables bois',     montant:1500},
+  {id:'B10',metier:'autre',label:'EPI & Sécurité',        montant:2000},
+  {id:'B11',metier:'autre',label:'Logiciels & Licences',  montant:3000},
+];
+
+let demandes = [
+  {id:'DA-001',metier:'elec', budgetId:'B01',objet:'Câbles HO7V-R 2.5mm² (100m)',      justif:'Renouvellement stock',        fournisseur:'Rexel Troyes',     refFourn:'REX-441', montant:620,  date:'2025-09-12',statut:'valide', fichier:null,formateur:'M. Bernard', motifRefus:null},
+  {id:'DA-002',metier:'plomb',budgetId:'B04',objet:'Raccords PER 16mm assortiment',     justif:'TP tuyauterie sem. 8',         fournisseur:'Sonepar',          refFourn:'SON-8821',montant:340,  date:'2025-09-18',statut:'valide', fichier:null,formateur:'Mme Perrin', motifRefus:null},
+  {id:'DA-003',metier:'elec', budgetId:'B02',objet:'Tableau électrique 48 modules',     justif:'Remplacement défectueux',     fournisseur:'Legrand Direct',   refFourn:'LGR-312', montant:890,  date:'2025-10-03',statut:'valide', fichier:null,formateur:'M. Bernard', motifRefus:null},
+  {id:'DA-004',metier:'menu', budgetId:'B07',objet:'Panneaux MDF 19mm (lot 20)',        justif:'TP menuiserie T1',            fournisseur:'Point P',          refFourn:'PP-7732', montant:1240, date:'2025-10-15',statut:'valide', fichier:null,formateur:'M. Girard',  motifRefus:null},
+  {id:'DA-005',metier:'elec', budgetId:'B02',objet:'Variateurs ATV320 (×3)',            justif:'Automates manquants',         fournisseur:'Schneider Electric',refFourn:'SCH-99',  montant:2800, date:'2025-11-04',statut:'valide', fichier:null,formateur:'M. Bernard', motifRefus:null},
+  {id:'DA-006',metier:'plomb',budgetId:'B05',objet:'Chauffe-eau thermodynamique démo',  justif:'Démo énergie renouvelable',   fournisseur:'Atlantic Pro',     refFourn:'ATL-2241',montant:1800, date:'2025-11-20',statut:'valide', fichier:null,formateur:'Mme Perrin', motifRefus:null},
+  {id:'DA-007',metier:'autre',budgetId:'B10',objet:'EPI atelier (gants, lunettes×30)',  justif:'Renouvellement annuel',       fournisseur:'RS Components',    refFourn:'RS-4412', montant:480,  date:'2025-12-02',statut:'valide', fichier:null,formateur:'M. Martin',  motifRefus:null},
+  {id:'DA-008',metier:'elec', budgetId:'B02',objet:'Onduleur 3kVA atelier automatisme', justif:'Continuité alimentation TP',  fournisseur:'APC by Schneider', refFourn:'APC-991', montant:780,  date:'2026-03-05',statut:'attente',fichier:null,formateur:'M. Bernard', motifRefus:null},
+  {id:'DA-009',metier:'menu', budgetId:'B08',objet:'Toupie à arbre vertical CN',        justif:'Renouvellement machine',      fournisseur:'Holzma France',    refFourn:'HOL-221', montant:4200, date:'2026-03-12',statut:'attente',fichier:null,formateur:'M. Girard',  motifRefus:null},
+  {id:'DA-010',metier:'plomb',budgetId:'B04',objet:'Station de soudure cuivre pro',     justif:'TP soudure niveau 2',         fournisseur:'SAF-FRO',          refFourn:'SAF-8821',montant:950,  date:'2026-04-02',statut:'attente',fichier:null,formateur:'Mme Perrin', motifRefus:null},
+  {id:'DA-011',metier:'elec', budgetId:'B01',objet:'Analyseur réseau Fluke 435-II',     justif:'TP qualité énergie BTS',      fournisseur:'Fluke France',     refFourn:'FLK-435', montant:3400, date:'2026-04-10',statut:'refuse', fichier:null,formateur:'M. Bernard', motifRefus:'Budget insuffisant — reporter en septembre'},
+];
+
+let eleves = [
+  {id:'E001',prenom:'Lucas',   nom:'MARTIN',  metier:'elec', formation:'BAC PRO',annee:'2',age:18,tel:'06 11 22 33 44',entreprise:'Elec Services 10',photo:null},
+  {id:'E002',prenom:'Théo',    nom:'DUPONT',  metier:'elec', formation:'BAC PRO',annee:'2',age:19,tel:'06 22 33 44 55',entreprise:'EDF Troyes',       photo:null},
+  {id:'E003',prenom:'Emma',    nom:'GIRARD',  metier:'elec', formation:'CAP',    annee:'1',age:16,tel:'06 33 44 55 66',entreprise:'Schneider Aube',   photo:null},
+  {id:'E004',prenom:'Tom',     nom:'SIMON',   metier:'plomb',formation:'CAP',    annee:'1',age:16,tel:'06 44 55 66 77',entreprise:'Plomberie Durand', photo:null},
+  {id:'E005',prenom:'Léa',     nom:'THOMAS',  metier:'plomb',formation:'BAC PRO',annee:'2',age:18,tel:'06 55 66 77 88',entreprise:'Sanitherm 10',     photo:null},
+  {id:'E006',prenom:'Axel',    nom:'BERNARD', metier:'menu', formation:'CAP',    annee:'1',age:16,tel:'06 66 77 88 99',entreprise:'Menuiserie Fabre', photo:null},
+  {id:'E007',prenom:'Inès',    nom:'MOREAU',  metier:'menu', formation:'BAC PRO',annee:'1',age:17,tel:'06 77 88 99 00',entreprise:'Bois & Habitat',   photo:null},
+];
+
+let currentFilterD = 'tous';
+let currentRole = 'responsable';
+let ficheDemandeId = null;
+let photoDataURL = null;
+const FORMATEUR_CONNECTE = 'M. Bernard';
+const FORMATEUR_METIER = 'elec';
+
+// ── UTILS ──────────────────────────────────────────────────────────────
+const fmt  = v => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);
+const fmtD = v => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',minimumFractionDigits:2}).format(v);
+function toast(msg,d=3200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+function getBudget(id){return budgets.find(b=>b.id===id);}
+
+// ── CALCULS ────────────────────────────────────────────────────────────
+function statsMetier(metId){
+  const engage  = demandes.filter(d=>d.metier===metId&&d.statut==='valide').reduce((s,d)=>s+d.montant,0);
+  const attente = demandes.filter(d=>d.metier===metId&&d.statut==='attente').reduce((s,d)=>s+d.montant,0);
+  const totalBudget = budgets.filter(b=>b.metier===metId).reduce((s,b)=>s+b.montant,0);
+  const restant = totalBudget - engage;
+  const pct = totalBudget > 0 ? Math.min(100,Math.round(engage/totalBudget*100)) : 0;
+  return {engage,attente,restant,pct,budget:totalBudget};
+}
+function statsBudget(bId){
+  const engage = demandes.filter(d=>d.budgetId===bId&&d.statut==='valide').reduce((s,d)=>s+d.montant,0);
+  const b = getBudget(bId);
+  return {engage, restant:(b?.montant||0)-engage, budget:b?.montant||0};
+}
+function statsGlobal(){
+  let tb=0,te=0,ta=0;
+  budgets.forEach(b=>tb+=b.montant);
+  demandes.forEach(d=>{if(d.statut==='valide')te+=d.montant;if(d.statut==='attente')ta+=d.montant;});
+  return{totalBudget:tb,totalEngage:te,totalRestant:tb-te,totalAttente:ta};
+}
+
+// ── NAVIGATION ──────────────────────────────────────────────────────────
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  else{const tabs=document.querySelectorAll('.nav-tab');tabs.forEach(t=>{if(t.onclick&&t.onclick.toString().includes("'"+id+"'"))t.classList.add('active');});}
+  if(id==='trombi')renderTrombi();
+  if(id==='commander')renderCommander();
+}
+
+// ── MODALS ─────────────────────────────────────────────────────────────
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeMBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+function openModalDemande(){
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+  updateBudgetSelect();
+  document.getElementById('modal-demande').classList.add('open');
+}
+function openModalEleve(){photoDataURL=null;document.getElementById('photo-preview').style.display='none';document.getElementById('modal-eleve').classList.add('open');}
+
+// ── BUDGET SELECT DYNAMIQUE ─────────────────────────────────────────────
+function updateBudgetSelect(metierOverride){
+  const metier = metierOverride || document.getElementById('f-metier').value;
+  const sel = document.getElementById('f-budget-select');
+  const list = budgets.filter(b=>b.metier===metier);
+  sel.innerHTML = list.map(b=>{
+    const s = statsBudget(b.id);
+    return `<option value="${b.id}">${b.label} — ${fmt(s.restant)} restant / ${fmt(b.montant)}</option>`;
+  }).join('') || '<option value="">Aucun budget défini pour ce métier</option>';
+}
+
+// ── BUDGETS GESTION ─────────────────────────────────────────────────────
+function openModalBudgets(){
+  renderBudgetsList();
+  document.getElementById('modal-budgets').classList.add('open');
+}
+function renderBudgetsList(){
+  const container = document.getElementById('budgets-list');
+  container.innerHTML = Object.entries(METIERS).map(([mid,m])=>{
+    const list = budgets.filter(b=>b.metier===mid);
+    if(!list.length) return '';
+    return `<div style="margin-bottom:14px">
+      <div style="font-size:.76rem;font-weight:700;color:${m.color};margin-bottom:6px">${m.icon} ${m.label}</div>
+      ${list.map(b=>{const s=statsBudget(b.id);return `
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.8rem">
+        <span style="flex:1">${b.label}</span>
+        <input type="number" value="${b.montant}" style="width:100px;padding:4px 6px;border:1.5px solid var(--border);border-radius:5px;font-size:.78rem" onchange="modifierBudget('${b.id}',this.value)">
+        <span style="font-size:.7rem;color:var(--muted)">${fmt(s.engage)} engagé</span>
+      </div>`}).join('')}
+    </div>`;
+  }).join('');
+}
+function modifierBudget(id,val){
+  const b = budgets.find(x=>x.id===id);
+  if(b){b.montant=parseFloat(val)||0;renderAll();toast('💾 Budget mis à jour');}
+}
+function ajouterBudget(){
+  const metier=document.getElementById('nb-metier').value;
+  const label=document.getElementById('nb-label').value.trim();
+  const montant=parseFloat(document.getElementById('nb-montant').value)||0;
+  if(!label||!montant){toast('⚠️ Libellé et montant requis');return;}
+  budgets.push({id:'B'+String(budgets.length+1).padStart(2,'0'),metier,label,montant});
+  document.getElementById('nb-label').value='';
+  document.getElementById('nb-montant').value='';
+  renderBudgetsList();
+  renderAll();
+  toast('✅ Budget ajouté');
+}
+
+// ── DEMANDES ───────────────────────────────────────────────────────────
+function ajouterDemande(){
+  const metier    = document.getElementById('f-metier').value;
+  const formateur = document.getElementById('f-formateur').value.trim();
+  const objet     = document.getElementById('f-objet').value.trim();
+  const justif    = document.getElementById('f-justif').value.trim();
+  const budgetId  = document.getElementById('f-budget-select').value;
+  const fournisseur=document.getElementById('f-fournisseur').value.trim();
+  const refFourn  = document.getElementById('f-ref-fournisseur').value.trim();
+  const montant   = parseFloat(document.getElementById('f-montant').value);
+  const date      = document.getElementById('f-date').value;
+  const fi        = document.getElementById('f-fichier');
+  const fichier   = fi.files.length ? fi.files[0].name : null;
+  if(!formateur||!objet||!fournisseur||isNaN(montant)||!date||!budgetId){toast('⚠️ Remplis tous les champs obligatoires (*)');return;}
+  const nd={id:'DA-'+String(demandes.length+1).padStart(3,'0'),metier,budgetId,objet,justif,fournisseur,refFourn,montant,date,statut:'attente',fichier,formateur,motifRefus:null};
+  demandes.push(nd);
+  closeModal('modal-demande');
+  ['f-formateur','f-objet','f-justif','f-fournisseur','f-ref-fournisseur','f-montant'].forEach(i=>document.getElementById(i).value='');
+  renderAll();
+  toast(`📋 Demande ${nd.id} envoyée — en attente de validation`);
+}
+
+function filterD(f,btn){
+  currentFilterD=f;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderDemandesTable();
+}
+
+function validerDemande(id){
+  const d=demandes.find(x=>x.id===id);if(!d)return;
+  d.statut='valide';
+  renderAll();
+  afficherBC(d);
+  toast(`✅ ${id} validée — BC généré, email envoyé à ${d.formateur}`);
+}
+
+function afficherBC(d){
+  const m=METIERS[d.metier];
+  const b=getBudget(d.budgetId);
+  const ht=d.montant,tva=ht*.2,ttc=ht*TVA;
+  const bcNum='BC-'+d.id.replace('DA-','');
+  const today=new Date().toLocaleDateString('fr-FR');
+  document.getElementById('bc-content').innerHTML=`
+  <div class="bc-preview">
+    <h3>📄 ${bcNum}</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;font-size:.78rem">
+      <div><strong>Émetteur :</strong><br>CFA Compagnons du Devoir<br>Troyes (10000)</div>
+      <div><strong>Fournisseur :</strong><br>${d.fournisseur}<br>${d.refFourn?'Réf : '+d.refFourn:''}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;font-size:.76rem;background:var(--accent-lt);padding:9px;border-radius:6px">
+      <div><strong>N° BC :</strong> ${bcNum}</div>
+      <div><strong>Date :</strong> ${today}</div>
+      <div><strong>Budget :</strong> ${m.label} · ${b?.label||'—'}</div>
+    </div>
+    <table class="bc-table">
+      <thead><tr><th>Désignation</th><th>Justification</th><th>Qté</th><th>Prix HT</th></tr></thead>
+      <tbody><tr><td>${d.objet}</td><td>${d.justif||'—'}</td><td>1</td><td style="font-family:'DM Mono',monospace;font-weight:600">${fmtD(ht)}</td></tr></tbody>
+    </table>
+    <div style="margin-top:10px;text-align:right;font-size:.8rem">
+      <div>Total HT : <strong>${fmtD(ht)}</strong></div>
+      <div>TVA 20% : <strong>${fmtD(tva)}</strong></div>
+      <div style="font-size:.95rem;margin-top:3px">Total TTC : <strong style="color:var(--accent)">${fmtD(ttc)}</strong></div>
+    </div>
+    <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:.72rem;color:var(--muted)">
+      ✉️ Email envoyé à ${d.formateur} · Validé le ${today}${d.fichier?'<br>📎 Devis joint : '+d.fichier:''}
+    </div>
+  </div>`;
+  document.getElementById('modal-bc').classList.add('open');
+}
+
+// ── FICHE DEMANDE ────────────────────────────────────────────────────────
+function ouvrirFiche(id){
+  const d=demandes.find(x=>x.id===id);if(!d)return;
+  ficheDemandeId=id;
+  const m=METIERS[d.metier];
+  const cfg=ROLE_CONFIG[currentRole];
+  const b=getBudget(d.budgetId);
+  const banners={attente:'⏳ En attente de validation',valide:'✅ Validée — Bon de commande généré',refuse:'❌ Refusée'};
+  document.getElementById('fiche-statut-banner').innerHTML=`<div class="statut-banner ${d.statut}">${banners[d.statut]}${d.motifRefus?' — Motif : '+d.motifRefus:''}</div>`;
+  const ht=d.montant,ttc=ht*TVA;
+  document.getElementById('fiche-montant').textContent=fmtD(ht)+' HT';
+  document.getElementById('fiche-ttc').textContent=fmtD(ttc);
+  const s=statsMetier(d.metier);
+  const restantApres=d.statut==='valide'?s.restant:s.restant-ht;
+  const restEl=document.getElementById('fiche-restant-apres');
+  restEl.textContent=fmtD(restantApres);
+  restEl.style.color=restantApres<0?'var(--danger)':restantApres<s.budget*.1?'var(--warn)':'var(--ok)';
+  const engTotal=s.engage+(d.statut==='attente'?ht:0);
+  const pct=s.budget>0?Math.min(100,Math.round(engTotal/s.budget*100)):0;
+  const barColor=pct>90?'var(--danger)':pct>70?'var(--warn)':m.color;
+  document.getElementById('fiche-prog').style.cssText=`width:${pct}%;background:${barColor};height:100%;border-radius:99px`;
+  document.getElementById('fiche-prog-label').textContent=`${fmtD(engTotal)} / ${fmtD(s.budget)} budget ${m.label} (${pct}%)`;
+  document.getElementById('fiche-id').textContent=d.id;
+  document.getElementById('fiche-date').textContent=new Date(d.date).toLocaleDateString('fr-FR');
+  document.getElementById('fiche-formateur').textContent=d.formateur;
+  document.getElementById('fiche-metier').innerHTML=`<span class="metier-tag" style="background:${m.color}">${m.icon} ${m.label}</span>`;
+  document.getElementById('fiche-objet').textContent=d.objet;
+  document.getElementById('fiche-justif').textContent=d.justif||'—';
+  document.getElementById('fiche-fournisseur').textContent=d.fournisseur;
+  document.getElementById('fiche-ref-fourn').textContent=d.refFourn||'—';
+  document.getElementById('fiche-fichier-zone').innerHTML=d.fichier
+    ?`<a class="devis-joint" href="#" onclick="return false">📎 ${d.fichier}</a>`
+    :`<span style="font-size:.78rem;color:var(--muted);font-style:italic">Aucun devis joint</span>`;
+
+  // Budget : modifiable par responsable si attente
+  const budgetZone=document.getElementById('fiche-budget-zone');
+  if(cfg.canValider && d.statut==='attente'){
+    const opts=budgets.map(bx=>`<option value="${bx.id}" ${bx.id===d.budgetId?'selected':''}>${METIERS[bx.metier].label} · ${bx.label} — ${fmt(statsBudget(bx.id).restant)} restant</option>`).join('');
+    budgetZone.innerHTML=`<div class="fiche-item"><label>Budget affecté <span style="color:var(--accent)">(modifiable)</span></label>
+      <select id="fiche-budget-select" style="width:100%;padding:7px 10px;border:1.5px solid var(--accent);border-radius:7px;font-size:.82rem;background:var(--accent-lt)"
+        onchange="changerBudgetFiche('${d.id}',this.value)">${opts}</select></div>`;
+  } else {
+    budgetZone.innerHTML=`<div class="fiche-item"><label>Budget affecté</label><strong>${b?METIERS[b.metier].label+' · '+b.label:'—'}</strong></div>`;
+  }
+
+  // Actions
+  const az=document.getElementById('fiche-actions-zone');
+  if(cfg.canValider && d.statut==='attente'){
+    az.innerHTML=`<div style="border-top:1.5px solid var(--border);margin-top:16px;padding-top:16px">
+      <div style="font-size:.8rem;font-weight:600;margin-bottom:10px">⚡ Décision du responsable</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-valider-big" onclick="validerDepuisFiche()">✅ Valider et générer le BC</button>
+        <button class="btn-refuser-big" onclick="ouvrirMotifRefus()">❌ Refuser avec motif</button>
+      </div></div>`;
+  } else if(d.statut==='valide'){
+    az.innerHTML=`<div style="border-top:1.5px solid var(--border);margin-top:16px;padding-top:16px">
+      <button class="btn btn-ghost" onclick="closeModal('modal-fiche');afficherBC(demandes.find(x=>x.id==='${d.id}'))">📄 Voir le bon de commande</button></div>`;
+  } else { az.innerHTML=''; }
+
+  document.getElementById('modal-fiche').classList.add('open');
+}
+
+function changerBudgetFiche(demandeId, newBudgetId){
+  const d=demandes.find(x=>x.id===demandeId);
+  if(!d)return;
+  const newB=getBudget(newBudgetId);
+  const oldB=getBudget(d.budgetId);
+  d.budgetId=newBudgetId;
+  d.metier=newB.metier;
+  renderAll();
+  toast(`💾 Budget changé → ${METIERS[newB.metier].label} · ${newB.label}`);
+}
+
+function validerDepuisFiche(){validerDemande(ficheDemandeId);closeModal('modal-fiche');}
+function ouvrirMotifRefus(){document.getElementById('motif-refus-text').value='';document.getElementById('modal-motif').classList.add('open');}
+function confirmerRefus(){
+  const motif=document.getElementById('motif-refus-text').value.trim();
+  if(!motif){toast('⚠️ Le motif est obligatoire');return;}
+  const d=demandes.find(x=>x.id===ficheDemandeId);if(!d)return;
+  d.statut='refuse';d.motifRefus=motif;
+  closeModal('modal-motif');closeModal('modal-fiche');
+  renderAll();
+  toast(`❌ ${ficheDemandeId} refusée — ${d.formateur} sera notifié`);
+}
+
+// ── À COMMANDER ──────────────────────────────────────────────────────────
+function renderCommander(){
+  const valides=demandes.filter(d=>d.statut==='valide').sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const container=document.getElementById('commander-list');
+  if(!valides.length){
+    container.innerHTML=`<div class="empty-state"><div class="icon">🛒</div><div>Aucun bon de commande validé pour l'instant.</div></div>`;
+    return;
+  }
+  container.innerHTML=valides.map(d=>{
+    const m=METIERS[d.metier];
+    const b=getBudget(d.budgetId);
+    const bcNum='BC-'+d.id.replace('DA-','');
+    return `<div class="commander-card">
+      <div style="padding-top:3px"><span class="metier-tag" style="background:${m.color}">${m.icon}</span></div>
+      <div>
+        <div class="bc-num">${bcNum} · ${d.id}</div>
+        <div class="objet">${d.objet}</div>
+        <div class="fourn">🏢 ${d.fournisseur}${d.refFourn?' · Réf : '+d.refFourn:''}</div>
+        <div class="bc-meta">
+          <span>📅 ${new Date(d.date).toLocaleDateString('fr-FR')}</span>
+          <span>👤 ${d.formateur}</span>
+          <span style="color:${m.color}">📁 ${b?b.label:'—'}</span>
+          ${d.fichier?`<span style="color:var(--ok)">📎 ${d.fichier}</span>`:''}
+        </div>
+      </div>
+      <div>
+        <div class="montant-bc">${fmtD(d.montant*TVA)}<small>TTC · ${fmtD(d.montant)} HT</small></div>
+        <div class="actions-bc">
+          <button class="btn btn-primary btn-sm" onclick="afficherBC(demandes.find(x=>x.id==='${d.id}'))">📄 Voir BC</button>
+          <button class="btn btn-ghost btn-sm" onclick="ouvrirFiche('${d.id}')">👁 Détail</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── TROMBI ──────────────────────────────────────────────────────────────
+function previewPhoto(input){
+  if(!input.files.length)return;
+  const r=new FileReader();
+  r.onload=e=>{photoDataURL=e.target.result;document.getElementById('photo-img').src=photoDataURL;document.getElementById('photo-preview').style.display='block';};
+  r.readAsDataURL(input.files[0]);
+}
+function ajouterEleve(){
+  const prenom=document.getElementById('e-prenom').value.trim();
+  const nom=document.getElementById('e-nom').value.trim().toUpperCase();
+  const metier=document.getElementById('e-metier').value;
+  const formation=document.getElementById('e-formation').value;
+  const annee=document.getElementById('e-annee').value;
+  const age=document.getElementById('e-age').value;
+  const tel=document.getElementById('e-tel').value.trim();
+  const entreprise=document.getElementById('e-entreprise').value.trim();
+  if(!prenom||!nom){toast('⚠️ Prénom et Nom obligatoires');return;}
+  eleves.push({id:'E'+String(eleves.length+1).padStart(3,'0'),prenom,nom,metier,formation,annee,age,tel,entreprise,photo:photoDataURL});
+  closeModal('modal-eleve');
+  ['e-prenom','e-nom','e-age','e-tel','e-entreprise'].forEach(i=>document.getElementById(i).value='');
+  photoDataURL=null;
+  renderTrombi();
+  toast(`👤 ${prenom} ${nom} ajouté`);
+}
+function renderTrombi(){
+  const fM=document.getElementById('filter-metier-t').value;
+  const fF=document.getElementById('filter-formation-t').value;
+  const fA=document.getElementById('filter-annee-t').value;
+  const groups={};
+  eleves.forEach(e=>{
+    if(fM&&e.metier!==fM)return;
+    if(fF&&e.formation!==fF)return;
+    if(fA&&e.annee!==fA)return;
+    const key=`${e.metier}|${e.formation}|${e.annee}`;
+    const m=METIERS[e.metier];
+    if(!groups[key])groups[key]={label:`${m.label} · ${e.formation} · ${e.annee}e année`,color:m.color,icon:m.icon,eleves:[]};
+    groups[key].eleves.push(e);
+  });
+  const container=document.getElementById('trombi-container');
+  if(!Object.keys(groups).length){container.innerHTML=`<div class="empty-state"><div class="icon">👥</div><div>Aucun apprenti pour ce filtre.</div></div>`;return;}
+  container.innerHTML=Object.entries(groups).sort(([a],[b])=>a.localeCompare(b)).map(([key,g])=>`
+    <div class="classe-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div><div class="classe-title" style="color:${g.color}">${g.icon} ${g.label}</div>
+          <div class="classe-subtitle">${g.eleves.length} apprenti${g.eleves.length>1?'s':''}</div></div>
+        <button class="btn btn-ghost btn-sm" id="btn-add-trombi" onclick="openModalEleve()">+ Ajouter</button>
+      </div>
+      <div class="eleves-grid">${g.eleves.map(e=>`
+        <div class="eleve-card">
+          <div class="eleve-avatar" style="border-color:${g.color}">
+            ${e.photo?`<img src="${e.photo}" alt="${e.prenom}">`:`<span style="color:${g.color};font-size:1.2rem">${(e.prenom[0]||'')+(e.nom[0]||'')}</span>`}
+          </div>
+          <div class="eleve-nom">${e.prenom}</div>
+          <div class="eleve-nom" style="font-size:.76rem">${e.nom}</div>
+          ${e.entreprise?`<div class="eleve-info">🏢 ${e.entreprise}</div>`:''}
+          ${e.age?`<div class="eleve-info">🎂 ${e.age} ans</div>`:''}
+          ${e.tel?`<div class="eleve-info"><a href="tel:${e.tel}" style="color:var(--accent);text-decoration:none">📞 ${e.tel}</a></div>`:''}
+        </div>`).join('')}</div>
+    </div>`).join('');
+}
+
+// ── RENDERS BUDGET ────────────────────────────────────────────────────────
+function renderRecap(){
+  const s=statsGlobal();
+  document.getElementById('total-budget').textContent=fmt(s.totalBudget);
+  const pct=s.totalBudget>0?s.totalEngage/s.totalBudget:0;
+  const eEl=document.getElementById('total-engage');eEl.textContent=fmt(s.totalEngage);eEl.className='val '+(pct>.9?'danger':'warn');
+  const rEl=document.getElementById('total-restant');rEl.textContent=fmt(s.totalRestant);rEl.className='val '+(s.totalRestant<0?'danger':'ok');
+  document.getElementById('total-attente').textContent=fmt(s.totalAttente);
+  // Badges nav
+  const nbAttente=demandes.filter(d=>d.statut==='attente').length;
+  const nbBC=demandes.filter(d=>d.statut==='valide').length;
+  const ba=document.getElementById('badge-attente');ba.textContent=nbAttente;ba.style.display=nbAttente>0?'':'none';
+  const bc=document.getElementById('badge-commander');bc.textContent=nbBC;bc.style.display=nbBC>0?'':'none';
+}
+function renderSections(){
+  const cfg=ROLE_CONFIG[currentRole];
+  const metiersToShow=!cfg.voirTousMetiers?{[FORMATEUR_METIER]:METIERS[FORMATEUR_METIER]}:METIERS;
+  document.getElementById('sections-grid').innerHTML=Object.entries(metiersToShow).map(([id,m])=>{
+    const s=statsMetier(id);
+    const fillClass=s.pct>90?'danger':s.pct>70?'warn':'';
+    const fillColor=fillClass?'':`background:${m.color}`;
+    const restClass=s.restant<0?'danger':s.restant<s.budget*.2?'warn':'ok';
+    return `<div class="sec-card" style="--c:${m.color}">
+      <div class="sec-header"><span class="sec-name">${m.label}</span><div class="sec-icon">${m.icon}</div></div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>${s.pct}% consommé</span><span>${fmt(s.engage)} / ${fmt(s.budget)}</span></div>
+        <div class="progress-bar"><div class="progress-fill ${fillClass}" style="width:${s.pct}%;${fillColor}"></div></div>
+      </div>
+      <div class="sec-amounts">
+        <div class="amount-box"><small>Budget</small><strong>${fmt(s.budget)}</strong></div>
+        <div class="amount-box"><small>Engagé</small><strong>${fmt(s.engage)}</strong></div>
+        <div class="amount-box"><small>Restant</small><strong class="${restClass}">${fmt(s.restant)}</strong></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderTimeline(){
+  const startYear=2025,startMonth=8;
+  const montants=Array(12).fill(0);
+  demandes.filter(d=>d.statut==='valide').forEach(d=>{
+    const dt=new Date(d.date);
+    let idx=(dt.getFullYear()-startYear)*12+dt.getMonth()-startMonth;
+    if(idx>=0&&idx<12)montants[idx]+=d.montant;
+  });
+  const max=Math.max(...montants,1);
+  const now=new Date();
+  const cur=(now.getFullYear()-startYear)*12+now.getMonth()-startMonth;
+  document.getElementById('months-grid').innerHTML=MOIS.map((m,i)=>{
+    const h=Math.round(montants[i]/max*60);
+    const isCur=i===cur;
+    return `<div class="month-col">
+      <div class="month-bar-wrap"><div class="month-bar" style="height:${h}px;background:${isCur?'#1B4FD8':'#C7D2FE'};${isCur?'box-shadow:0 0 0 2px #1B4FD8':''}"></div></div>
+      <div class="month-label">${m}</div>
+      ${montants[i]>0?`<div class="month-amount">${Math.round(montants[i]/100)/10}k</div>`:''}
+    </div>`;
+  }).join('');
+}
+function renderDemandesTable(){
+  const cfg=ROLE_CONFIG[currentRole];
+  let filtered=demandes;
+  if(currentFilterD==='attente')filtered=filtered.filter(d=>d.statut==='attente');
+  else if(currentFilterD==='valide')filtered=filtered.filter(d=>d.statut==='valide');
+  else if(currentFilterD==='refuse')filtered=filtered.filter(d=>d.statut==='refuse');
+  if(!cfg.voirToutesDemandes)filtered=filtered.filter(d=>d.formateur===FORMATEUR_CONNECTE);
+  const tbody=document.getElementById('demandes-tbody');
+  if(!filtered.length){tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:28px;color:var(--muted)">Aucune demande.</td></tr>`;return;}
+  tbody.innerHTML=[...filtered].reverse().map(d=>{
+    const m=METIERS[d.metier];
+    const b=getBudget(d.budgetId);
+    const sLabel={attente:'⏳ En attente',valide:'✅ Validée',refuse:'❌ Refusée'}[d.statut];
+    let actions;
+    if(d.statut==='attente'){
+      actions=cfg.canValider
+        ?`<button class="btn btn-primary btn-sm" onclick="ouvrirFiche('${d.id}')">🔍 Analyser</button>`
+        :`<button class="btn btn-ghost btn-sm" onclick="ouvrirFiche('${d.id}')">👁 Voir</button>`;
+    } else if(d.statut==='valide'){
+      actions=`<div style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="ouvrirFiche('${d.id}')">👁</button>
+        <button class="btn btn-ok btn-sm" onclick="afficherBC(demandes.find(x=>x.id==='${d.id}'))">📄 BC</button>
+      </div>`;
+    } else {
+      actions=`<button class="btn btn-ghost btn-sm" onclick="ouvrirFiche('${d.id}')">👁 Voir</button>`;
+    }
+    return `<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted)">${d.id}</td>
+      <td><span class="metier-tag" style="background:${m.color}">${m.icon} ${m.label}</span></td>
+      <td style="max-width:180px"><div style="font-weight:500">${d.objet}</div><div style="font-size:.7rem;color:var(--muted)">${(d.justif||'').slice(0,45)}${d.justif&&d.justif.length>45?'…':''}</div></td>
+      <td style="font-size:.79rem">${d.fournisseur}<br><span style="color:var(--muted);font-size:.7rem">${d.refFourn||''}</span></td>
+      <td style="color:var(--muted);font-size:.79rem">${d.formateur}</td>
+      <td style="font-size:.74rem;color:var(--muted)">${b?b.label:'—'}</td>
+      <td><span class="montant">${fmt(d.montant)}</span></td>
+      <td style="color:var(--muted);font-size:.76rem">${new Date(d.date).toLocaleDateString('fr-FR')}</td>
+      <td><span class="badge ${d.statut}">${sLabel}</span></td>
+      <td>${actions}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── RÔLES ──────────────────────────────────────────────────────────────
+const ROLE_CONFIG = {
+  responsable:{label:'RESPONSABLE',pillClass:'pill-responsable',avatar:'👔',canCreateDemande:true,canValider:true,canEditTrombi:true,voirToutesDemandes:true,voirTousMetiers:true,desc:'Accès complet — validation, budgets, tous les métiers'},
+  formateur:  {label:'FORMATEUR',  pillClass:'pill-formateur',  avatar:'🎓',canCreateDemande:true,canValider:false,canEditTrombi:false,voirToutesDemandes:false,voirTousMetiers:false,desc:`Ses demandes uniquement · ${METIERS[FORMATEUR_METIER].label}`},
+  secretariat:{label:'SECRÉTARIAT',pillClass:'pill-secretariat',avatar:'📁',canCreateDemande:true,canValider:false,canEditTrombi:true,voirToutesDemandes:true,voirTousMetiers:true,desc:'Lecture complète + saisie + trombinoscope'},
+  direction:  {label:'DIRECTION',  pillClass:'pill-direction',  avatar:'📊',canCreateDemande:false,canValider:false,canEditTrombi:false,voirToutesDemandes:true,voirTousMetiers:true,desc:'Lecture seule — vue globale'},
+};
+
+function applyRole(role){
+  currentRole=role;
+  const cfg=ROLE_CONFIG[role];
+  const pill=document.getElementById('role-pill');
+  pill.textContent=cfg.label;pill.className='role-pill '+cfg.pillClass;
+  ['btn-new-demande-budget','btn-new-demande'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=cfg.canCreateDemande?'':'none';});
+  const be=document.getElementById('btn-new-eleve');if(be)be.style.display=cfg.canEditTrombi?'':'none';
+  // Onglet gestion visible seulement responsable
+  const navGestion=document.getElementById('nav-tab-gestion');
+  if(navGestion)navGestion.style.display=role==='responsable'?'':'none';
+  // Si on est sur la page gestion et qu'on change de rôle, revenir au budget
+  if(role!=='responsable' && document.getElementById('page-gestion').classList.contains('active')){
+    showPage('budget');
+    document.querySelectorAll('.nav-tab').forEach((t,i)=>{if(i===0)t.classList.add('active');else t.classList.remove('active');});
+  }
+  const colors={responsable:'#14532d',formateur:'#1e3a5f',secretariat:'#4c1d95',direction:'#78350f'};
+  const bgs={responsable:'#f0fdf4',formateur:'#eff6ff',secretariat:'#faf5ff',direction:'#fffbeb'};
+  const band=document.getElementById('role-info-band');
+  band.style.background=bgs[role];
+  // Bouton gestion budgets visible seulement pour responsable
+  const btnBudgets='';
+  band.innerHTML=`<span style="font-size:1rem">${cfg.avatar}</span>
+    <span style="font-weight:700;color:${colors[role]}">${cfg.label}</span>
+    <span style="color:var(--muted)">—</span>
+    <span style="color:${colors[role]};font-size:.76rem">${cfg.desc}</span>
+    ${role==='formateur'?`<span style="font-size:.72rem;color:var(--muted);font-style:italic">· Connecté : ${FORMATEUR_CONNECTE}</span>`:''}
+    `;  // btnBudgets retiré — onglet dédié
+  renderAll();
+  if(document.getElementById('page-trombi').classList.contains('active'))renderTrombi();
+  if(document.getElementById('page-commander').classList.contains('active'))renderCommander();
+}
+
+function renderAll(){
+  renderRecap();
+  renderSections();
+  renderTimeline();
+  renderDemandesTable();
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────
+
+// ── GESTION MÉTIERS & BUDGETS ─────────────────────────────────────────
+const PALETTE = ['#1B4FD8','#0891B2','#7C3AED','#D97706','#16A34A','#DC2626','#DB2777','#0D9488','#9333EA','#EA580C','#65A30D','#0284C7'];
+
+function openModalNouveauMetier(){
+  document.getElementById('nm-label').value='';
+  document.getElementById('nm-icon').value='🏠';
+  // Générer le color picker
+  const row = document.getElementById('color-picker-row');
+  row.innerHTML = PALETTE.map((c,i) =>
+    `<div class="color-swatch ${i===0?'selected':''}" style="background:${c}" onclick="selectColor('${c}',this)" title="${c}"></div>`
+  ).join('');
+  document.getElementById('nm-color').value = PALETTE[0];
+  document.getElementById('modal-nouveau-metier').classList.add('open');
+}
+
+function selectColor(color, el){
+  document.getElementById('nm-color').value = color;
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function creerMetier(){
+  const label = document.getElementById('nm-label').value.trim();
+  const icon  = document.getElementById('nm-icon').value.trim() || '📁';
+  const color = document.getElementById('nm-color').value;
+  if(!label){toast('⚠️ Nom du métier obligatoire');return;}
+  // Générer un id unique
+  const id = 'custom_' + label.toLowerCase().replace(/[^a-z0-9]/g,'_').slice(0,12) + '_' + Date.now().toString(36);
+  METIERS[id] = {label, icon, color};
+  closeModal('modal-nouveau-metier');
+  // Mettre à jour les selects métier partout
+  refreshMetierSelects();
+  renderAll();
+  renderGestion();
+  toast(`✅ Métier "${label}" créé — ajoutez des lignes budgétaires`);
+}
+
+function supprimerMetier(id){
+  const m = METIERS[id];
+  if(!m){return;}
+  // Vérifier si des demandes utilisent ce métier
+  const used = demandes.filter(d=>d.metier===id).length;
+  if(used > 0){toast(`⚠️ Impossible — ${used} demande(s) utilisent ce métier`);return;}
+  // Supprimer les budgets liés
+  budgets = budgets.filter(b=>b.metier!==id);
+  delete METIERS[id];
+  refreshMetierSelects();
+  renderAll();
+  renderGestion();
+  toast(`🗑️ Métier supprimé`);
+}
+
+function ajouterLigneBudget(metier){
+  const labelEl = document.getElementById('new-budget-label-'+metier);
+  const montantEl = document.getElementById('new-budget-montant-'+metier);
+  const label = labelEl.value.trim();
+  const montant = parseFloat(montantEl.value)||0;
+  if(!label||!montant){toast('⚠️ Libellé et montant requis');return;}
+  budgets.push({id:'B'+String(budgets.length+1).padStart(2,'0'),metier,label,montant});
+  labelEl.value='';montantEl.value='';
+  renderGestion();
+  renderAll();
+  toast('✅ Ligne budgétaire ajoutée');
+}
+
+function supprimerBudget(id){
+  const used = demandes.filter(d=>d.budgetId===id).length;
+  if(used>0){toast(`⚠️ ${used} demande(s) utilisent ce budget`);return;}
+  budgets = budgets.filter(b=>b.id!==id);
+  renderGestion();
+  renderAll();
+  toast('🗑️ Ligne supprimée');
+}
+
+function modifierMontantBudget(id, val){
+  const b = budgets.find(x=>x.id===id);
+  if(b){b.montant=parseFloat(val)||0;renderAll();renderRecap();}
+}
+
+function renderGestion(){
+  const container = document.getElementById('gestion-metiers-list');
+  if(!container)return;
+
+  const html = Object.entries(METIERS).map(([mid,m])=>{
+    const lignes = budgets.filter(b=>b.metier===mid);
+    const totalBudget = lignes.reduce((s,b)=>s+b.montant,0);
+    const isDefault = ['elec','plomb','menu','autre'].includes(mid);
+
+    const lignesHtml = lignes.map(b=>{
+      const s = statsBudget(b.id);
+      const restClass = s.restant<0?'color:var(--danger)':s.restant<s.budget*.2?'color:var(--warn)':'color:var(--ok)';
+      return `<div class="budget-line">
+        <span class="budget-line-label">${b.label}</span>
+        <input type="number" value="${b.montant}" min="0"
+          onchange="modifierMontantBudget('${b.id}',this.value)"
+          title="Modifier le montant alloué">
+        <span class="budget-engage">Engagé : ${fmt(s.engage)}</span>
+        <span class="budget-restant" style="${restClass}">${fmt(s.restant)}</span>
+        <button class="btn-delete" onclick="supprimerBudget('${b.id}')" title="Supprimer">🗑</button>
+      </div>`;
+    }).join('') || `<div style="padding:12px 18px;font-size:.8rem;color:var(--muted);font-style:italic">Aucune ligne budgétaire — ajoutez-en une ci-dessous</div>`;
+
+    return `<div class="metier-block">
+      <div class="metier-block-header">
+        <div class="metier-color-dot" style="background:${m.color}"></div>
+        <span style="font-size:1.2rem">${m.icon}</span>
+        <span class="metier-block-title">${m.label}</span>
+        <span class="metier-block-total">Total alloué : ${fmt(totalBudget)}</span>
+        ${!isDefault?`<button class="btn btn-danger btn-sm" onclick="supprimerMetier('${mid}')">🗑 Supprimer</button>`:''}
+      </div>
+      ${lignesHtml}
+      <div class="add-budget-line">
+        <input type="text" id="new-budget-label-${mid}" placeholder="Nouvelle ligne (ex: Matériel pédagogique)" style="flex:1">
+        <input type="number" id="new-budget-montant-${mid}" placeholder="Montant €" style="width:110px" min="0">
+        <button class="btn btn-primary btn-sm" onclick="ajouterLigneBudget('${mid}')">+ Ajouter</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  container.innerHTML = html;
+}
+
+function refreshMetierSelects(){
+  // Mettre à jour tous les selects métier dans les formulaires
+  const opts = Object.entries(METIERS).map(([id,m])=>`<option value="${id}">${m.icon} ${m.label}</option>`).join('');
+  ['f-metier','e-metier','nb-metier'].forEach(selId=>{
+    const el = document.getElementById(selId);
+    if(el){el.innerHTML=opts;}
+  });
+  updateBudgetSelect();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  updateBudgetSelect();
+  renderAll();
+  renderGestion();
+  applyRole('responsable');
+});
+</script>
+</body>
+</html>
