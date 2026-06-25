@@ -1,0 +1,2759 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CFA Compagnons du Devoir — Troyes</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#F7F6F3;--surface:#fff;--border:#E4E1DA;--text:#1C1A17;--muted:#8A8680;
+  --accent:#1B4FD8;--accent-lt:#EBF0FD;
+  --warn:#D97706;--warn-lt:#FEF3C7;
+  --danger:#DC2626;--danger-lt:#FEE2E2;
+  --ok:#16A34A;--ok-lt:#DCFCE7;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* LOGIN */
+.login-page{min-height:100vh;display:grid;place-items:center;background:var(--text);}
+.login-card{background:var(--surface);border-radius:16px;padding:40px;width:100%;max-width:400px;margin:16px;box-shadow:0 24px 60px rgba(0,0,0,.3);}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo .icon{width:56px;height:56px;background:var(--accent);border-radius:14px;display:grid;place-items:center;font-size:1.6rem;margin:0 auto 12px;}
+.login-logo h1{font-size:1.2rem;font-weight:700;}
+.login-logo p{font-size:.82rem;color:var(--muted);margin-top:4px;}
+.login-error{background:var(--danger-lt);color:var(--danger);padding:10px 14px;border-radius:8px;font-size:.82rem;margin-bottom:14px;display:none;}
+
+/* HEADER */
+header{background:var(--text);color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:300;}
+.logo{display:flex;align-items:center;gap:9px;font-size:.88rem;font-weight:700;}
+.logo-icon{width:28px;height:28px;background:var(--accent);border-radius:6px;display:grid;place-items:center;font-size:.9rem;}
+.header-right{display:flex;align-items:center;gap:12px;}
+.user-info{font-size:.75rem;color:#aaa;text-align:right;}
+.user-info strong{color:#fff;display:block;font-size:.82rem;}
+.role-pill{font-size:.65rem;padding:3px 9px;border-radius:20px;font-weight:700;}
+.pill-responsable{background:#14532d;color:#86efac;}
+.pill-formateur{background:#1e3a5f;color:#93c5fd;}
+.pill-secretariat{background:#4c1d95;color:#c4b5fd;}
+.pill-direction{background:#78350f;color:#fcd34d;}
+.year-badge{font-size:.72rem;color:#aaa;font-family:'DM Mono',monospace;background:#2a2a2a;padding:3px 9px;border-radius:20px;}
+.btn-logout{background:transparent;border:1px solid #444;color:#aaa;padding:4px 10px;border-radius:6px;font-size:.75rem;cursor:pointer;transition:all .15s;}
+.btn-logout:hover{background:#333;color:#fff;}
+
+/* NAV */
+nav{background:var(--surface);border-bottom:1.5px solid var(--border);display:flex;padding:0 24px;position:sticky;top:56px;z-index:200;overflow-x:auto;}
+.nav-tab{padding:13px 18px;font-size:.83rem;font-weight:600;cursor:pointer;border-bottom:2.5px solid transparent;color:var(--muted);transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.nav-tab:hover{color:var(--text);}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-badge{background:var(--danger);color:#fff;font-size:.6rem;padding:1px 5px;border-radius:10px;font-weight:700;min-width:16px;text-align:center;}
+
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;padding:48px;gap:10px;color:var(--muted);}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* MAIN */
+main{max-width:1200px;margin:0 auto;padding:24px 20px;}
+.page{display:none;}.page.active{display:block;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:7px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:opacity .15s,transform .1s;}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--text);}
+.btn-ok{background:var(--ok-lt);color:var(--ok);border:none;}
+.btn-danger{background:var(--danger-lt);color:var(--danger);border:1.5px solid transparent;}
+.btn-sm{padding:4px 10px;font-size:.73rem;}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px;}
+.page-header h1{font-size:1.4rem;font-weight:700;}
+.page-header p{color:var(--muted);font-size:.83rem;margin-top:3px;}
+
+/* RECAP BAND */
+.recap-band{background:var(--text);color:#fff;border-radius:13px;padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:18px;margin-bottom:24px;}
+.recap-item label{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:#999;display:block;margin-bottom:4px;}
+.recap-item .val{font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:500;}
+.val.ok{color:#4ade80;}.val.warn{color:#fbbf24;}.val.danger{color:#f87171;}
+.recap-sep{width:1px;background:#333;}
+
+/* CARDS */
+.sections-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:28px;}
+.sec-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden;}
+.sec-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--c);}
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sec-name{font-weight:700;font-size:.92rem;}
+.sec-icon{width:32px;height:32px;border-radius:8px;background:color-mix(in srgb,var(--c) 12%,transparent);color:var(--c);display:grid;place-items:center;font-size:1rem;}
+.progress-wrap{margin:10px 0 8px;}
+.progress-label{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-bottom:4px;}
+.progress-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.sec-amounts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:10px;}
+.amount-box{text-align:center;}
+.amount-box small{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:block;}
+.amount-box strong{font-family:'DM Mono',monospace;font-size:.84rem;}
+
+/* CARD BOX */
+.card-box{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;}
+.card-box-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.card-box-header h2{font-size:.92rem;font-weight:700;}
+.filter-tabs{display:flex;gap:4px;}
+.tab{padding:4px 10px;border-radius:5px;font-size:.73rem;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--muted);transition:all .15s;}
+.tab.active{background:var(--text);color:#fff;border-color:var(--text);}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;}
+thead th{padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border);background:var(--bg);}
+tbody tr{transition:background .1s;}
+tbody tr:hover{background:var(--bg);}
+tbody td{padding:10px 12px;font-size:.81rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:.68rem;font-weight:600;}
+.badge.attente{background:var(--warn-lt);color:var(--warn);}
+.badge.valide{background:var(--ok-lt);color:var(--ok);}
+.badge.refuse{background:var(--danger-lt);color:var(--danger);}
+.metier-tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.68rem;font-weight:600;color:#fff;}
+.montant{font-family:'DM Mono',monospace;font-weight:500;}
+
+/* TIMELINE */
+.months-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;}
+.month-col{text-align:center;}
+.month-bar-wrap{height:66px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--bg);border-radius:4px;overflow:hidden;margin-bottom:3px;}
+.month-bar{border-radius:4px 4px 0 0;transition:height .5s ease;}
+.month-label{font-size:.6rem;color:var(--muted);font-family:'DM Mono',monospace;}
+.month-amount{font-size:.57rem;color:var(--muted);}
+
+/* À COMMANDER */
+.commander-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:start;}
+.commander-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);}
+.montant-bc{font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--ok);text-align:right;}
+.montant-bc small{font-size:.68rem;color:var(--muted);display:block;font-weight:400;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;place-items:center;padding:16px;}
+.modal-bg.open{display:grid;}
+.modal{background:var(--surface);border-radius:14px;padding:24px;width:100%;max-width:520px;box-shadow:0 24px 60px rgba(0,0,0,.22);max-height:90vh;overflow-y:auto;}
+.modal h2{font-size:1rem;font-weight:700;margin-bottom:16px;}
+.form-row{margin-bottom:11px;}
+.form-row label{display:block;font-size:.72rem;font-weight:600;margin-bottom:3px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.83rem;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);transition:border-color .15s;}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:none;border-color:var(--accent);}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* FICHE */
+.fiche-highlight{background:var(--accent-lt);border:1.5px solid var(--accent);border-radius:9px;padding:14px;margin-bottom:14px;}
+.fiche-montant-big{font-family:'DM Mono',monospace;font-size:1.7rem;font-weight:700;color:var(--accent);}
+.fiche-section{margin-bottom:16px;}
+.fiche-section h3{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.fiche-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.fiche-item label{font-size:.68rem;color:var(--muted);display:block;margin-bottom:2px;}
+.fiche-item strong{font-size:.84rem;}
+.statut-banner{padding:8px 12px;border-radius:7px;font-size:.8rem;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.statut-banner.attente{background:var(--warn-lt);color:var(--warn);}
+.statut-banner.valide{background:var(--ok-lt);color:var(--ok);}
+.statut-banner.refuse{background:var(--danger-lt);color:var(--danger);}
+.btn-valider-big{background:var(--ok);color:#fff;padding:10px 20px;font-size:.88rem;font-weight:700;border:none;border-radius:8px;cursor:pointer;}
+.btn-refuser-big{background:var(--danger-lt);color:var(--danger);padding:10px 20px;font-size:.88rem;font-weight:700;border:1.5px solid var(--danger);border-radius:8px;cursor:pointer;}
+
+/* BC */
+.bc-preview{background:#fff;border:2px solid var(--accent);border-radius:11px;padding:20px;margin-top:14px;font-size:.8rem;}
+.bc-preview h3{font-size:.95rem;font-weight:700;color:var(--accent);margin-bottom:12px;}
+.bc-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.bc-table th,.bc-table td{padding:6px 9px;border:1px solid var(--border);font-size:.76rem;}
+.bc-table th{background:var(--accent-lt);font-weight:600;}
+
+/* TROMBI */
+.trombi-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.trombi-controls select{padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.82rem;background:var(--surface);color:var(--text);}
+.eleves-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:12px;}
+.eleve-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;}
+.eleve-avatar{width:64px;height:64px;border-radius:50%;margin:0 auto 8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:2.5px solid var(--border);}
+.eleve-avatar img{width:100%;height:100%;object-fit:cover;}
+.eleve-nom{font-weight:600;font-size:.79rem;}
+.eleve-info{font-size:.67rem;color:var(--muted);}
+
+/* GESTION */
+.metier-block{background:var(--surface);border:1.5px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:18px;}
+.metier-block-header{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+.budget-line{display:grid;grid-template-columns:1fr 140px 110px 80px 36px;gap:10px;align-items:center;padding:10px 18px;border-bottom:1px solid var(--border);font-size:.83rem;}
+.budget-line:last-child{border-bottom:none;}
+.budget-line input[type=number]{padding:5px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:.81rem;width:100%;font-family:'DM Mono',monospace;}
+.btn-delete{width:28px;height:28px;border-radius:6px;border:none;background:var(--danger-lt);color:var(--danger);cursor:pointer;font-size:.85rem;display:grid;place-items:center;}
+.add-budget-line{padding:10px 18px;display:flex;gap:8px;align-items:center;background:var(--bg);}
+.add-budget-line input{padding:6px 9px;border:1.5px solid var(--border);border-radius:6px;font-size:.81rem;font-family:'Inter',sans-serif;background:var(--surface);}
+.color-swatch{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s;display:inline-block;}
+.color-swatch:hover,.color-swatch.selected{transform:scale(1.2);border-color:var(--text);}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;padding:10px 16px;border-radius:8px;font-size:.81rem;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);}
+.toast.show{transform:translateY(0);opacity:1;}
+
+.empty-state{text-align:center;padding:48px;color:var(--muted);}
+.empty-state .icon{font-size:2.5rem;margin-bottom:10px;}
+
+@media(max-width:600px){
+  main{padding:12px;}
+  .months-grid{grid-template-columns:repeat(6,1fr);}
+  .form-grid-2{grid-template-columns:1fr;}
+  .fiche-grid{grid-template-columns:1fr;}
+  .budget-line{grid-template-columns:1fr 100px 36px;}
+}
+
+/* ===== STYLES LOGEMENT ===== */
+/* Semaine */
+.semaine-bar{background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.semaine-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:1rem;transition:all .15s;}
+.semaine-btn:hover{background:var(--accent-lt);border-color:var(--accent);}
+.semaine-display{font-family:'DM Mono',monospace;font-size:1rem;font-weight:700;min-width:60px;text-align:center;}
+.semaine-range{font-size:.78rem;color:var(--muted);}
+/* Alertes */
+.alert-banner{background:var(--danger-lt);border:1.5px solid var(--danger);border-radius:9px;padding:10px 14px;margin-bottom:16px;font-size:.82rem;color:var(--danger);font-weight:600;display:none;align-items:center;gap:8px;}
+.alert-banner.show{display:flex;}
+/* Bâtiments */
+.batiment-section{margin-bottom:28px;}
+.batiment-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.batiment-badge{padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:700;color:#fff;}
+.batiment-stats{font-size:.78rem;color:var(--muted);margin-left:auto;}
+.etage-label{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;margin-top:12px;}
+/* Chambres vue hotel */
+.chambres-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}
+.chambre-card{border-radius:9px;padding:10px;cursor:pointer;transition:all .2s;position:relative;border:2px solid transparent;min-height:80px;}
+.chambre-card.libre{background:var(--ok-lt);border-color:#86efac;}
+.chambre-card.occupee{background:var(--accent-lt);border-color:#93c5fd;}
+.chambre-card.double-partiel{background:#fef3c7;border-color:#fcd34d;}
+.chambre-card.double-pleine{background:#fee2e2;border-color:#fca5a5;}
+.chambre-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1);}
+.chambre-card.alerte-mineur{border-color:var(--danger)!important;box-shadow:0 0 0 2px var(--danger)!important;}
+.chambre-num{font-family:'DM Mono',monospace;font-size:.75rem;font-weight:700;color:var(--muted);}
+.chambre-type{font-size:.62rem;color:var(--muted);}
+.chambre-occupant{font-size:.72rem;font-weight:600;margin-top:4px;line-height:1.3;}
+.mineur-badge{position:absolute;top:4px;right:4px;background:var(--danger);color:#fff;font-size:.55rem;padding:1px 5px;border-radius:10px;font-weight:700;}
+/* Vue étage */
+.chambre-detail-card{background:var(--surface);border:1.5px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:16px;transition:box-shadow .2s;}
+.chambre-detail-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.08);}
+.chambre-detail-header{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:var(--bg);}
+.chambre-detail-num{font-family:'DM Mono',monospace;font-size:1rem;font-weight:700;}
+.chambre-detail-type{font-size:.72rem;color:var(--muted);}
+.chambre-detail-status{margin-left:auto;font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:20px;}
+.lits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
+.lit-slot{padding:14px 12px;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:8px;min-height:120px;}
+.lit-slot:last-child{border-right:none;}
+.lit-slot.itinerant{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);}
+.lit-slot.libre{background:var(--bg);margin:4px;border-radius:8px;cursor:pointer;}
+.lit-numero{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.lit-photo{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--border);}
+.lit-avatar{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:1.1rem;font-weight:700;color:#fff;border:2px solid rgba(0,0,0,.1);}
+.lit-nom{font-size:.75rem;font-weight:700;text-align:center;line-height:1.2;}
+.lit-prenom{font-size:.7rem;color:var(--muted);text-align:center;}
+.lit-promo{font-size:.62rem;padding:2px 6px;border-radius:10px;color:#fff;font-weight:600;text-align:center;}
+.lit-badge-it{font-size:.58rem;background:#dbeafe;color:#1e40af;padding:2px 6px;border-radius:10px;font-weight:700;}
+.lit-badge-mineur{font-size:.58rem;background:var(--warn-lt);color:var(--warn);padding:2px 6px;border-radius:10px;font-weight:700;}
+.lit-libre-label{font-size:.72rem;color:var(--muted);font-style:italic;}
+.etage-section{margin-bottom:28px;}
+.etage-section-title{font-size:.88rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+/* Extraction */
+.extraction-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.extraction-header{padding:14px 18px;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:space-between;}
+.badge-mineur{background:var(--warn-lt);color:var(--warn);padding:2px 7px;border-radius:10px;font-size:.68rem;font-weight:600;}
+.badge-majeur{background:var(--ok-lt);color:var(--ok);padding:2px 7px;border-radius:10px;font-size:.68rem;font-weight:600;}
+/* Config chambres */
+.historique-badge{background:var(--accent-lt);color:var(--accent);padding:6px 10px;border-radius:7px;font-size:.78rem;margin-bottom:12px;display:none;}
+.historique-badge.show{display:block;}
+
+</style>
+</head>
+<body>
+
+<!-- ══ PAGE LOGIN ══ -->
+<div id="login-page" class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">⚙</div>
+      <h1>CFA Compagnons du Devoir</h1>
+      <p>Troyes — Plateforme de gestion</p>
+    </div>
+    <div class="login-error" id="login-error"></div>
+    <div class="form-row"><label>Email</label><input type="email" id="login-email" placeholder="votre@email.fr"></div>
+    <div class="form-row"><label>Mot de passe</label><input type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="doLogin()" id="btn-login">Se connecter</button>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app" style="display:none">
+  <header>
+    <div class="logo"><div class="logo-icon">⚙</div>CFA Compagnons du Devoir — Troyes</div>
+    <div class="header-right">
+      <div class="user-info">
+        <strong id="header-nom">—</strong>
+        <span id="header-email" style="font-size:.7rem">—</span>
+      </div>
+      <span class="role-pill" id="header-role-pill">—</span>
+      <span class="year-badge">2025–2026</span>
+      <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
+    </div>
+  </header>
+
+  <nav id="main-nav">
+    <div class="nav-tab active" onclick="showPage('budget',this)">📊 Budget</div>
+    <div class="nav-tab" onclick="showPage('demandes',this)">📋 Demandes <span class="nav-badge" id="badge-attente" style="display:none">0</span></div>
+    <div class="nav-tab" onclick="showPage('commander',this)">🛒 À commander <span class="nav-badge" id="badge-commander" style="display:none;background:var(--ok)">0</span></div>
+    <div class="nav-tab" onclick="showPage('trombi',this)">👥 Trombinoscope</div>
+    <div class="nav-tab" id="nav-gestion" style="display:none;color:var(--accent)" onclick="showPage('gestion',this)">⚙️ Budgets</div>
+    <div class="nav-tab" id="nav-logement" style="display:none;color:var(--accent)" onclick="showPage('logement',this)">🏠 Logement</div>
+    <div class="nav-tab" id="nav-utilisateurs" style="display:none;color:var(--accent)" onclick="showPage('utilisateurs',this)">👤 Utilisateurs</div>
+  </nav>
+
+  <main>
+    <!-- BUDGET -->
+    <div class="page active" id="page-budget">
+      <div class="page-header">
+        <div><h1>Vue budgétaire</h1><p>Enveloppes par métier · 2025–2026</p></div>
+        <button class="btn btn-primary" id="btn-new-budget" onclick="showPage('demandes');openModalDemande()">+ Nouvelle demande</button>
+      </div>
+      <div class="recap-band">
+        <div class="recap-item"><label>Budget total</label><div class="val" id="total-budget">—</div></div>
+        <div class="recap-sep"></div>
+        <div class="recap-item"><label>Engagé</label><div class="val warn" id="total-engage">—</div></div>
+        <div class="recap-sep"></div>
+        <div class="recap-item"><label>Restant</label><div class="val ok" id="total-restant">—</div></div>
+        <div class="recap-sep"></div>
+        <div class="recap-item"><label>En attente</label><div class="val" id="total-attente">—</div></div>
+      </div>
+      <div class="sections-grid" id="sections-grid"><div class="loading"><div class="spinner"></div> Chargement...</div></div>
+      <div class="card-box">
+        <div class="card-box-header"><h2>📅 Dépenses mensuelles</h2></div>
+        <div style="padding:18px"><div class="months-grid" id="months-grid"></div></div>
+      </div>
+    </div>
+
+    <!-- DEMANDES -->
+    <div class="page" id="page-demandes">
+      <div class="page-header">
+        <div><h1>Demandes & Devis</h1><p>Cycle : Demande → Validation responsable → Bon de commande</p></div>
+        <button class="btn btn-primary" id="btn-new-demande" onclick="openModalDemande()">+ Nouvelle demande</button>
+      </div>
+      <div class="card-box">
+        <div class="card-box-header">
+          <h2>Toutes les demandes</h2>
+          <div class="filter-tabs">
+            <button class="tab active" onclick="filterD('tous',this)">Toutes</button>
+            <button class="tab" onclick="filterD('attente',this)">⏳ En attente</button>
+            <button class="tab" onclick="filterD('valide',this)">✅ Validées</button>
+            <button class="tab" onclick="filterD('refuse',this)">❌ Refusées</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Réf.</th><th>Métier</th><th>Objet</th><th>Fournisseur</th><th>Formateur</th><th>Budget</th><th>Montant HT</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
+            <tbody id="demandes-tbody"><tr><td colspan="10" class="loading"><div class="spinner"></div> Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- À COMMANDER -->
+    <div class="page" id="page-commander">
+      <div class="page-header"><div><h1>🛒 À commander</h1><p>Bons de commande validés — prêts à envoyer</p></div></div>
+      <div id="commander-list"><div class="loading"><div class="spinner"></div> Chargement...</div></div>
+    </div>
+
+    <!-- TROMBI -->
+    <div class="page" id="page-trombi">
+      <div class="page-header">
+        <div><h1>Trombinoscope</h1><p>Apprentis par métier, formation et année</p></div>
+        <button class="btn btn-primary" id="btn-new-eleve" onclick="openModalEleve()">+ Ajouter un apprenti</button>
+      </div>
+      <div class="trombi-controls">
+        <select id="filter-metier-t" onchange="renderTrombi()"><option value="">Tous les métiers</option></select>
+        <select id="filter-formation-t" onchange="renderTrombi()"><option value="">Toutes les formations</option><option value="CAP">CAP</option><option value="BAC PRO">BAC PRO</option><option value="BTS">BTS</option><option value="TITRE PRO">TITRE PRO</option></select>
+        <select id="filter-annee-t" onchange="renderTrombi()"><option value="">Toutes les années</option><option value="1">1ère année</option><option value="2">2ème année</option><option value="3">3ème année</option></select>
+      </div>
+      <div id="trombi-container"><div class="loading"><div class="spinner"></div> Chargement...</div></div>
+    </div>
+
+    <!-- LOGEMENT -->
+    <div class="page" id="page-logement">
+
+      <!-- Sous-nav logement -->
+      <div style="display:flex;gap:0;margin:-24px -20px 20px;padding:0 0 0 0;background:var(--surface);border-bottom:1.5px solid var(--border);overflow-x:auto">
+        <div class="nav-tab active" id="log-tab-hotel" onclick="showLogPage('hotel',this)" style="font-size:.78rem;padding:10px 14px">🏨 Vue Hotel</div>
+        <div class="nav-tab" id="log-tab-etage" onclick="showLogPage('etage',this)" style="font-size:.78rem;padding:10px 14px">🔍 Vue Etage</div>
+        <div class="nav-tab" id="log-tab-planning" onclick="showLogPage('planning',this)" style="font-size:.78rem;padding:10px 14px">📅 Planning</div>
+        <div class="nav-tab" id="log-tab-extraction" onclick="showLogPage('extraction',this)" style="font-size:.78rem;padding:10px 14px">📄 Extraction</div>
+        <div class="nav-tab" id="log-tab-promotions" onclick="showLogPage('promotions',this)" style="font-size:.78rem;padding:10px 14px">👥 Promotions</div>
+        <div class="nav-tab" id="log-tab-itinerants" onclick="showLogPage('itinerants',this)" style="font-size:.78rem;padding:10px 14px">🏠 Itinerants</div>
+        <div class="nav-tab" id="log-tab-chambres" onclick="showLogPage('chambres',this)" style="font-size:.78rem;padding:10px 14px">🛏 Chambres</div>
+      </div>
+
+      <div style="padding:0 0">
+<!-- ══ VUE HÔTEL ══ -->
+<div class="page active" id="page-log-hotel">
+  <div class="page-header">
+    <div><h1>Vue Hôtel</h1><p>Placement des apprentis par chambre - cliquer pour affecter</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-ok" onclick="affectationAuto()">⚡ Affectation auto</button>
+      <button class="btn btn-ghost" onclick="toutVider()">🗑 Vider la semaine</button>
+    </div>
+  </div>
+
+  <div class="semaine-bar">
+    <label>Semaine en cours :</label>
+    <button class="semaine-btn" onclick="changerSemaine(-1)">‹</button>
+    <span class="semaine-display" id="sem-display">S01</span>
+    <button class="semaine-btn" onclick="changerSemaine(1)">›</button>
+    <span class="semaine-range" id="sem-range"></span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn btn-ghost btn-sm" onclick="allerSemaineActuelle()">📍 Aujourd'hui</button>
+    </div>
+  </div>
+
+  <div class="alert-banner" id="alert-mineur">
+    ⚠️ Attention - Des mineurs sont affectés dans un bâtiment annexe ! Ceci est interdit par le règlement.
+  </div>
+
+  <div class="stats-band" id="stats-band"></div>
+
+  <div class="legende">
+    <span style="font-size:.76rem;font-weight:600;color:var(--muted)">Légende :</span>
+    <div class="legende-item"><div class="legende-dot" style="background:#dcfce7;border:1px solid #86efac"></div> Libre</div>
+    <div class="legende-item"><div class="legende-dot" style="background:#ebf0fd;border:1px solid #93c5fd"></div> Occupée</div>
+    <div class="legende-item"><div class="legende-dot" style="background:#fef3c7;border:1px solid #fcd34d"></div> Double partiel</div>
+    <div class="legende-item"><div class="legende-dot" style="background:#fee2e2;border:1px solid #fca5a5"></div> Double pleine</div>
+    <div class="legende-item"><div class="legende-dot" style="background:var(--danger);border-radius:50%"></div> ⚠️ Mineur en annexe</div>
+  </div>
+
+  <div id="hotel-content"></div>
+</div>
+
+<!-- ══ PLANNING PROMOTIONS ══ -->
+<div class="page" id="page-log-planning">
+  <div class="page-header">
+    <div><h1>Planning des promotions</h1><p>Vue rapide - quelles formations sont présentes chaque semaine</p></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="planning-annee" onchange="renderPlanning()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:.82rem;background:var(--surface)">
+        <option value="2025">Année 2025-2026</option>
+        <option value="2026">Année 2026-2027</option>
+      </select>
+      <button class="btn btn-ghost btn-sm" onclick="renderPlanning()">🔄 Actualiser</button>
+    </div>
+  </div>
+
+  <!-- Stats rapides semaine actuelle -->
+  <div id="planning-stats-semaine" style="margin-bottom:20px"></div>
+
+  <!-- Gantt promotions -->
+  <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <h2 style="font-size:.92rem;font-weight:700">📅 Présence des formations sur l'année</h2>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn btn-ghost btn-sm" onclick="scrollToSemaineActuelle()">📍 Aujourd'hui</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto" id="planning-gantt-wrap">
+      <div id="planning-gantt"></div>
+    </div>
+  </div>
+
+  <!-- Détail par semaine -->
+  <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+      <h2 style="font-size:.92rem;font-weight:700">🔍 Détail par semaine</h2>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="semaine-btn" onclick="changerSemainePlanning(-1)">‹</button>
+        <span class="semaine-display" id="planning-sem-display" style="font-size:.9rem">S01</span>
+        <button class="semaine-btn" onclick="changerSemainePlanning(1)">›</button>
+        <span id="planning-sem-range" style="font-size:.76rem;color:var(--muted)"></span>
+      </div>
+    </div>
+    <div id="planning-detail" style="padding:16px"></div>
+  </div>
+</div>
+
+<!-- ══ EXTRACTION ══ -->
+<div class="page" id="page-log-extraction">
+  <div class="page-header">
+    <div><h1>Extraction</h1><p>Liste des occupants par bâtiment pour les dames de service</p></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="ext-semaine" onchange="renderExtraction()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.82rem;background:var(--surface)">
+      </select>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimer</button>
+    </div>
+  </div>
+  <div id="extraction-content"></div>
+</div>
+
+<!-- ══ PROMOTIONS ══ -->
+<div class="page" id="page-log-promotions">
+  <div class="page-header">
+    <div><h1>Promotions & Planning</h1><p>Gérez les promotions et leurs périodes de séjour</p></div>
+    <button class="btn btn-primary" onclick="openModalPromo()">+ Nouvelle promotion</button>
+  </div>
+  <div id="promos-list"></div>
+</div>
+
+
+    <!-- PAGE ITINERANTS -->
+    <div class="page" id="page-log-itinerants">
+      <div class="page-header">
+        <div><h1>🏠 Itinerants</h1><p>Residents a l'annee — 1 par chambre CFA, inamovibles</p></div>
+        <button class="btn btn-primary" onclick="openModalItinerant()">+ Ajouter un itinerant</button>
+      </div>
+      <div id="itinerants-list"></div>
+    </div>
+
+    <!-- PAGE CHAMBRES -->
+    <div class="page" id="page-log-chambres">
+      <div class="page-header">
+        <div><h1>🛏 Gestion des chambres</h1><p>Modifier le nombre de lits par chambre</p></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+        <select id="ch-filter-bat" onchange="renderChambresConfig()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:.83rem;background:var(--surface)">
+          <option value="">Tous les batiments</option>
+          <option value="CFA">Batiment CFA</option>
+          <option value="YS9">Yscoole Bat. 9</option>
+          <option value="YS10">Yscoole Bat. 10</option>
+        </select>
+      </div>
+      <div id="chambres-config-list"></div>
+    </div>
+
+</main>
+
+<!-- MODAL AFFECTATION CHAMBRE -->
+<div class="modal-bg" id="modal-chambre" onclick="closeMBg(event,'modal-chambre')">
+  <div class="modal">
+    <h2 id="modal-chambre-title">🛏 Chambre -</h2>
+    <div class="historique-badge" id="historique-badge"></div>
+    <div id="modal-chambre-occupants"></div>
+    <div class="form-row" id="form-ajout-zone">
+      <label>Affecter un apprenti</label>
+      <select id="select-apprenti">
+        <option value="">- Choisir un apprenti -</option>
+      </select>
+    </div>
+    <div id="modal-chambre-warning" style="display:none;background:var(--danger-lt);color:var(--danger);padding:8px 12px;border-radius:7px;font-size:.8rem;margin-bottom:10px;font-weight:600"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-chambre')">Fermer</button>
+      <button class="btn btn-primary" onclick="affecterApprenti()">Affecter</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOUVELLE PROMOTION -->
+<div class="modal-bg" id="modal-promo" onclick="closeMBg(event,'modal-promo')">
+  <div class="modal" style="max-width:560px">
+    <h2>👥 Nouvelle promotion</h2>
+    <div class="form-row"><label>Nom de la promotion *</label><input type="text" id="p-nom" placeholder="Ex : BTS Élec 1ère année"></div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Métier</label>
+        <select id="p-metier">
+          <option value="elec">Électricité</option>
+          <option value="plomb">Plomberie</option>
+          <option value="menu">Menuiserie</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Durée de chaque passage (sem.)</label>
+        <input type="number" id="p-duree" min="1" max="8" placeholder="Ex : 2" value="2">
+      </div>
+    </div>
+    <div class="form-row"><label>Couleur</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px" id="promo-color-picker"></div>
+      <input type="hidden" id="p-color" value="#1B4FD8">
+    </div>
+    <div class="form-row">
+      <label>Semaines d'arrivée * <span style="color:var(--muted);font-weight:400;text-transform:none">(séparées par des virgules · ex : 4, 10, 18, 26, 34, 42, 48)</span></label>
+      <input type="text" id="p-semaines" placeholder="Ex : 4, 10, 18, 26, 34, 42, 48" oninput="previewPeriodes()">
+      <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+        <button type="button" class="btn btn-ghost btn-sm" onclick="presetSemaines(7,2)">7 passages × 2 sem. (CAP)</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="presetSemaines(11,2)">11 passages × 2 sem. (BTS)</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="presetSemaines(5,3)">5 passages × 3 sem.</button>
+      </div>
+    </div>
+    <div id="p-preview" style="margin-top:10px;display:none;background:var(--bg);border-radius:8px;padding:10px;font-size:.78rem;color:var(--muted)"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-promo')">Annuler</button>
+      <button class="btn btn-primary" onclick="ajouterPromo()">Créer</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal ajouter passage -->
+<div class="modal-bg" id="modal-ajouter-passage" onclick="closeMBg(event,'modal-ajouter-passage')">
+  <div class="modal" style="max-width:380px">
+    <h2>+ Ajouter un passage</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Formation : <strong id="ap-promo-nom"></strong></p>
+    <div class="form-row">
+      <label>Semaine d'arrivee *</label>
+      <input type="number" id="ap-semaine" min="1" max="52" placeholder="Ex : 43">
+    </div>
+    <div class="form-row">
+      <label>Duree (semaines)</label>
+      <input type="number" id="ap-duree" min="1" max="8" value="2">
+    </div>
+    <div id="ap-preview" style="margin-top:8px;font-size:.78rem;color:var(--muted)"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-ajouter-passage')">Annuler</button>
+      <button class="btn btn-primary" onclick="confirmerAjouterPassage()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ajouter itinerant -->
+<div class="modal-bg" id="modal-itinerant" onclick="closeMBg(event,'modal-itinerant')">
+  <div class="modal" style="max-width:440px">
+    <h2 id="modal-itin-title">+ Nouvel itinerant</h2>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Prenom *</label><input type="text" id="it-prenom" placeholder="Prenom"></div>
+      <div class="form-row"><label>Nom *</label><input type="text" id="it-nom" placeholder="NOM"></div>
+    </div>
+    <div class="form-row"><label>Chambre assignee *</label>
+      <select id="it-chambre"></select>
+    </div>
+    <div class="form-row"><label>Photo (optionnel)</label>
+      <input type="file" id="it-photo" accept="image/*" onchange="previewItPhoto(this)">
+      <div id="it-photo-preview" style="margin-top:6px;display:none">
+        <img id="it-photo-img" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--border)">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-itinerant')">Annuler</button>
+      <button class="btn btn-primary" onclick="sauvegarderItinerant()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal modifier lits chambre -->
+<div class="modal-bg" id="modal-lits" onclick="closeMBg(event,'modal-lits')">
+  <div class="modal" style="max-width:380px">
+    <h2>🛏 Modifier la chambre <span id="modal-lits-num"></span></h2>
+    <div class="form-row">
+      <label>Nombre de lits *</label>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+        <button class="btn btn-ghost" style="width:36px;height:36px;font-size:1.2rem;padding:0;justify-content:center" onclick="changerLits(-1)">-</button>
+        <span id="modal-lits-nb" style="font-size:1.4rem;font-weight:700;font-family:'DM Mono',monospace;min-width:30px;text-align:center">3</span>
+        <button class="btn btn-ghost" style="width:36px;height:36px;font-size:1.2rem;padding:0;justify-content:center" onclick="changerLits(1)">+</button>
+        <span style="font-size:.78rem;color:var(--muted)">(dont 1 lit itinerant)</span>
+      </div>
+    </div>
+    <div id="modal-lits-info" style="margin-top:10px;font-size:.78rem;color:var(--muted)"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-lits')">Annuler</button>
+      <button class="btn btn-primary" onclick="sauvegarderLits()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ajouter passage -->
+<div class="modal-bg" id="modal-ajouter-passage" onclick="closeMBg(event,'modal-ajouter-passage')">
+  <div class="modal" style="max-width:380px">
+    <h2>+ Ajouter un passage</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Formation : <strong id="ap-promo-nom"></strong></p>
+    <div class="form-row">
+      <label>Semaine d'arrivee *</label>
+      <input type="number" id="ap-semaine" min="1" max="52" placeholder="Ex : 43">
+    </div>
+    <div class="form-row">
+      <label>Duree (semaines)</label>
+      <input type="number" id="ap-duree" min="1" max="8" value="2">
+    </div>
+    <div id="ap-preview" style="margin-top:8px;font-size:.78rem;color:var(--muted)"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-ajouter-passage')">Annuler</button>
+      <button class="btn btn-primary" onclick="confirmerAjouterPassage()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ajouter itinerant -->
+<div class="modal-bg" id="modal-itinerant" onclick="closeMBg(event,'modal-itinerant')">
+  <div class="modal" style="max-width:440px">
+    <h2 id="modal-itin-title">+ Nouvel itinerant</h2>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Prenom *</label><input type="text" id="it-prenom" placeholder="Prenom"></div>
+      <div class="form-row"><label>Nom *</label><input type="text" id="it-nom" placeholder="NOM"></div>
+    </div>
+    <div class="form-row"><label>Chambre assignee *</label>
+      <select id="it-chambre"></select>
+    </div>
+    <div class="form-row"><label>Photo (optionnel)</label>
+      <input type="file" id="it-photo" accept="image/*" onchange="previewItPhoto(this)">
+      <div id="it-photo-preview" style="margin-top:6px;display:none">
+        <img id="it-photo-img" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--border)">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-itinerant')">Annuler</button>
+      <button class="btn btn-primary" onclick="sauvegarderItinerant()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal modifier lits chambre -->
+<div class="modal-bg" id="modal-lits" onclick="closeMBg(event,'modal-lits')">
+  <div class="modal" style="max-width:380px">
+    <h2>🛏 Modifier la chambre <span id="modal-lits-num"></span></h2>
+    <div class="form-row">
+      <label>Nombre de lits *</label>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+        <button class="btn btn-ghost" style="width:36px;height:36px;font-size:1.2rem;padding:0;justify-content:center" onclick="changerLits(-1)">-</button>
+        <span id="modal-lits-nb" style="font-size:1.4rem;font-weight:700;font-family:'DM Mono',monospace;min-width:30px;text-align:center">3</span>
+        <button class="btn btn-ghost" style="width:36px;height:36px;font-size:1.2rem;padding:0;justify-content:center" onclick="changerLits(1)">+</button>
+        <span style="font-size:.78rem;color:var(--muted)">(dont 1 lit itinerant)</span>
+      </div>
+    </div>
+    <div id="modal-lits-info" style="margin-top:10px;font-size:.78rem;color:var(--muted)"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-lits')">Annuler</button>
+      <button class="btn btn-primary" onclick="sauvegarderLits()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+      </div>
+    </div>
+
+    <!-- GESTION -->
+    <div class="page" id="page-gestion">
+      <div class="page-header">
+        <div><h1>⚙️ Gestion des budgets</h1><p>Métiers, formations et enveloppes budgétaires</p></div>
+        <button class="btn btn-primary" onclick="openModalNouveauMetier()">+ Nouveau métier</button>
+      </div>
+      <div id="gestion-list"><div class="loading"><div class="spinner"></div> Chargement...</div></div>
+    </div>
+
+    <!-- UTILISATEURS -->
+    <div class="page" id="page-utilisateurs">
+      <div class="page-header">
+        <div><h1>👤 Gestion des utilisateurs</h1><p>Créez et gérez les comptes d'accès à la plateforme</p></div>
+        <button class="btn btn-primary" onclick="openModalUser()">+ Nouvel utilisateur</button>
+      </div>
+      <div class="card-box">
+        <div class="card-box-header"><h2>Tous les utilisateurs</h2></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Initiales</th><th>Nom</th><th>Email</th><th>Rôle</th><th>Statut</th><th>Métier</th><th>Actions</th></tr></thead>
+            <tbody id="users-tbody"><tr><td colspan="6" class="loading"><div class="spinner"></div> Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODALS -->
+<!-- Nouvelle demande -->
+<div class="modal-bg" id="modal-demande" onclick="closeMBg(event,'modal-demande')">
+  <div class="modal">
+    <h2>📋 Nouvelle demande d'achat</h2>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Métier *</label><select id="f-metier" onchange="updateBudgetSelect()"></select></div>
+      <div class="form-row"><label>Formateur *</label><input type="text" id="f-formateur" placeholder="Nom du formateur"></div>
+    </div>
+    <div class="form-row"><label>Objet *</label><input type="text" id="f-objet" placeholder="Ex : Câbles HO7V-R 2.5mm²..."></div>
+    <div class="form-row"><label>Justification</label><textarea id="f-justif" rows="2" placeholder="Pourquoi ce besoin ?"></textarea></div>
+    <div class="form-row"><label>Budget concerné *</label><select id="f-budget-select"></select></div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Fournisseur *</label><input type="text" id="f-fournisseur" placeholder="Rexel, Sonepar..."></div>
+      <div class="form-row"><label>Réf. devis</label><input type="text" id="f-ref-fourn" placeholder="N° devis"></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Montant HT (€) *</label><input type="number" id="f-montant" placeholder="0.00" step="0.01" min="0"></div>
+      <div class="form-row"><label>Date</label><input type="date" id="f-date"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-demande')">Annuler</button>
+      <button class="btn btn-primary" onclick="soumettreDemandeAPI()">Envoyer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Fiche demande -->
+<div class="modal-bg" id="modal-fiche" onclick="closeMBg(event,'modal-fiche')">
+  <div class="modal" style="max-width:570px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <h2 style="margin:0">🔍 Analyse de la demande</h2>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-fiche')">✕</button>
+    </div>
+    <div id="fiche-content"></div>
+  </div>
+</div>
+
+<!-- Motif refus -->
+<div class="modal-bg" id="modal-motif" onclick="closeMBg(event,'modal-motif')">
+  <div class="modal" style="max-width:400px">
+    <h2>❌ Motif du refus</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Ce motif sera transmis au formateur.</p>
+    <div class="form-row"><label>Motif obligatoire *</label><textarea id="motif-text" rows="4" placeholder="Ex : Budget insuffisant ce trimestre..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-motif')">Annuler</button>
+      <button class="btn btn-danger" onclick="confirmerRefusAPI()">Confirmer le refus</button>
+    </div>
+  </div>
+</div>
+
+<!-- BC -->
+<div class="modal-bg" id="modal-bc" onclick="closeMBg(event,'modal-bc')">
+  <div class="modal" style="max-width:600px">
+    <h2>✅ Bon de commande</h2>
+    <div id="bc-content"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-bc')">Fermer</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Élève -->
+<div class="modal-bg" id="modal-eleve" onclick="closeMBg(event,'modal-eleve')">
+  <div class="modal">
+    <h2>👤 Ajouter un apprenti</h2>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Prénom *</label><input type="text" id="e-prenom"></div>
+      <div class="form-row"><label>Nom *</label><input type="text" id="e-nom"></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Métier *</label><select id="e-metier"></select></div>
+      <div class="form-row"><label>Formation *</label><select id="e-formation"><option value="CAP">CAP</option><option value="BAC PRO">BAC PRO</option><option value="BTS">BTS</option><option value="TITRE PRO">TITRE PRO</option></select></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Année *</label><select id="e-annee"><option value="1">1ère année</option><option value="2">2ème année</option><option value="3">3ème année</option></select></div>
+      <div class="form-row"><label>Âge</label><input type="number" id="e-age" min="14" max="30"></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Téléphone</label><input type="tel" id="e-tel"></div>
+      <div class="form-row"><label>Entreprise</label><input type="text" id="e-entreprise"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-eleve')">Annuler</button>
+      <button class="btn btn-primary" onclick="ajouterEleveAPI()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nouveau métier -->
+<div class="modal-bg" id="modal-metier" onclick="closeMBg(event,'modal-metier')">
+  <div class="modal" style="max-width:400px">
+    <h2>🏗️ Nouveau métier</h2>
+    <div class="form-row"><label>Nom *</label><input type="text" id="nm-label" placeholder="Ex : Maçonnerie, Maison..."></div>
+    <div class="form-row"><label>Icône (emoji)</label><input type="text" id="nm-icon" placeholder="🏠" maxlength="2" style="width:70px"></div>
+    <div class="form-row">
+      <label>Couleur</label>
+      <div id="color-picker" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"></div>
+      <input type="hidden" id="nm-color" value="#1B4FD8">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-metier')">Annuler</button>
+      <button class="btn btn-primary" onclick="creerMetierAPI()">Créer</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal nouvel utilisateur -->
+<div class="modal-bg" id="modal-user" onclick="closeMBg(event,'modal-user')">
+  <div class="modal" style="max-width:480px">
+    <h2>👤 Nouvel utilisateur</h2>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Prénom *</label><input type="text" id="u-prenom" placeholder="Prénom"></div>
+      <div class="form-row"><label>Nom *</label><input type="text" id="u-nom" placeholder="NOM"></div>
+    </div>
+    <div class="form-row"><label>Email *</label><input type="email" id="u-email" placeholder="prenom.nom@cfa-troyes.fr"></div>
+    <div class="form-row"><label>Mot de passe *</label><input type="password" id="u-password" placeholder="Minimum 8 caractères"></div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Rôle *</label>
+        <select id="u-role">
+          <option value="formateur">🎓 Formateur</option>
+          <option value="responsable">👔 Responsable</option>
+          <option value="secretariat">📁 Secrétariat</option>
+          <option value="direction">📊 Direction</option>
+          <option value="admin">⭐ Admin</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Métier (optionnel)</label>
+        <select id="u-metier"><option value="">— Aucun —</option></select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-user')">Annuler</button>
+      <button class="btn btn-primary" onclick="creerUtilisateurAPI()">Créer le compte</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────
+const API = 'https://cfa-backend-oagf.onrender.com';
+const MOIS = ['Sep','Oct','Nov','Déc','Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû'];
+const TVA = 1.20;
+const PALETTE = ['#1B4FD8','#0891B2','#7C3AED','#D97706','#16A34A','#DC2626','#DB2777','#0D9488','#EA580C','#0284C7'];
+
+// ── STATE ─────────────────────────────────────────────────────────────
+let token = localStorage.getItem('cfa_token') || null;
+let currentUser = JSON.parse(localStorage.getItem('cfa_user') || 'null');
+let metiers = [];
+let budgets = [];
+let demandes = [];
+let apprentis = [];
+let currentFilterD = 'tous';
+let ficheDemandeId = null;
+
+// ── UTILS ─────────────────────────────────────────────────────────────
+const fmt  = v => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);
+const fmtD = v => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',minimumFractionDigits:2}).format(v);
+function toast(msg,d=3200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeMBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='trombi')renderTrombi();
+  if(id==='commander')renderCommander();
+  if(id==='gestion')renderGestion();
+  if(id==='utilisateurs'){loadUtilisateurs();}
+}
+
+// ── API CALLS ─────────────────────────────────────────────────────────
+async function api(method, path, body=null){
+  const opts = {
+    method,
+    headers: {'Content-Type':'application/json', ...(token?{'Authorization':'Bearer '+token}:{})},
+  };
+  if(body) opts.body = JSON.stringify(body);
+  const res = await fetch(API+path, opts);
+  if(res.status === 401){doLogout();return null;}
+  if(!res.ok){
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.detail || 'Erreur serveur');
+  }
+  return res.json();
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────
+async function doLogin(){
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  const btn = document.getElementById('btn-login');
+  errEl.style.display='none';
+  btn.textContent='Connexion...';btn.disabled=true;
+  try {
+    const data = await api('POST','/auth/login',{email,password});
+    token = data.access_token;
+    currentUser = data.user;
+    localStorage.setItem('cfa_token', token);
+    localStorage.setItem('cfa_user', JSON.stringify(currentUser));
+    startApp();
+  } catch(e){
+    errEl.textContent = e.message || 'Email ou mot de passe incorrect';
+    errEl.style.display='block';
+  } finally {
+    btn.textContent='Se connecter';btn.disabled=false;
+  }
+}
+
+function doLogout(){
+  token=null;currentUser=null;
+  localStorage.removeItem('cfa_token');
+  localStorage.removeItem('cfa_user');
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-page').style.display='grid';
+}
+
+// ── START APP ─────────────────────────────────────────────────────────
+async function startApp(){
+  document.getElementById('login-page').style.display='none';
+  document.getElementById('app').style.display='block';
+
+  // Header
+  const role = currentUser.role;
+  document.getElementById('header-nom').textContent = currentUser.prenom+' '+currentUser.nom;
+  document.getElementById('header-email').textContent = currentUser.email;
+  const pill = document.getElementById('header-role-pill');
+  const pillLabels = {responsable:'RESPONSABLE',formateur:'FORMATEUR',secretariat:'SECRÉTARIAT',direction:'DIRECTION'};
+  const pillClasses = {responsable:'pill-responsable',formateur:'pill-formateur',secretariat:'pill-secretariat',direction:'pill-direction'};
+  pill.textContent = pillLabels[role] || role.toUpperCase();
+  pill.className = 'role-pill '+(pillClasses[role]||'');
+
+  // Onglets admin/responsable
+  const isAdmin = role === 'admin';
+  const isResp  = role === 'responsable' || isAdmin;
+  document.getElementById('nav-gestion').style.display = isResp ? '' : 'none';
+  const canLogement = ['admin','responsable','secretariat'].includes(role);
+  document.getElementById('nav-logement').style.display = canLogement ? '' : 'none';
+  document.getElementById('nav-utilisateurs').style.display = isAdmin ? '' : 'none';
+
+  // Boutons selon rôle
+  const canCreate = ['responsable','formateur','secretariat'].includes(role);
+  ['btn-new-budget','btn-new-demande'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display=canCreate?'':'none';
+  });
+  document.getElementById('btn-new-eleve').style.display = ['responsable','secretariat'].includes(role)?'':'none';
+
+  // Charger les données
+  await loadAll();
+}
+
+async function loadAll(){
+  try {
+    [metiers, budgets, demandes, apprentis] = await Promise.all([
+      api('GET','/metiers'),
+      api('GET','/budgets'),
+      api('GET','/demandes'),
+      api('GET','/apprentis'),
+    ]);
+    refreshMetierSelects();
+    renderAll();
+  } catch(e){
+    toast('❌ Erreur de chargement : '+e.message);
+  }
+}
+
+// ── RENDERS ───────────────────────────────────────────────────────────
+function getMetier(id){return metiers.find(m=>m.id===id)||{label:id,icon:'📁',color:'#888'};}
+function getBudget(id){return budgets.find(b=>b.id===id);}
+
+function statsMetier(mid){
+  const totalBudget = budgets.filter(b=>b.metier_id===mid).reduce((s,b)=>s+b.montant,0);
+  const engage = demandes.filter(d=>d.metier_id===mid&&d.statut==='valide').reduce((s,d)=>s+d.montant,0);
+  const attente = demandes.filter(d=>d.metier_id===mid&&d.statut==='attente').reduce((s,d)=>s+d.montant,0);
+  const restant = totalBudget-engage;
+  const pct = totalBudget>0?Math.min(100,Math.round(engage/totalBudget*100)):0;
+  return{totalBudget,engage,attente,restant,pct};
+}
+function statsBudget(bid){
+  const b=getBudget(bid);
+  const engage=demandes.filter(d=>d.budget_id===bid&&d.statut==='valide').reduce((s,d)=>s+d.montant,0);
+  return{engage,restant:(b?.montant||0)-engage,budget:b?.montant||0};
+}
+
+function renderAll(){
+  // Recap global
+  let tb=0,te=0,ta=0;
+  budgets.forEach(b=>tb+=b.montant);
+  demandes.forEach(d=>{if(d.statut==='valide')te+=d.montant;if(d.statut==='attente')ta+=d.montant;});
+  document.getElementById('total-budget').textContent=fmt(tb);
+  const eEl=document.getElementById('total-engage');eEl.textContent=fmt(te);eEl.className='val '+(tb>0&&te/tb>.9?'danger':'warn');
+  const rEl=document.getElementById('total-restant');rEl.textContent=fmt(tb-te);rEl.className='val '+(tb-te<0?'danger':'ok');
+  document.getElementById('total-attente').textContent=fmt(ta);
+
+  // Badges nav
+  const na=demandes.filter(d=>d.statut==='attente').length;
+  const nc=demandes.filter(d=>d.statut==='valide').length;
+  const ba=document.getElementById('badge-attente');ba.textContent=na;ba.style.display=na>0?'':'none';
+  const bc=document.getElementById('badge-commander');bc.textContent=nc;bc.style.display=nc>0?'':'none';
+
+  // Sections métiers
+  const grid=document.getElementById('sections-grid');
+  if(!metiers.length){grid.innerHTML='<div class="empty-state"><div class="icon">📊</div>Aucun métier configuré</div>';return;}
+  grid.innerHTML=metiers.map(m=>{
+    const s=statsMetier(m.id);
+    const fillClass=s.pct>90?'danger':s.pct>70?'warn':'';
+    const fillColor=fillClass?'':`background:${m.color}`;
+    const restClass=s.restant<0?'danger':s.restant<s.totalBudget*.2?'warn':'ok';
+    return `<div class="sec-card" style="--c:${m.color}">
+      <div class="sec-header"><span class="sec-name">${m.label}</span><div class="sec-icon">${m.icon}</div></div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>${s.pct}% consommé</span><span>${fmt(s.engage)} / ${fmt(s.totalBudget)}</span></div>
+        <div class="progress-bar"><div class="progress-fill ${fillClass}" style="width:${s.pct}%;${fillColor}"></div></div>
+      </div>
+      <div class="sec-amounts">
+        <div class="amount-box"><small>Budget</small><strong>${fmt(s.totalBudget)}</strong></div>
+        <div class="amount-box"><small>Engagé</small><strong>${fmt(s.engage)}</strong></div>
+        <div class="amount-box"><small>Restant</small><strong class="${restClass}">${fmt(s.restant)}</strong></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Timeline
+  const startY=2025,startM=8;
+  const mont=Array(12).fill(0);
+  demandes.filter(d=>d.statut==='valide').forEach(d=>{
+    const dt=new Date(d.date_demande);
+    let idx=(dt.getFullYear()-startY)*12+dt.getMonth()-startM;
+    if(idx>=0&&idx<12)mont[idx]+=d.montant;
+  });
+  const max=Math.max(...mont,1);
+  const now=new Date();
+  const cur=(now.getFullYear()-startY)*12+now.getMonth()-startM;
+  document.getElementById('months-grid').innerHTML=MOIS.map((m,i)=>{
+    const h=Math.round(mont[i]/max*60);
+    const isCur=i===cur;
+    return `<div class="month-col">
+      <div class="month-bar-wrap"><div class="month-bar" style="height:${h}px;background:${isCur?'#1B4FD8':'#C7D2FE'};${isCur?'box-shadow:0 0 0 2px #1B4FD8':''}"></div></div>
+      <div class="month-label">${m}</div>
+      ${mont[i]>0?`<div class="month-amount">${Math.round(mont[i]/100)/10}k</div>`:''}
+    </div>`;
+  }).join('');
+
+  renderDemandesTable();
+}
+
+function renderDemandesTable(){
+  let filtered=[...demandes];
+  if(currentFilterD==='attente')filtered=filtered.filter(d=>d.statut==='attente');
+  else if(currentFilterD==='valide')filtered=filtered.filter(d=>d.statut==='valide');
+  else if(currentFilterD==='refuse')filtered=filtered.filter(d=>d.statut==='refuse');
+
+  const tbody=document.getElementById('demandes-tbody');
+  if(!filtered.length){
+    tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:28px;color:var(--muted)">Aucune demande.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML=filtered.map(d=>{
+    const m=getMetier(d.metier_id);
+    const b=getBudget(d.budget_id);
+    const sLabel={attente:'⏳ En attente',valide:'✅ Validée',refuse:'❌ Refusée'}[d.statut];
+    const canValider=currentUser?.role==='responsable';
+    let actions;
+    if(d.statut==='attente'){
+      actions=canValider
+        ?`<button class="btn btn-primary btn-sm" onclick="ouvrirFiche('${d.id}')">🔍 Analyser</button>`
+        :`<button class="btn btn-ghost btn-sm" onclick="ouvrirFiche('${d.id}')">👁 Voir</button>`;
+    } else if(d.statut==='valide'){
+      actions=`<div style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="ouvrirFiche('${d.id}')">👁</button>
+        <button class="btn btn-ok btn-sm" onclick="afficherBC('${d.id}')">📄 BC</button>
+      </div>`;
+    } else {
+      actions=`<button class="btn btn-ghost btn-sm" onclick="ouvrirFiche('${d.id}')">👁</button>`;
+    }
+    return `<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted)">${d.id}</td>
+      <td><span class="metier-tag" style="background:${m.color}">${m.icon} ${m.label}</span></td>
+      <td style="max-width:180px"><div style="font-weight:500">${d.objet}</div><div style="font-size:.7rem;color:var(--muted)">${(d.justif||'').slice(0,45)}</div></td>
+      <td style="font-size:.79rem">${d.fournisseur}<br><span style="color:var(--muted);font-size:.7rem">${d.ref_fourn||''}</span></td>
+      <td style="color:var(--muted);font-size:.79rem">${d.formateur_nom||'—'}</td>
+      <td style="font-size:.74rem;color:var(--muted)">${b?b.label:'—'}</td>
+      <td><span class="montant">${fmt(d.montant)}</span></td>
+      <td style="color:var(--muted);font-size:.76rem">${new Date(d.date_demande).toLocaleDateString('fr-FR')}</td>
+      <td><span class="badge ${d.statut}">${sLabel}</span></td>
+      <td>${actions}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderCommander(){
+  const valides=demandes.filter(d=>d.statut==='valide').sort((a,b)=>new Date(b.date_demande)-new Date(a.date_demande));
+  const container=document.getElementById('commander-list');
+  if(!valides.length){container.innerHTML=`<div class="empty-state"><div class="icon">🛒</div>Aucun bon de commande validé.</div>`;return;}
+  container.innerHTML=valides.map(d=>{
+    const m=getMetier(d.metier_id);
+    const b=getBudget(d.budget_id);
+    const bcNum='BC-'+d.id.replace('DA-','');
+    return `<div class="commander-card">
+      <div><span class="metier-tag" style="background:${m.color}">${m.icon}</span></div>
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--muted)">${bcNum}</div>
+        <div style="font-weight:600;font-size:.92rem;margin-bottom:3px">${d.objet}</div>
+        <div style="font-size:.8rem;color:var(--muted)">🏢 ${d.fournisseur}${d.ref_fourn?' · Réf: '+d.ref_fourn:''}</div>
+        <div style="display:flex;gap:10px;margin-top:5px;font-size:.72rem;color:var(--muted)">
+          <span>📅 ${new Date(d.date_demande).toLocaleDateString('fr-FR')}</span>
+          <span>👤 ${d.formateur_nom||'—'}</span>
+          <span style="color:${m.color}">📁 ${b?b.label:'—'}</span>
+        </div>
+      </div>
+      <div>
+        <div class="montant-bc">${fmtD(d.montant*TVA)}<small>TTC · ${fmtD(d.montant)} HT</small></div>
+        <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px">
+          <button class="btn btn-primary btn-sm" onclick="afficherBC('${d.id}')">📄 Voir BC</button>
+          <button class="btn btn-ghost btn-sm" onclick="ouvrirFiche('${d.id}')">👁 Détail</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTrombi(){
+  const fM=document.getElementById('filter-metier-t').value;
+  const fF=document.getElementById('filter-formation-t').value;
+  const fA=document.getElementById('filter-annee-t').value;
+  const groups={};
+  apprentis.forEach(e=>{
+    if(fM&&e.metier_id!==fM)return;
+    if(fF&&e.formation!==fF)return;
+    if(fA&&e.annee!==fA)return;
+    const m=getMetier(e.metier_id);
+    const key=`${e.metier_id}|${e.formation}|${e.annee}`;
+    if(!groups[key])groups[key]={label:`${m.label} · ${e.formation} · ${e.annee}e année`,color:m.color,icon:m.icon,eleves:[]};
+    groups[key].eleves.push(e);
+  });
+  const container=document.getElementById('trombi-container');
+  if(!Object.keys(groups).length){container.innerHTML=`<div class="empty-state"><div class="icon">👥</div>Aucun apprenti.</div>`;return;}
+  container.innerHTML=Object.entries(groups).sort(([a],[b])=>a.localeCompare(b)).map(([key,g])=>`
+    <div style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div><div style="font-size:.95rem;font-weight:700;color:${g.color}">${g.icon} ${g.label}</div>
+          <div style="font-size:.76rem;color:var(--muted)">${g.eleves.length} apprenti${g.eleves.length>1?'s':''}</div></div>
+      </div>
+      <div class="eleves-grid">${g.eleves.map(e=>{
+        const ini=(e.prenom[0]||'')+(e.nom[0]||'');
+        return `<div class="eleve-card">
+          <div class="eleve-avatar" style="border-color:${g.color}">
+            ${e.photo_url?`<img src="${e.photo_url}" alt="${e.prenom}">`:`<span style="color:${g.color};font-size:1.2rem">${ini}</span>`}
+          </div>
+          <div class="eleve-nom">${e.prenom}</div>
+          <div class="eleve-nom" style="font-size:.76rem">${e.nom}</div>
+          ${e.entreprise?`<div class="eleve-info">🏢 ${e.entreprise}</div>`:''}
+          ${e.age?`<div class="eleve-info">🎂 ${e.age} ans</div>`:''}
+          ${e.telephone?`<div class="eleve-info"><a href="tel:${e.telephone}" style="color:var(--accent);text-decoration:none">📞 ${e.telephone}</a></div>`:''}
+        </div>`;}).join('')}
+      </div>
+    </div>`).join('');
+}
+
+
+// ── UTILISATEURS ──────────────────────────────────────────────────────
+let utilisateurs = [];
+
+async function loadUtilisateurs(){
+  try{
+    utilisateurs = await api('GET','/utilisateurs');
+    renderUsers();
+  }catch(e){console.log('Erreur chargement users:',e);}
+}
+
+function openModalUser(){
+  // Remplir select métier
+  const sel = document.getElementById('u-metier');
+  sel.innerHTML = '<option value="">— Aucun —</option>' + metiers.map(m=>`<option value="${m.id}">${m.icon} ${m.label}</option>`).join('');
+  document.getElementById('modal-user').classList.add('open');
+}
+
+async function creerUtilisateurAPI(){
+  const prenom   = document.getElementById('u-prenom').value.trim();
+  const nom      = document.getElementById('u-nom').value.trim().toUpperCase();
+  const email    = document.getElementById('u-email').value.trim();
+  const password = document.getElementById('u-password').value;
+  const role     = document.getElementById('u-role').value;
+  const metier_id= document.getElementById('u-metier').value || null;
+  if(!prenom||!nom||!email||!password){toast('⚠️ Remplis tous les champs obligatoires');return;}
+  if(password.length < 8){toast('⚠️ Mot de passe minimum 8 caractères');return;}
+  try{
+    const u = await api('POST','/utilisateurs',{prenom,nom,email,password,role,metier_id});
+    utilisateurs.push(u);
+    closeModal('modal-user');
+    ['u-prenom','u-nom','u-email','u-password'].forEach(id=>document.getElementById(id).value='');
+    renderUsers();
+    toast('✅ Compte créé pour '+prenom+' '+nom);
+  }catch(e){toast('❌ '+e.message);}
+}
+
+async function desactiverUtilisateurAPI(id, nom){
+  if(!confirm('Désactiver le compte de '+nom+' ? Il ne pourra plus se connecter.'))return;
+  try{
+    await api('DELETE','/utilisateurs/'+id);
+    const u = utilisateurs.find(x=>x.id===id);
+    if(u) u.actif = false;
+    renderUsers();
+    toast('⏸ Compte de '+nom+' désactivé');
+  }catch(e){toast('❌ '+e.message);}
+}
+
+async function reactiverUtilisateurAPI(id, nom){
+  try{
+    await api('PUT','/utilisateurs/'+id+'/reactiver',{});
+    const u = utilisateurs.find(x=>x.id===id);
+    if(u) u.actif = true;
+    renderUsers();
+    toast('▶ Compte de '+nom+' réactivé');
+  }catch(e){toast('❌ '+e.message);}
+}
+
+function renderUsers(){
+  const ROLE_LABELS = {
+    admin:'⭐ Admin', responsable:'👔 Responsable',
+    formateur:'🎓 Formateur', secretariat:'📁 Secrétariat', direction:'📊 Direction'
+  };
+  const ROLE_COLORS = {
+    admin:'#7C3AED',responsable:'#16A34A',
+    formateur:'#1B4FD8',secretariat:'#7C3AED',direction:'#D97706'
+  };
+  const tbody = document.getElementById('users-tbody');
+  if(!tbody)return;
+  if(!utilisateurs.length){
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--muted)">Aucun utilisateur.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = utilisateurs.map(u=>{
+    const initials = (u.prenom?.[0]||'')+(u.nom?.[0]||'');
+    const roleColor = ROLE_COLORS[u.role]||'#888';
+    const roleLabel = ROLE_LABELS[u.role]||u.role;
+    const m = metiers.find(x=>x.id===u.metier_id);
+    const isSelf = u.id === currentUser?.id;
+    const isActif = u.actif !== false;
+    const statutBadge = isActif 
+      ? '<span style="background:var(--ok-lt);color:var(--ok);padding:2px 8px;border-radius:20px;font-size:.68rem;font-weight:600">Actif</span>'
+      : '<span style="background:var(--danger-lt);color:var(--danger);padding:2px 8px;border-radius:20px;font-size:.68rem;font-weight:600">Inactif</span>';
+    let actions;
+    if(isSelf){
+      actions = '<span style="font-size:.75rem;color:var(--muted)">Votre compte</span>';
+    } else if(isActif){
+      actions = `<button class="btn btn-danger btn-sm" onclick="desactiverUtilisateurAPI('${u.id}','${u.prenom} ${u.nom}')">⏸ Désactiver</button>`;
+    } else {
+      actions = `<button class="btn btn-ok btn-sm" onclick="reactiverUtilisateurAPI('${u.id}','${u.prenom} ${u.nom}')">▶ Réactiver</button>`;
+    }
+    return `<tr style="${!isActif?'opacity:.5':''}">
+      <td><div style="width:36px;height:36px;border-radius:50%;background:${isActif?roleColor:'#aaa'};color:#fff;display:grid;place-items:center;font-size:.82rem;font-weight:700">${initials}</div></td>
+      <td style="font-weight:600">${u.prenom} ${u.nom}</td>
+      <td style="color:var(--muted);font-size:.82rem">${u.email}</td>
+      <td><span style="background:${roleColor}22;color:${roleColor};padding:3px 9px;border-radius:20px;font-size:.72rem;font-weight:700">${roleLabel}</span></td>
+      <td>${statutBadge}</td>
+      <td style="font-size:.79rem;color:var(--muted)">${m?m.icon+' '+m.label:'—'}</td>
+      <td>${actions}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderGestion(){
+  const container=document.getElementById('gestion-list');
+  if(!metiers.length){container.innerHTML='<div class="empty-state"><div class="icon">⚙️</div>Aucun métier.</div>';return;}
+  const isDefault = ['elec','plomb','menu','autre'];
+  container.innerHTML=metiers.map(m=>{
+    const lignes=budgets.filter(b=>b.metier_id===m.id);
+    const totalBudget=lignes.reduce((s,b)=>s+b.montant,0);
+    const lignesHtml=lignes.map(b=>{
+      const s=statsBudget(b.id);
+      const rc=s.restant<0?'color:var(--danger)':s.restant<s.budget*.2?'color:var(--warn)':'color:var(--ok)';
+      return `<div class="budget-line">
+        <span style="font-weight:500">${b.label}</span>
+        <input type="number" value="${b.montant}" min="0" onchange="modifierBudgetAPI('${b.id}',this.value)">
+        <span style="font-size:.75rem;color:var(--muted)">Engagé: ${fmt(s.engage)}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:.78rem;font-weight:600;${rc}">${fmt(s.restant)}</span>
+        <button class="btn-delete" onclick="supprimerBudgetAPI('${b.id}')">🗑</button>
+      </div>`;
+    }).join('')||`<div style="padding:12px 18px;font-size:.8rem;color:var(--muted);font-style:italic">Aucune ligne — ajoutez-en une</div>`;
+    return `<div class="metier-block">
+      <div class="metier-block-header">
+        <div style="width:12px;height:12px;border-radius:50%;background:${m.color};flex-shrink:0"></div>
+        <span style="font-size:1.2rem">${m.icon}</span>
+        <span style="font-weight:700;font-size:1rem;flex:1">${m.label}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:.88rem;color:var(--muted)">Total: ${fmt(totalBudget)}</span>
+        ${!isDefault.includes(m.id)?`<button class="btn btn-danger btn-sm" onclick="supprimerMetierAPI('${m.id}')">🗑 Supprimer</button>`:''}
+      </div>
+      ${lignesHtml}
+      <div class="add-budget-line">
+        <input type="text" id="nbl-label-${m.id}" placeholder="Nouvelle ligne budgétaire" style="flex:1">
+        <input type="number" id="nbl-montant-${m.id}" placeholder="Montant €" style="width:110px" min="0">
+        <button class="btn btn-primary btn-sm" onclick="ajouterBudgetAPI('${m.id}')">+ Ajouter</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ACTIONS API ───────────────────────────────────────────────────────
+function filterD(f,btn){
+  currentFilterD=f;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderDemandesTable();
+}
+
+function refreshMetierSelects(){
+  const opts=metiers.map(m=>`<option value="${m.id}">${m.icon} ${m.label}</option>`).join('');
+  ['f-metier','e-metier'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  updateBudgetSelect();
+  // Filter trombi
+  const ft=document.getElementById('filter-metier-t');
+  ft.innerHTML='<option value="">Tous les métiers</option>'+metiers.map(m=>`<option value="${m.id}">${m.icon} ${m.label}</option>`).join('');
+}
+
+function updateBudgetSelect(){
+  const mid=document.getElementById('f-metier')?.value;
+  const sel=document.getElementById('f-budget-select');
+  if(!sel)return;
+  const list=budgets.filter(b=>b.metier_id===mid);
+  sel.innerHTML=list.map(b=>{
+    const s=statsBudget(b.id);
+    return `<option value="${b.id}">${b.label} — ${fmt(s.restant)} restant</option>`;
+  }).join('')||'<option value="">Aucun budget pour ce métier</option>';
+}
+
+function openModalDemande(){
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+  if(currentUser){
+    document.getElementById('f-formateur').value=currentUser.prenom+' '+currentUser.nom;
+  }
+  updateBudgetSelect();
+  document.getElementById('modal-demande').classList.add('open');
+}
+
+async function soumettreDemandeAPI(){
+  const metier_id=document.getElementById('f-metier').value;
+  const formateur_nom=document.getElementById('f-formateur').value.trim();
+  const objet=document.getElementById('f-objet').value.trim();
+  const justif=document.getElementById('f-justif').value.trim();
+  const budget_id=document.getElementById('f-budget-select').value;
+  const fournisseur=document.getElementById('f-fournisseur').value.trim();
+  const ref_fourn=document.getElementById('f-ref-fourn').value.trim();
+  const montant=parseFloat(document.getElementById('f-montant').value);
+  const date_demande=document.getElementById('f-date').value;
+  if(!objet||!fournisseur||isNaN(montant)||!budget_id){toast('⚠️ Remplis tous les champs obligatoires');return;}
+  try{
+    const d=await api('POST','/demandes',{metier_id,budget_id,objet,justif,fournisseur,ref_fourn,montant,date_demande,formateur_nom});
+    demandes.unshift(d);
+    closeModal('modal-demande');
+    renderAll();
+    toast('📋 Demande envoyée — en attente de validation');
+  }catch(e){toast('❌ '+e.message);}
+}
+
+function ouvrirFiche(id){
+  const d=demandes.find(x=>x.id===id);if(!d)return;
+  ficheDemandeId=id;
+  const m=getMetier(d.metier_id);
+  const b=getBudget(d.budget_id);
+  const canValider=currentUser?.role==='responsable';
+  const banners={attente:'⏳ En attente de validation',valide:'✅ Validée',refuse:'❌ Refusée'};
+  const s=statsMetier(d.metier_id);
+  const restantApres=d.statut==='valide'?s.restant:s.restant-d.montant;
+  const engTotal=s.engage+(d.statut==='attente'?d.montant:0);
+  const pct=s.totalBudget>0?Math.min(100,Math.round(engTotal/s.totalBudget*100)):0;
+  const barColor=pct>90?'var(--danger)':pct>70?'var(--warn)':m.color;
+  const restClass=restantApres<0?'var(--danger)':restantApres<s.totalBudget*.1?'var(--warn)':'var(--ok)';
+
+  let budgetSelect='';
+  if(canValider&&d.statut==='attente'){
+    const opts=budgets.map(bx=>`<option value="${bx.id}" ${bx.id===d.budget_id?'selected':''}>${getMetier(bx.metier_id).label} · ${bx.label} — ${fmt(statsBudget(bx.id).restant)} restant</option>`).join('');
+    budgetSelect=`<div class="fiche-item"><label>Budget affecté <span style="color:var(--accent)">(modifiable)</span></label>
+      <select style="width:100%;padding:7px;border:1.5px solid var(--accent);border-radius:7px;font-size:.82rem;background:var(--accent-lt)"
+        onchange="changerBudgetFiche('${d.id}',this.value)">${opts}</select></div>`;
+  } else {
+    budgetSelect=`<div class="fiche-item"><label>Budget</label><strong>${b?getMetier(b.metier_id).label+' · '+b.label:'—'}</strong></div>`;
+  }
+
+  let actionsHtml='';
+  if(canValider&&d.statut==='attente'){
+    actionsHtml=`<div style="border-top:1.5px solid var(--border);margin-top:16px;padding-top:16px">
+      <div style="font-size:.8rem;font-weight:600;margin-bottom:10px">⚡ Décision</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-valider-big" onclick="validerDemandeAPI('${d.id}')">✅ Valider et générer le BC</button>
+        <button class="btn-refuser-big" onclick="ouvrirMotifRefus()">❌ Refuser avec motif</button>
+      </div></div>`;
+  } else if(d.statut==='valide'){
+    actionsHtml=`<div style="border-top:1.5px solid var(--border);margin-top:16px;padding-top:16px">
+      <button class="btn btn-ghost" onclick="closeModal('modal-fiche');afficherBC('${d.id}')">📄 Voir le bon de commande</button></div>`;
+  }
+
+  document.getElementById('fiche-content').innerHTML=`
+    <div class="statut-banner ${d.statut}">${banners[d.statut]}${d.motif_refus?' — '+d.motif_refus:''}</div>
+    <div class="fiche-highlight">
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">Montant HT</div>
+      <div class="fiche-montant-big">${fmtD(d.montant)}</div>
+      <div style="margin-top:4px;font-size:.76rem;color:var(--muted)">TTC : <strong>${fmtD(d.montant*TVA)}</strong> &nbsp;·&nbsp; Restant après : <strong style="color:${restClass}">${fmtD(restantApres)}</strong></div>
+      <div style="margin-top:8px">
+        <div style="height:6px;background:rgba(255,255,255,.3);border-radius:99px;overflow:hidden"><div style="width:${pct}%;background:${barColor};height:100%;border-radius:99px"></div></div>
+        <div style="font-size:.66rem;color:var(--muted);margin-top:2px">${fmtD(engTotal)} / ${fmtD(s.totalBudget)} budget ${m.label} (${pct}%)</div>
+      </div>
+    </div>
+    <div class="fiche-section"><h3>📋 Détail</h3>
+      <div class="fiche-grid">
+        <div class="fiche-item"><label>Référence</label><strong>${d.id}</strong></div>
+        <div class="fiche-item"><label>Date</label><strong>${new Date(d.date_demande).toLocaleDateString('fr-FR')}</strong></div>
+        <div class="fiche-item"><label>Formateur</label><strong>${d.formateur_nom||'—'}</strong></div>
+        <div class="fiche-item"><label>Métier</label><strong><span class="metier-tag" style="background:${m.color}">${m.icon} ${m.label}</span></strong></div>
+      </div>
+      <div style="margin-top:8px"><div class="fiche-item"><label>Objet</label><strong style="font-size:.9rem">${d.objet}</strong></div></div>
+      <div style="margin-top:8px"><div class="fiche-item"><label>Justification</label><div style="font-size:.82rem;padding:7px;background:var(--bg);border-radius:5px;margin-top:2px">${d.justif||'—'}</div></div></div>
+      <div style="margin-top:8px">${budgetSelect}</div>
+    </div>
+    <div class="fiche-section"><h3>🏢 Fournisseur</h3>
+      <div class="fiche-grid">
+        <div class="fiche-item"><label>Fournisseur</label><strong>${d.fournisseur}</strong></div>
+        <div class="fiche-item"><label>Réf. devis</label><strong>${d.ref_fourn||'—'}</strong></div>
+      </div>
+    </div>
+    ${actionsHtml}`;
+  document.getElementById('modal-fiche').classList.add('open');
+}
+
+async function changerBudgetFiche(demandeId, newBudgetId){
+  try{
+    const d=await api('PUT','/demandes/'+demandeId,{statut:demandes.find(x=>x.id===demandeId).statut,budget_id:newBudgetId});
+    const idx=demandes.findIndex(x=>x.id===demandeId);
+    if(idx>=0)demandes[idx]=d;
+    renderAll();
+    toast('💾 Budget modifié');
+  }catch(e){toast('❌ '+e.message);}
+}
+
+async function validerDemandeAPI(id){
+  try{
+    const d=await api('PUT','/demandes/'+id,{statut:'valide'});
+    const idx=demandes.findIndex(x=>x.id===id);
+    if(idx>=0)demandes[idx]=d;
+    closeModal('modal-fiche');
+    renderAll();
+    afficherBC(id);
+    toast('✅ Demande validée — BC généré');
+  }catch(e){toast('❌ '+e.message);}
+}
+
+function ouvrirMotifRefus(){
+  document.getElementById('motif-text').value='';
+  document.getElementById('modal-motif').classList.add('open');
+}
+
+async function confirmerRefusAPI(){
+  const motif=document.getElementById('motif-text').value.trim();
+  if(!motif){toast('⚠️ Motif obligatoire');return;}
+  try{
+    const d=await api('PUT','/demandes/'+ficheDemandeId,{statut:'refuse',motif_refus:motif});
+    const idx=demandes.findIndex(x=>x.id===ficheDemandeId);
+    if(idx>=0)demandes[idx]=d;
+    closeModal('modal-motif');closeModal('modal-fiche');
+    renderAll();
+    toast('❌ Demande refusée');
+  }catch(e){toast('❌ '+e.message);}
+}
+
+function afficherBC(id){
+  const d=demandes.find(x=>x.id===id);if(!d)return;
+  const m=getMetier(d.metier_id);
+  const b=getBudget(d.budget_id);
+  const bcNum='BC-'+d.id.replace('DA-','');
+  const today=new Date().toLocaleDateString('fr-FR');
+  document.getElementById('bc-content').innerHTML=`
+  <div class="bc-preview">
+    <h3>📄 ${bcNum}</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;font-size:.78rem">
+      <div><strong>Émetteur :</strong><br>CFA Compagnons du Devoir<br>Troyes (10000)</div>
+      <div><strong>Fournisseur :</strong><br>${d.fournisseur}<br>${d.ref_fourn?'Réf : '+d.ref_fourn:''}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;font-size:.76rem;background:var(--accent-lt);padding:9px;border-radius:6px">
+      <div><strong>N° BC :</strong> ${bcNum}</div>
+      <div><strong>Date :</strong> ${today}</div>
+      <div><strong>Budget :</strong> ${m.label} · ${b?b.label:'—'}</div>
+    </div>
+    <table class="bc-table">
+      <thead><tr><th>Désignation</th><th>Justification</th><th>Qté</th><th>Prix HT</th></tr></thead>
+      <tbody><tr><td>${d.objet}</td><td>${d.justif||'—'}</td><td>1</td><td style="font-family:'DM Mono',monospace;font-weight:600">${fmtD(d.montant)}</td></tr></tbody>
+    </table>
+    <div style="margin-top:10px;text-align:right;font-size:.8rem">
+      <div>Total HT : <strong>${fmtD(d.montant)}</strong></div>
+      <div>TVA 20% : <strong>${fmtD(d.montant*.2)}</strong></div>
+      <div style="font-size:.95rem;margin-top:3px">Total TTC : <strong style="color:var(--accent)">${fmtD(d.montant*TVA)}</strong></div>
+    </div>
+    <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:.72rem;color:var(--muted)">
+      Validé le ${today} · Formateur : ${d.formateur_nom||'—'}
+    </div>
+  </div>`;
+  document.getElementById('modal-bc').classList.add('open');
+}
+
+function openModalEleve(){document.getElementById('modal-eleve').classList.add('open');}
+
+async function ajouterEleveAPI(){
+  const prenom=document.getElementById('e-prenom').value.trim();
+  const nom=document.getElementById('e-nom').value.trim().toUpperCase();
+  const metier_id=document.getElementById('e-metier').value;
+  const formation=document.getElementById('e-formation').value;
+  const annee=document.getElementById('e-annee').value;
+  const age=parseInt(document.getElementById('e-age').value)||null;
+  const telephone=document.getElementById('e-tel').value.trim()||null;
+  const entreprise=document.getElementById('e-entreprise').value.trim()||null;
+  if(!prenom||!nom){toast('⚠️ Prénom et Nom obligatoires');return;}
+  try{
+    const e=await api('POST','/apprentis',{prenom,nom,metier_id,formation,annee,age,telephone,entreprise});
+    apprentis.push(e);
+    closeModal('modal-eleve');
+    ['e-prenom','e-nom','e-age','e-tel','e-entreprise'].forEach(id=>document.getElementById(id).value='');
+    renderTrombi();
+    toast('👤 '+prenom+' '+nom+' ajouté');
+  }catch(e){toast('❌ '+e.message);}
+}
+
+// GESTION MÉTIERS/BUDGETS
+function openModalNouveauMetier(){
+  document.getElementById('nm-label').value='';
+  document.getElementById('nm-icon').value='🏠';
+  const cp=document.getElementById('color-picker');
+  cp.innerHTML=PALETTE.map((c,i)=>`<div class="color-swatch ${i===0?'selected':''}" style="background:${c}" onclick="selectColor('${c}',this)"></div>`).join('');
+  document.getElementById('nm-color').value=PALETTE[0];
+  document.getElementById('modal-metier').classList.add('open');
+}
+function selectColor(c,el){
+  document.getElementById('nm-color').value=c;
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+async function creerMetierAPI(){
+  const label=document.getElementById('nm-label').value.trim();
+  const icon=document.getElementById('nm-icon').value.trim()||'📁';
+  const color=document.getElementById('nm-color').value;
+  if(!label){toast('⚠️ Nom obligatoire');return;}
+  const id='custom_'+label.toLowerCase().replace(/[^a-z0-9]/g,'_').slice(0,12)+'_'+Date.now().toString(36);
+  try{
+    const m=await api('POST','/metiers',{id,label,icon,color});
+    metiers.push(m);
+    closeModal('modal-metier');
+    refreshMetierSelects();
+    renderGestion();
+    toast('✅ Métier "'+label+'" créé');
+  }catch(e){toast('❌ '+e.message);}
+}
+async function supprimerMetierAPI(id){
+  try{
+    await api('DELETE','/metiers/'+id);
+    metiers=metiers.filter(m=>m.id!==id);
+    budgets=budgets.filter(b=>b.metier_id!==id);
+    refreshMetierSelects();renderAll();renderGestion();
+    toast('🗑️ Métier supprimé');
+  }catch(e){toast('❌ '+e.message);}
+}
+async function ajouterBudgetAPI(metier_id){
+  const label=document.getElementById('nbl-label-'+metier_id).value.trim();
+  const montant=parseFloat(document.getElementById('nbl-montant-'+metier_id).value)||0;
+  if(!label||!montant){toast('⚠️ Libellé et montant requis');return;}
+  try{
+    const b=await api('POST','/budgets',{metier_id,label,montant});
+    budgets.push(b);
+    renderAll();renderGestion();
+    toast('✅ Budget ajouté');
+  }catch(e){toast('❌ '+e.message);}
+}
+async function modifierBudgetAPI(id,val){
+  try{
+    const b=await api('PUT','/budgets/'+id,{montant:parseFloat(val)||0});
+    const idx=budgets.findIndex(x=>x.id===id);
+    if(idx>=0)budgets[idx]=b;
+    renderAll();
+  }catch(e){toast('❌ '+e.message);}
+}
+async function supprimerBudgetAPI(id){
+  try{
+    await api('DELETE','/budgets/'+id);
+    budgets=budgets.filter(b=>b.id!==id);
+    renderAll();renderGestion();
+    toast('🗑️ Budget supprimé');
+  }catch(e){toast('❌ '+e.message);}
+}
+
+
+// ===== JS LOGEMENT =====
+
+// DATA
+const BATIMENTS = {
+  CFA:  { label: 'Batiment CFA', color: '#1B4FD8', priority: 1, annexe: false,
+          etages: ['Etage 1','Etage 2','Etage 3','Etage 4'], chambresParEtage: 10 },
+  YS9:  { label: 'Yscoole Bat. 9', color: '#7C3AED', priority: 2, annexe: true, chambres: 10 },
+  YS10: { label: 'Yscoole Bat. 10', color: '#0891B2', priority: 3, annexe: true, chambres: 10 },
+};
+
+const PROMO_COLORS = ['#1B4FD8','#7C3AED','#0891B2','#D97706','#16A34A','#DC2626','#DB2777','#0D9488','#EA580C','#6366f1'];
+
+// Generer les chambres
+function genChambres() {
+  const ch = [];
+  for(let e=1;e<=4;e++) {
+    for(let n=1;n<=10;n++) {
+      const num = e+'0'+(n<=9?'0'+n:n);
+      ch.push({ id:'CFA-'+num, batiment:'CFA', etage:'Etage '+e, num:num, type:'triple', maxOcc:3, occupants:[] });
+    }
+  }
+  for(let n=1;n<=10;n++) {
+    ch.push({ id:'YS9-'+n, batiment:'YS9', etage:'', num:'9-'+n, type: n<=2?'double':'simple', occupants:[] });
+  }
+  for(let n=1;n<=10;n++) {
+    ch.push({ id:'YS10-'+n, batiment:'YS10', etage:'', num:'10-'+n, type: n<=2?'double':'simple', occupants:[] });
+  }
+  return ch;
+}
+
+let log_chambres = genChambres();
+
+// Promotions avec plusieurs periodes
+let log_promotions = [
+  { id:'P1', nom:'CAP Elec 1ere', metier:'elec', color:'#1B4FD8',
+    periodes:[ {semDebut:4,duree:2},{semDebut:10,duree:2},{semDebut:18,duree:2},{semDebut:26,duree:2},{semDebut:34,duree:2},{semDebut:42,duree:2},{semDebut:48,duree:2} ] },
+  { id:'P2', nom:'CAP Plomb 1ere', metier:'plomb', color:'#0891B2',
+    periodes:[ {semDebut:5,duree:2},{semDebut:11,duree:2},{semDebut:19,duree:2},{semDebut:27,duree:2},{semDebut:35,duree:2},{semDebut:43,duree:2},{semDebut:49,duree:2} ] },
+  { id:'P3', nom:'BTS Elec', metier:'elec', color:'#7C3AED',
+    periodes:[ {semDebut:3,duree:2},{semDebut:6,duree:2},{semDebut:9,duree:2},{semDebut:13,duree:2},{semDebut:17,duree:2},{semDebut:21,duree:2},{semDebut:25,duree:2},{semDebut:29,duree:2},{semDebut:33,duree:2},{semDebut:39,duree:2},{semDebut:45,duree:2} ] },
+  { id:'P4', nom:'CAP Menu 1ere', metier:'menu', color:'#D97706',
+    periodes:[ {semDebut:6,duree:2},{semDebut:12,duree:2},{semDebut:20,duree:2},{semDebut:28,duree:2},{semDebut:36,duree:2},{semDebut:44,duree:2},{semDebut:50,duree:2} ] },
+];
+
+// Itinerants (residents a l'annee - inamovibles)
+let log_itinerants = [
+  { id:'IT01', prenom:'Marc',      nom:'DUPUIS',   chambre:'CFA-10101', type:'itinerant', photo:null },
+  { id:'IT02', prenom:'Pierre',    nom:'MARTIN',   chambre:'CFA-10102', type:'itinerant', photo:null },
+  { id:'IT03', prenom:'Jean',      nom:'LEFORT',   chambre:'CFA-10103', type:'itinerant', photo:null },
+  { id:'IT04', prenom:'Andre',     nom:'SIMON',    chambre:'CFA-10104', type:'itinerant', photo:null },
+  { id:'IT05', prenom:'Michel',    nom:'BERNARD',  chambre:'CFA-10105', type:'itinerant', photo:null },
+  { id:'IT06', prenom:'Jacques',   nom:'THOMAS',   chambre:'CFA-10106', type:'itinerant', photo:null },
+  { id:'IT07', prenom:'Robert',    nom:'RICHARD',  chambre:'CFA-10107', type:'itinerant', photo:null },
+  { id:'IT08', prenom:'Henri',     nom:'PETIT',    chambre:'CFA-10108', type:'itinerant', photo:null },
+  { id:'IT09', prenom:'Louis',     nom:'MOREAU',   chambre:'CFA-10109', type:'itinerant', photo:null },
+  { id:'IT10', prenom:'Georges',   nom:'LAURENT',  chambre:'CFA-10110', type:'itinerant', photo:null },
+];
+
+let log_apprentis = [
+  { id:'A01', prenom:'Lucas',   nom:'MARTIN',  age:17, mineur:true,  promo:'P1', chambreHisto:'CFA-10101', photo:null },
+  { id:'A02', prenom:'Theo',    nom:'DUPONT',  age:19, mineur:false, promo:'P1', chambreHisto:'CFA-10102', photo:null },
+  { id:'A03', prenom:'Emma',    nom:'GIRARD',  age:16, mineur:true,  promo:'P1', chambreHisto:'CFA-10103', photo:null },
+  { id:'A04', prenom:'Noah',    nom:'RICHARD', age:18, mineur:false, promo:'P1', chambreHisto:'CFA-10104', photo:null },
+  { id:'A05', prenom:'Tom',     nom:'SIMON',   age:16, mineur:true,  promo:'P2', chambreHisto:'CFA-20201', photo:null },
+  { id:'A06', prenom:'Lea',     nom:'THOMAS',  age:17, mineur:true,  promo:'P2', chambreHisto:'CFA-20202', photo:null },
+  { id:'A07', prenom:'Hugo',    nom:'LEROY',   age:20, mineur:false, promo:'P2', chambreHisto:'CFA-20203', photo:null },
+  { id:'A08', prenom:'Jade',    nom:'PETIT',   age:18, mineur:false, promo:'P2', chambreHisto:'CFA-20204', photo:null },
+  { id:'A09', prenom:'Axel',    nom:'BERNARD', age:19, mineur:false, promo:'P3', chambreHisto:'CFA-30301', photo:null },
+  { id:'A10', prenom:'Ines',    nom:'MOREAU',  age:17, mineur:true,  promo:'P3', chambreHisto:'CFA-30302', photo:null },
+  { id:'A11', prenom:'Raphael', nom:'FOURNIER',age:20, mineur:false, promo:'P3', chambreHisto:'YS9-1',    photo:null },
+  { id:'A12', prenom:'Chloe',   nom:'LAMBERT', age:19, mineur:false, promo:'P3', chambreHisto:'YS9-2',    photo:null },
+  { id:'A13', prenom:'Maxime',  nom:'GARCIA',  age:18, mineur:false, promo:'P4', chambreHisto:'CFA-40401', photo:null },
+  { id:'A14', prenom:'Sarah',   nom:'DUBOIS',  age:17, mineur:true,  promo:'P4', chambreHisto:'CFA-40402', photo:null },
+  { id:'A15', prenom:'Antoine', nom:'ROUX',    age:20, mineur:false, promo:'P5', chambreHisto:'YS10-1',   photo:null },
+];
+
+let log_affectations = {};
+let log_semaineActuelle = 1;
+let log_semaineEtage = 1;
+let log_semainePlanning = 1;
+let log_chambreSelectionnee = null;
+
+// UTILS
+// toast deja definie dans index
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeMBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+var log_fmt = function(v){return new Intl.NumberFormat('fr-FR').format(Math.round(v));};
+
+function getSemKey(s){ return 'S'+(s<10?'0':'')+s; }
+
+function getAffectations(sem){ return log_affectations[getSemKey(sem)] || {}; }
+function setAffectation(sem, chambreId, apprentiIds){
+  if(!log_affectations[getSemKey(sem)]) log_affectations[getSemKey(sem)] = {};
+  log_affectations[getSemKey(sem)][chambreId] = apprentiIds;
+}
+function getOccupants(sem, chambreId){
+  var ids = getAffectations(sem)[chambreId] || [];
+  return ids.map(function(id){return log_apprentis.find(function(a){return a.id===id;});}).filter(Boolean);
+}
+
+function semDateRange(s){
+  var start = new Date(2025, 8, 1);
+  var day = start.getDay();
+  var diff = day <= 1 ? 1 - day : 8 - day;
+  start.setDate(start.getDate() + diff + (s-1)*7);
+  var end = new Date(start); end.setDate(end.getDate()+6);
+  return (start.getDate())+'/'+(start.getMonth()+1)+' - '+(end.getDate())+'/'+(end.getMonth()+1);
+}
+
+function promoActifSemaine(p, s){
+  if(p.periodes) return p.periodes.some(function(per){return s>=per.semDebut && s<per.semDebut+per.duree;});
+  return s>=p.semDebut && s<p.semDebut+p.duree;
+}
+function getPeriodeActive(p, s){
+  if(p.periodes) return p.periodes.find(function(per){return s>=per.semDebut && s<per.semDebut+per.duree;})||null;
+  if(s>=p.semDebut && s<p.semDebut+p.duree) return {semDebut:p.semDebut,duree:p.duree};
+  return null;
+}
+function getProchainePeriode(p, s){
+  var all = p.periodes || [{semDebut:p.semDebut,duree:p.duree}];
+  var futures = all.filter(function(per){return per.semDebut>s;}).sort(function(a,b){return a.semDebut-b.semDebut;});
+  return futures[0]||null;
+}
+
+function apprentisEnSemaine(s){
+  return log_apprentis.filter(function(a){
+    var p = log_promotions.find(function(pr){return pr.id===a.promo;});
+    return p && promoActifSemaine(p,s);
+  });
+}
+
+function alerteMineurAnnexe(sem){
+  var aff = getAffectations(sem);
+  var keys = Object.keys(aff);
+  for(var i=0;i<keys.length;i++){
+    var ch = chambres.find(function(c){return c.id===keys[i];});
+    if(!ch || !BATIMENTS[ch.batiment].annexe) continue;
+    var ids = aff[keys[i]];
+    for(var j=0;j<ids.length;j++){
+      var a = log_apprentis.find(function(x){return x.id===ids[j];});
+      if(a && a.mineur) return true;
+    }
+  }
+  return false;
+}
+
+// NAVIGATION
+function showLogPage(id,btn){
+  // Sous-pages logement uniquement
+  var logPages=['hotel','etage','planning','extraction','promotions','itinerants','chambres'];
+  logPages.forEach(function(p){
+    var el=document.getElementById('page-log-'+p);
+    if(el) el.style.display='none';
+  });
+  document.querySelectorAll('[id^="log-tab-"]').forEach(function(t){t.classList.remove('active');});
+  var target=document.getElementById('page-log-'+id);
+  if(target) target.style.display='block';
+  var tab=document.getElementById('log-tab-'+id);
+  if(tab) tab.classList.add('active');
+  if(btn && btn.id && btn.id.startsWith('log-tab-')) {
+    // déjà géré
+  }
+  if(id==='planning'){ renderPlanning(); setTimeout(scrollToSemaineActuelle,100); }
+  if(id==='extraction') renderExtraction();
+  if(id==='promotions') renderPromos();
+  if(id==='itinerants') renderItinerants();
+  if(id==='chambres') renderChambresConfig();
+  if(id==='etage'){
+    semaineEtage=log_semaineActuelle;
+    document.getElementById('etage-sem-display').textContent=getSemKey(semaineEtage);
+    document.getElementById('etage-sem-range').textContent=semDateRange(semaineEtage);
+    renderEtage();
+  }
+}
+
+// SEMAINE
+function changerSemaine(delta){
+  log_semaineActuelle=Math.max(1,Math.min(52,log_semaineActuelle+delta));
+  updateSemaineDisplay(); renderHotel();
+}
+function allerSemaineActuelle(){
+  var now=new Date(); var start=new Date(2025,8,1);
+  var diff=Math.floor((now-start)/(7*24*3600*1000));
+  log_semaineActuelle=Math.max(1,Math.min(52,diff+1));
+  updateSemaineDisplay(); renderHotel();
+}
+function updateSemaineDisplay(){
+  document.getElementById('sem-display').textContent=getSemKey(semaineActuelle);
+  document.getElementById('sem-range').textContent=semDateRange(semaineActuelle);
+}
+
+// VUE HOTEL
+function renderHotel(){
+  var sem=log_semaineActuelle;
+  var aff=getAffectations(sem);
+  var enSemaine=log_apprentisEnSemaine(sem);
+  var enSemaineIds={};
+  enSemaine.forEach(function(a){enSemaineIds[a.id]=true;});
+
+  var totalOcc=0,totalLibre=0,totalCFA=0,totalAnnexe=0;
+  chambres.forEach(function(ch){
+    var occs=(aff[ch.id]||[]).filter(function(id){return enSemaineIds[id];});
+    if(occs.length>0){totalOcc++;if(BATIMENTS[ch.batiment].annexe)totalAnnexe+=occs.length;else totalCFA+=occs.length;}
+    else totalLibre++;
+  });
+
+  var nonPlaces=enSemaine.length;
+  var allPlaces=[];
+  Object.values(aff).forEach(function(ids){ids.forEach(function(id){if(enSemaineIds[id])allPlaces.push(id);});});
+  nonPlaces-=allPlaces.length;
+
+  document.getElementById('stats-band').innerHTML =
+    '<div class="stat-card"><label>Apprentis presents</label><div class="val">'+enSemaine.length+'</div><small>cette semaine</small></div>'+
+    '<div class="stat-card"><label>Chambres occupees</label><div class="val warn">'+totalOcc+'</div><small>sur '+chambres.length+'</small></div>'+
+    '<div class="stat-card"><label>Chambres libres</label><div class="val ok">'+totalLibre+'</div></div>'+
+    '<div class="stat-card"><label>Au CFA</label><div class="val" style="color:var(--cfa)">'+totalCFA+'</div><small>apprentis</small></div>'+
+    '<div class="stat-card"><label>En annexe</label><div class="val" style="color:var(--ys9)">'+totalAnnexe+'</div><small>apprentis</small></div>'+
+    '<div class="stat-card"><label>Non places</label><div class="val danger">'+Math.max(0,nonPlaces)+'</div><small>a placer</small></div>';
+
+  var alertEl=document.getElementById('alert-mineur');
+  if(alerteMineurAnnexe(sem)) alertEl.classList.add('show'); else alertEl.classList.remove('show');
+
+  var html='';
+  var batKeys=Object.keys(BATIMENTS);
+  for(var bi=0;bi<batKeys.length;bi++){
+    var batId=batKeys[bi]; var bat=BATIMENTS[batId];
+    var batChambres=chambres.filter(function(c){return c.batiment===batId;});
+    var batOcc=batChambres.filter(function(c){return (aff[c.id]||[]).some(function(id){return enSemaineIds[id];});}).length;
+    html+='<div class="batiment-section">';
+    html+='<div class="batiment-header">';
+    html+='<span class="batiment-badge" style="background:'+bat.color+'">'+bat.label+'</span>';
+    html+=bat.annexe?'<span style="font-size:.72rem;background:var(--warn-lt);color:var(--warn);padding:2px 8px;border-radius:20px;font-weight:600">ANNEXE - 0 mineur</span>':'<span style="font-size:.72rem;background:var(--ok-lt);color:var(--ok);padding:2px 8px;border-radius:20px;font-weight:600">Prioritaire</span>';
+    html+='<span class="batiment-stats">'+batOcc+'/'+batChambres.length+' occupees</span>';
+    html+='</div>';
+
+    if(bat.etages){
+      bat.etages.forEach(function(etage){
+        var etChambres=batChambres.filter(function(c){return c.etage===etage;});
+        html+='<div class="etage-label">'+etage+'</div><div class="chambres-grid">';
+        etChambres.forEach(function(ch){html+=chambreCardHTML(ch,aff,enSemaineIds,bat);});
+        html+='</div>';
+      });
+    } else {
+      html+='<div class="chambres-grid">';
+      batChambres.forEach(function(ch){html+=chambreCardHTML(ch,aff,enSemaineIds,bat);});
+      html+='</div>';
+    }
+    html+='</div>';
+  }
+  document.getElementById('hotel-content').innerHTML=html;
+}
+
+function chambreCardHTML(ch,aff,enSemaineIds,bat){
+  var occs=(aff[ch.id]||[]).map(function(id){return log_apprentis.find(function(a){return a.id===id;});}).filter(function(a){return a&&enSemaineIds[a.id];});
+  var itin=log_itinerants.find(function(it){return it.chambre===ch.id;});
+  var hasMineur=occs.some(function(a){return a.mineur;});
+  var alerteMineur=bat.annexe&&hasMineur;
+  var maxApp=ch.batiment==='CFA'?2:(ch.type==='double'?2:1);
+  var maxTotal=ch.batiment==='CFA'?3:maxApp;
+  var totalOccs=occs.length+(itin?1:0);
+
+  var cardClass=occs.length===0?'libre':occs.length<maxApp?'double-partiel':'double-pleine';
+
+  var occupantsHTML='';
+  if(itin) occupantsHTML+='<div style="font-size:.68rem;color:#1e40af;font-weight:600">'+itin.prenom+' '+itin.nom[0]+'. <span style="font-size:.55rem;background:#dbeafe;color:#1e40af;padding:1px 4px;border-radius:6px">Itin.</span></div>';
+  occs.forEach(function(a){
+    var p=log_promotions.find(function(pr){return pr.id===a.promo;});
+    occupantsHTML+='<div class="chambre-occupant" style="color:'+(p?p.color:'#333')+'">'+a.prenom+' '+a.nom[0]+'.'+(a.mineur?' <span style="font-size:.58rem;background:var(--warn-lt);color:var(--warn);padding:1px 4px;border-radius:6px">-18</span>':'')+'</div>';
+  });
+
+  return '<div class="chambre-card '+cardClass+(alerteMineur?' alerte-mineur':'')+'" onclick="ouvrirChambre(\''+ch.id+'\')">'
+    +(alerteMineur?'<span class="mineur-badge">MINEUR</span>':'')
+    +'<div class="chambre-num">N&#176;'+ch.num+'</div>'
+    +'<div class="chambre-type">'+maxTotal+' lits - '+totalOccs+'/'+maxTotal+'</div>'
+    +(occupantsHTML||'<div style="font-size:.7rem;color:var(--muted);margin-top:4px">Libre</div>')
+    +'</div>';
+}
+
+// MODAL CHAMBRE
+function ouvrirChambre(chambreId){
+  log_chambreSelectionnee=chambreId;
+  var ch=chambres.find(function(c){return c.id===chambreId;});
+  var bat=BATIMENTS[ch.batiment];
+  var sem=log_semaineActuelle;
+  var aff=getAffectations(sem);
+  var enSemaine=log_apprentisEnSemaine(sem);
+  var enSemaineIds={};
+  enSemaine.forEach(function(a){enSemaineIds[a.id]=true;});
+  var occs=(aff[ch.id]||[]).map(function(id){return log_apprentis.find(function(a){return a.id===id;});}).filter(function(a){return a&&enSemaineIds[a.id];});
+  var maxApp=ch.batiment==='CFA'?2:(ch.type==='double'?2:1);
+  var itin=log_itinerants.find(function(it){return it.chambre===ch.id;});
+
+  document.getElementById('modal-chambre-title').textContent='Chambre '+ch.num+' - '+bat.label;
+
+  var histoApps=log_apprentis.filter(function(a){return a.chambreHisto===chambreId&&enSemaineIds[a.id];});
+  var histoBadge=document.getElementById('historique-badge');
+  if(histoApps.length>0){
+    histoBadge.className='historique-badge show';
+    histoBadge.innerHTML='Chambre habituelle de : '+histoApps.map(function(a){return '<strong>'+a.prenom+' '+a.nom+'</strong>';}).join(', ');
+  } else { histoBadge.className='historique-badge'; }
+
+  var occEl=document.getElementById('modal-chambre-occupants');
+  var occHTML='<div style="margin-bottom:12px"><div style="font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:6px">OCCUPANTS</div>';
+  if(itin){
+    occHTML+='<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#dbeafe;border-radius:7px;margin-bottom:5px;font-size:.83rem;border:1px solid #93c5fd">'
+      +'<span>&#128274; <strong>'+itin.prenom+' '+itin.nom+'</strong> <span style="font-size:.68rem;color:#1e40af;font-weight:600">(Itinerant - Resident annuel)</span></span>'
+      +'<span style="font-size:.72rem;color:#1e40af;font-weight:600">Inamovible</span>'
+      +'</div>';
+  }
+  occs.forEach(function(a){
+    occHTML+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--bg);border-radius:7px;margin-bottom:5px;font-size:.83rem">'
+      +'<span>'+(a.mineur?'<b>MINEUR</b> ':'')+' <strong>'+a.prenom+' '+a.nom+'</strong></span>'
+      +'<button class="btn btn-danger btn-sm" data-id="'+a.id+'" onclick="retirerApprenti(this.dataset.id)">Retirer</button>'
+      +'</div>';
+  });
+  if(!itin&&occs.length===0) occHTML+='<div style="font-size:.82rem;color:var(--muted);font-style:italic;padding:6px">Aucun occupant</div>';
+  occEl.innerHTML=occHTML+'</div>';
+
+  var formZone=document.getElementById('form-ajout-zone');
+  var warn=document.getElementById('modal-chambre-warning');
+  warn.style.display='none';
+
+  if(occs.length>=maxApp){
+    formZone.style.display='none';
+  } else {
+    formZone.style.display='block';
+    var dispo=enSemaine.filter(function(a){
+      var dejaPlace=Object.keys(aff).some(function(cId){return cId!==chambreId&&(aff[cId]||[]).indexOf(a.id)>=0;});
+      return !occs.find(function(o){return o.id===a.id;})&&!dejaPlace;
+    });
+    var sel=document.getElementById('select-apprenti');
+    sel.innerHTML='<option value="">-- Choisir un apprenti --</option>';
+    dispo.forEach(function(a){
+      var p=log_promotions.find(function(pr){return pr.id===a.promo;});
+      var opt=document.createElement('option');
+      opt.value=a.id;
+      opt.textContent=a.prenom+' '+a.nom+(a.mineur?' (mineur)':'')+' - '+(p?p.nom:'')+(a.chambreHisto===chambreId?' (habituel)':'');
+      sel.appendChild(opt);
+    });
+    sel.onchange=function(){verifierRegleMineur(sel.value,ch);};
+  }
+
+  document.getElementById('modal-chambre').classList.add('open');
+}
+
+function verifierRegleMineur(apprentiId,ch){
+  var warn=document.getElementById('modal-chambre-warning');
+  if(!apprentiId){warn.style.display='none';return;}
+  var a=log_apprentis.find(function(x){return x.id===apprentiId;});
+  var bat=BATIMENTS[ch.batiment];
+  if(a&&a.mineur&&bat.annexe){
+    warn.style.display='block';
+    warn.textContent='INTERDIT - Ce jeune est mineur. Il ne peut pas etre place en batiment annexe !';
+  } else { warn.style.display='none'; }
+}
+
+function affecterApprenti(){
+  var apprentiId=document.getElementById('select-apprenti').value;
+  if(!apprentiId){toast('Selectionne un apprenti');return;}
+  var ch=chambres.find(function(c){return c.id===log_chambreSelectionnee;});
+  var a=log_apprentis.find(function(x){return x.id===apprentiId;});
+  var bat=BATIMENTS[ch.batiment];
+  if(a.mineur&&bat.annexe){toast('INTERDIT - Mineur en batiment annexe !');return;}
+  var sem=log_semaineActuelle;
+  var aff=getAffectations(sem);
+  var current=aff[chambreSelectionnee]||[];
+  var maxApp=ch.batiment==='CFA'?2:(ch.type==='double'?2:1);
+  if(current.length>=maxApp){toast('Chambre complete');return;}
+  setAffectation(sem,chambreSelectionnee,[].concat(current,[apprentiId]));
+  a.chambreHisto=log_chambreSelectionnee;
+  closeModal('modal-chambre');
+  renderHotel();
+  toast(a.prenom+' '+a.nom+' place en chambre '+ch.num);
+}
+
+function retirerApprenti(apprentiId){
+  var sem=log_semaineActuelle;
+  var aff=getAffectations(sem);
+  var current=aff[chambreSelectionnee]||[];
+  setAffectation(sem,chambreSelectionnee,current.filter(function(id){return id!==apprentiId;}));
+  closeModal('modal-chambre');
+  renderHotel();
+  var a=log_apprentis.find(function(x){return x.id===apprentiId;});
+  toast((a?a.prenom:'')+' retire de la chambre');
+}
+
+// AFFECTATION AUTO
+function affectationAuto(){
+  var sem=log_semaineActuelle;
+  var enSemaine=log_apprentisEnSemaine(sem);
+  var aff=Object.assign({},log_getAffectations(sem));
+  Object.keys(aff).forEach(function(k){aff[k]=[].concat(aff[k]||[]);});
+  var dejaPlaces={};
+  Object.values(aff).forEach(function(ids){ids.forEach(function(id){dejaPlaces[id]=true;});});
+  var aAffecter=enSemaine.filter(function(a){return !dejaPlaces[a.id];});
+  if(!aAffecter.length){toast('Tous les apprentis sont deja places');return;}
+
+  var mineurs=aAffecter.filter(function(a){return a.mineur;});
+  var majeurs=aAffecter.filter(function(a){return !a.mineur;});
+
+  function getPlaces(ch){return (ch.batiment==='CFA'?2:(ch.type==='double'?2:1))-(aff[ch.id]||[]).length;}
+  var chambresLibresCFA=chambres.filter(function(c){return c.batiment==='CFA'&&getPlaces(c)>0;});
+  var chambresLibresAnnexe=chambres.filter(function(c){return c.batiment!=='CFA'&&getPlaces(c)>0;});
+
+  var placed=0;
+  function placer(liste,chambresDisp){
+    liste.forEach(function(a){
+      if(dejaPlaces[a.id]) return;
+      if(a.chambreHisto){
+        var histoCh=chambres.find(function(c){return c.id===a.chambreHisto;});
+        if(histoCh&&!(a.mineur&&BATIMENTS[histoCh.batiment].annexe)&&getPlaces(histoCh)>0){
+          if(!aff[histoCh.id]) aff[histoCh.id]=[];
+          aff[histoCh.id].push(a.id); dejaPlaces[a.id]=true; placed++; return;
+        }
+      }
+      for(var i=0;i<chambresDisp.length;i++){
+        var ch=chambresDisp[i];
+        if(a.mineur&&BATIMENTS[ch.batiment].annexe) continue;
+        if(getPlaces(ch)>0){
+          if(!aff[ch.id]) aff[ch.id]=[];
+          aff[ch.id].push(a.id); dejaPlaces[a.id]=true; placed++; return;
+        }
+      }
+    });
+  }
+  placer(mineurs,chambresLibresCFA);
+  placer(majeurs,chambresLibresCFA);
+  placer(majeurs.filter(function(a){return !dejaPlaces[a.id];}),chambresLibresAnnexe);
+
+  log_affectations[getSemKey(sem)]=aff;
+  renderHotel();
+  toast(placed+' apprenti(s) places automatiquement');
+}
+
+function toutVider(){
+  if(!confirm('Vider toutes les affectations de cette semaine ?')) return;
+  log_affectations[getSemKey(semaineActuelle)]={};
+  renderHotel();
+  toast('Semaine videe');
+}
+
+// VUE ETAGE
+function changerSemaineEtage(delta){
+  log_semaineEtage=Math.max(1,Math.min(52,log_semaineEtage+delta));
+  document.getElementById('etage-sem-display').textContent=getSemKey(semaineEtage);
+  document.getElementById('etage-sem-range').textContent=semDateRange(semaineEtage);
+  renderEtage();
+}
+
+function renderEtage(){
+  var batId=document.getElementById('etage-filter-bat').value;
+  var etageFilter=document.getElementById('etage-filter-etage').value;
+  var bat=BATIMENTS[batId];
+  var sem=log_semaineEtage;
+  var aff=getAffectations(sem);
+  var enSemaine=log_apprentisEnSemaine(sem);
+  var enSemaineIds={};
+  enSemaine.forEach(function(a){enSemaineIds[a.id]=true;});
+
+  var etSel=document.getElementById('etage-filter-etage');
+  etSel.style.display=batId==='CFA'?'':'none';
+
+  var filteredChambres=chambres.filter(function(c){return c.batiment===batId;});
+  if(etageFilter&&batId==='CFA') filteredChambres=filteredChambres.filter(function(c){return c.etage===etageFilter;});
+
+  var etages={};
+  filteredChambres.forEach(function(ch){
+    var key=ch.etage||bat.label;
+    if(!etages[key]) etages[key]=[];
+    etages[key].push(ch);
+  });
+
+  var html='';
+  Object.keys(etages).forEach(function(etageNom){
+    var chs=etages[etageNom];
+    html+='<div class="etage-section">'
+      +'<div class="etage-section-title"><span style="width:4px;height:16px;background:'+bat.color+';border-radius:2px;display:inline-block"></span>'+etageNom+'</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px">';
+
+    chs.forEach(function(ch){
+      var itin=log_itinerants.find(function(it){return it.chambre===ch.id;});
+      var appIds=aff[ch.id]||[];
+      var appOccs=appIds.map(function(id){return log_apprentis.find(function(a){return a.id===id;});}).filter(function(a){return a&&enSemaineIds[a.id];});
+      var lits=[
+        {type:'itinerant',personne:itin},
+        {type:'apprenti',personne:appOccs[0]||null},
+        {type:'apprenti',personne:appOccs[1]||null},
+      ];
+      var nbOccs=(itin?1:0)+appOccs.length;
+      var hasMineurAnnexe=bat.annexe&&appOccs.some(function(a){return a.mineur;});
+      var statusColor=nbOccs===3?'var(--danger-lt)':nbOccs>0?'var(--warn-lt)':'var(--ok-lt)';
+      var statusTC=nbOccs===3?'var(--danger)':nbOccs>0?'var(--warn)':'var(--ok)';
+      var statusLabel=nbOccs===3?'Complete':nbOccs>0?((3-nbOccs)+' lit(s) libre(s)'):'Libre';
+
+      html+='<div class="chambre-detail-card'+(hasMineurAnnexe?' alerte-mineur':'')+'">'
+        +'<div class="chambre-detail-header">'
+        +'<div><div class="chambre-detail-num">Chambre '+ch.num+'</div><div class="chambre-detail-type">3 lits - '+bat.label+'</div></div>'
+        +(hasMineurAnnexe?'<span style="background:var(--danger-lt);color:var(--danger);font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:20px">MINEUR EN ANNEXE</span>':'')
+        +'<span class="chambre-detail-status" style="background:'+statusColor+';color:'+statusTC+'">'+statusLabel+'</span>'
+        +'</div>'
+        +'<div class="lits-grid">';
+
+      lits.forEach(function(lit,i){
+        if(lit.type==='itinerant'){
+          var it=lit.personne;
+          if(it){
+            html+='<div class="lit-slot itinerant">'
+              +'<div class="lit-numero">&#128274; Lit '+(i+1)+' - Itinerant</div>'
+              +(it.photo?'<img class="lit-photo" src="'+it.photo+'" alt="'+it.prenom+'" style="border-color:#1e40af">':'<div class="lit-avatar" style="background:#1e3a5f">'+it.prenom[0]+it.nom[0]+'</div>')
+              +'<div class="lit-nom">'+it.nom+'</div>'
+              +'<div class="lit-prenom">'+it.prenom+'</div>'
+              +'<span class="lit-badge-it">&#127968; Resident annuel</span>'
+              +'</div>';
+          } else {
+            html+='<div class="lit-slot libre" data-ch="'+ch.id+'" onclick="semaineActuelle=log_semaineEtage;ouvrirChambre(this.dataset.ch);renderHotel();">'
+              +'<div class="lit-numero">Lit '+(i+1)+'</div>'
+              +'<div class="lit-lock">&#128275;</div>'
+              +'<div class="lit-libre-label">Pas d\'itinerant</div>'
+              +'</div>';
+          }
+        } else {
+          var a=lit.personne;
+          if(a){
+            var p=log_promotions.find(function(pr){return pr.id===a.promo;});
+            html+='<div class="lit-slot apprenti" data-ch="'+ch.id+'" onclick="semaineActuelle=log_semaineEtage;ouvrirChambre(this.dataset.ch);renderHotel();" style="cursor:pointer">'
+              +'<div class="lit-numero">Lit '+(i+1)+'</div>'
+              +(a.photo?'<img class="lit-photo" src="'+a.photo+'" alt="'+a.prenom+'" style="border-color:'+(p?p.color:'#888')+'">':'<div class="lit-avatar" style="background:'+(p?p.color:'#888')+'">'+a.prenom[0]+a.nom[0]+'</div>')
+              +'<div class="lit-nom">'+a.nom+'</div>'
+              +'<div class="lit-prenom">'+a.prenom+'</div>'
+              +(a.mineur?'<span class="lit-badge-mineur">Mineur</span>':'')
+              +(p?'<span class="lit-promo" style="background:'+p.color+'">'+p.nom+'</span>':'')
+              +'</div>';
+          } else {
+            html+='<div class="lit-slot libre" data-ch="'+ch.id+'" onclick="semaineActuelle=log_semaineEtage;ouvrirChambre(this.dataset.ch);renderHotel();" style="cursor:pointer">'
+              +'<div class="lit-numero">Lit '+(i+1)+'</div>'
+              +'<div style="font-size:1.5rem;color:var(--border)">+</div>'
+              +'<div class="lit-libre-label">Cliquer pour affecter</div>'
+              +'</div>';
+          }
+        }
+      });
+      html+='</div></div>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('etage-content').innerHTML=html;
+}
+
+// PLANNING
+function changerSemainePlanning(delta){
+  log_semainePlanning=Math.max(1,Math.min(52,semainePlanning+delta));
+  document.getElementById('planning-sem-display').textContent=getSemKey(semainePlanning);
+  document.getElementById('planning-sem-range').textContent=semDateRange(semainePlanning);
+  renderPlanningDetail(semainePlanning);
+}
+
+function scrollToSemaineActuelle(){
+  semainePlanning=log_semaineActuelle;
+  document.getElementById('planning-sem-display').textContent=getSemKey(semainePlanning);
+  document.getElementById('planning-sem-range').textContent=semDateRange(semainePlanning);
+  renderPlanningDetail(semainePlanning);
+  var wrap=document.getElementById('planning-gantt-wrap');
+  if(wrap) wrap.scrollLeft=200+(semaineActuelle-3)*44;
+}
+
+function renderPlanning(){
+  renderPlanningGantt();
+  semainePlanning=log_semaineActuelle;
+  document.getElementById('planning-sem-display').textContent=getSemKey(semainePlanning);
+  document.getElementById('planning-sem-range').textContent=semDateRange(semainePlanning);
+  renderPlanningDetail(semainePlanning);
+  renderPlanningStats();
+}
+
+function renderPlanningStats(){
+  var promosSem=log_promotions.filter(function(p){return promoActifSemaine(p,semaineActuelle);});
+  var nbApp=apprentisEnSemaine(semaineActuelle).length;
+  var el=document.getElementById('planning-stats-semaine');
+  if(!el) return;
+  var prochaine=null;
+  log_promotions.forEach(function(p){
+    var pp=getProchainePeriode(p,semaineActuelle);
+    if(pp&&(!prochaine||pp.semDebut<prochaine.sem)){prochaine={sem:pp.semDebut,nom:p.nom};}
+  });
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">'
+    +'<div class="stat-card"><label>Semaine actuelle</label><div class="val" style="font-size:1.2rem">'+getSemKey(semaineActuelle)+'</div><small>'+semDateRange(semaineActuelle)+'</small></div>'
+    +'<div class="stat-card"><label>Formations presentes</label><div class="val warn">'+promosSem.length+'</div></div>'
+    +'<div class="stat-card"><label>Apprentis attendus</label><div class="val">'+nbApp+'</div></div>'
+    +'<div class="stat-card"><label>Prochaine arrivee</label><div class="val ok" style="font-size:1rem">'+(prochaine?getSemKey(prochaine.sem)+' - '+prochaine.nom.slice(0,15):'---')+'</div></div>'
+    +'</div>';
+}
+
+function renderPlanningGantt(){
+  var CELL_W=44; var LABEL_W=200; var NB_SEM=52;
+  var html='<div style="min-width:'+(LABEL_W+NB_SEM*CELL_W)+'px">';
+
+  // Header semaines
+  html+='<div style="display:flex;background:var(--text);color:#fff;position:sticky;top:0;z-index:10">';
+  html+='<div style="width:'+LABEL_W+'px;flex-shrink:0;padding:10px 14px;font-size:.72rem;font-weight:600;border-right:1px solid #444">Formation</div>';
+  for(var s=1;s<=NB_SEM;s++){
+    var isCur=s===log_semaineActuelle;
+    var nb=log_promotions.filter(function(p){return promoActifSemaine(p,s);}).length;
+    html+='<div style="width:'+CELL_W+'px;flex-shrink:0;padding:6px 2px;font-size:.62rem;font-weight:'+(isCur?700:600)+';text-align:center;border-right:1px solid #444;background:'+(isCur?'#1B4FD8':'#1C1A17')+';color:'+(nb?'#fff':'#666')+';cursor:pointer" data-s="'+s+'" onclick="semainePlanning=parseInt(this.dataset.s);document.getElementById(\'planning-sem-display\').textContent=getSemKey(semainePlanning);document.getElementById(\'planning-sem-range\').textContent=semDateRange(semainePlanning);renderPlanningDetail(semainePlanning);" title="'+semDateRange(s)+'">'+(isCur?'*':String(s<10?'0'+s:s))+(nb>0?'<div style="font-size:.5rem;color:#aaa">'+nb+'p</div>':'')+'</div>';
+  }
+  html+='</div>';
+
+  // Lignes promotions
+  log_promotions.forEach(function(p){
+    var nbApp=log_apprentis.filter(function(a){return a.promo===p.id;}).length;
+    var periodes=p.periodes||[{semDebut:p.semDebut,duree:p.duree}];
+    html+='<div style="display:flex;border-bottom:1px solid var(--border);min-height:44px">';
+    html+='<div style="width:'+LABEL_W+'px;flex-shrink:0;padding:8px 14px;border-right:1px solid var(--border);background:var(--bg);display:flex;align-items:center;gap:8px;position:sticky;left:0;z-index:5">';
+    html+='<div style="width:10px;height:10px;border-radius:2px;flex-shrink:0;background:'+p.color+'"></div>';
+    html+='<div><div style="font-size:.79rem;font-weight:600">'+p.nom+'</div><div style="font-size:.64rem;color:var(--muted)">'+nbApp+' apprenti'+(nbApp>1?'s':'')+'</div></div>';
+    html+='</div>';
+    for(var s=1;s<=NB_SEM;s++){
+      var per=periodes.find(function(per){return s>=per.semDebut&&s<per.semDebut+per.duree;});
+      var isCur=s===log_semaineActuelle;
+      var isD=per&&s===per.semDebut; var isF=per&&s===per.semDebut+per.duree-1;
+      var idx=per?periodes.indexOf(per):0;
+      html+='<div style="width:'+CELL_W+'px;flex-shrink:0;border-right:1px solid var(--border);position:relative;background:'+(isCur?'rgba(27,79,216,.05)':'')+'">';
+      if(per){
+        var br=isD&&isF?'6px':isD?'6px 0 0 6px':isF?'0 6px 6px 0':'0';
+        html+='<div style="position:absolute;top:6px;bottom:6px;left:'+(isD?3:0)+'px;right:'+(isF?3:0)+'px;background:'+p.color+';border-radius:'+br+';opacity:.88;display:flex;align-items:center;justify-content:center" title="'+p.nom+' - '+semDateRange(s)+' (Passage '+(idx+1)+'/'+periodes.length+')">';
+        if(isD) html+='<span style="font-size:.56rem;color:#fff;font-weight:700;padding:0 3px;white-space:nowrap;overflow:hidden">'+(idx+1)+'</span>';
+        html+='</div>';
+      }
+      html+='</div>';
+    }
+    html+='</div>';
+  });
+
+  // Ligne synthese
+  html+='<div style="display:flex;border-top:2px solid var(--border);background:var(--bg)">';
+  html+='<div style="width:'+LABEL_W+'px;flex-shrink:0;padding:8px 14px;border-right:1px solid var(--border);font-size:.74rem;font-weight:700;color:var(--muted);position:sticky;left:0;z-index:5;background:var(--bg)">Total formations/sem.</div>';
+  for(var s=1;s<=NB_SEM;s++){
+    var nb=log_promotions.filter(function(p){return promoActifSemaine(p,s);}).length;
+    var isCur=s===log_semaineActuelle;
+    var bg=isCur?'rgba(27,79,216,.06)':nb===0?'':nb>=3?'var(--danger-lt)':nb>=2?'var(--warn-lt)':'var(--ok-lt)';
+    var col=nb===0?'var(--border)':nb>=3?'var(--danger)':nb>=2?'var(--warn)':'var(--ok)';
+    html+='<div style="width:'+CELL_W+'px;flex-shrink:0;padding:8px 2px;text-align:center;font-size:.72rem;font-weight:700;border-right:1px solid var(--border);color:'+col+';background:'+bg+'">'+(nb||'')+'</div>';
+  }
+  html+='</div></div>';
+
+  document.getElementById('planning-gantt').innerHTML=html;
+}
+
+function renderPlanningDetail(sem){
+  var promosSem=log_promotions.filter(function(p){return promoActifSemaine(p,sem);});
+  var enSemaine=log_apprentisEnSemaine(sem);
+  var el=document.getElementById('planning-detail');
+  if(!el) return;
+
+  if(!promosSem.length){
+    el.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">ZZZ</div><div style="font-weight:600">Aucune formation presente</div><div style="font-size:.82rem;margin-top:4px">'+semDateRange(sem)+'</div></div>';
+    return;
+  }
+
+  var cardsHtml='';
+  promosSem.forEach(function(p){
+    var appList=log_apprentis.filter(function(a){return a.promo===p.id;});
+    var mineurs=appList.filter(function(a){return a.mineur;}).length;
+    var per=getPeriodeActive(p,sem);
+    var periodes=p.periodes||[{semDebut:p.semDebut,duree:p.duree}];
+    var numPer=per?periodes.indexOf(per)+1:1;
+    var semR=per?per.semDebut+per.duree-sem:0;
+    var isD=per&&sem===per.semDebut; var isF=per&&sem===per.semDebut+per.duree-1;
+    var prochaine=getProchainePeriode(p,sem);
+    var statut=isD?'Arrivee cette semaine':isF?'Depart cette semaine':'En cours';
+    var semDL=per?getSemKey(per.semDebut):'-';
+    var semFL=per?getSemKey(per.semDebut+per.duree-1):'-';
+    var mBadge=mineurs>0?'<div style="background:var(--warn-lt);color:var(--warn);padding:5px 8px;border-radius:6px;font-size:.72rem;font-weight:600;margin-bottom:8px">'+mineurs+' mineur'+(mineurs>1?'s':'')+' - Logement CFA uniquement</div>':'';
+    var pBadge=prochaine?'<div style="background:var(--accent-lt);color:var(--accent);padding:5px 8px;border-radius:6px;font-size:.72rem;font-weight:600;margin-bottom:8px">Prochain passage : '+getSemKey(prochaine.semDebut)+' ('+semDateRange(prochaine.semDebut)+')</div>':'';
+    var badges='';
+    appList.slice(0,5).forEach(function(a){badges+='<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 7px;background:'+p.color+'22;color:'+p.color+';border-radius:10px;font-weight:600">'+a.prenom+' '+a.nom[0]+'.</span>';});
+    if(appList.length>5) badges+='<span style="color:var(--muted);font-size:.72rem">+'+(appList.length-5)+' autres</span>';
+
+    cardsHtml+='<div style="background:var(--surface);border:1.5px solid '+p.color+';border-radius:11px;overflow:hidden">'
+      +'<div style="background:'+p.color+';color:#fff;padding:10px 14px">'
+      +'<div style="font-weight:700;font-size:.92rem">'+p.nom+'</div>'
+      +'<div style="font-size:.72rem;opacity:.85;margin-top:2px">'+statut+' - Passage '+numPer+'/'+periodes.length+' - '+semDL+' au '+semFL+'</div>'
+      +'</div>'
+      +'<div style="padding:10px 14px">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:10px">'
+      +'<div style="text-align:center"><div style="font-size:1.1rem;font-weight:700">'+appList.length+'</div><div style="font-size:.62rem;color:var(--muted)">Apprentis</div></div>'
+      +'<div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:var(--warn)">'+mineurs+'</div><div style="font-size:.62rem;color:var(--muted)">Mineurs</div></div>'
+      +'<div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:var(--ok)">'+semR+'</div><div style="font-size:.62rem;color:var(--muted)">Sem. restantes</div></div>'
+      +'<div style="text-align:center"><div style="font-size:1.1rem;font-weight:700">'+periodes.length+'</div><div style="font-size:.62rem;color:var(--muted)">Passages/an</div></div>'
+      +'</div>'
+      +mBadge+pBadge
+      +'<div style="font-size:.75rem">'+badges+'</div>'
+      +'</div></div>';
+  });
+
+  el.innerHTML='<div style="margin-bottom:12px;font-size:.82rem;color:var(--muted);font-weight:600">'+getSemKey(sem)+' - '+semDateRange(sem)+' - '+promosSem.length+' formation'+(promosSem.length>1?'s':'')+' - '+enSemaine.length+' apprenti'+(enSemaine.length>1?'s':'')+'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">'+cardsHtml+'</div>';
+}
+
+// EXTRACTION
+function renderExtraction(){
+  var sel=document.getElementById('ext-semaine');
+  if(sel.options.length===0){
+    for(var s=1;s<=52;s++){
+      var opt=document.createElement('option');
+      opt.value=s; opt.textContent=getSemKey(s)+' - '+semDateRange(s);
+      if(s===semaineActuelle) opt.selected=true;
+      sel.appendChild(opt);
+    }
+  }
+  var sem=parseInt(sel.value)||semaineActuelle;
+  var aff=getAffectations(sem);
+  var enSemaine=log_apprentisEnSemaine(sem);
+  var enSemaineIds={};
+  enSemaine.forEach(function(a){enSemaineIds[a.id]=true;});
+
+  var html='';
+  Object.keys(BATIMENTS).forEach(function(batId){
+    var bat=BATIMENTS[batId];
+    var batChambres=chambres.filter(function(c){return c.batiment===batId;});
+    var rows=[];
+    batChambres.forEach(function(ch){
+      var occs=(aff[ch.id]||[]).map(function(id){return log_apprentis.find(function(a){return a.id===id;});}).filter(function(a){return a&&enSemaineIds[a.id];});
+      occs.forEach(function(a){
+        var p=log_promotions.find(function(pr){return pr.id===a.promo;});
+        rows.push({ch:ch,a:a,p:p});
+      });
+    });
+
+    html+='<div class="extraction-card">'
+      +'<div class="extraction-header"><h3>'+bat.label+(bat.annexe?' - ANNEXE':'')+'</h3>'
+      +'<span style="font-size:.78rem;opacity:.8">'+rows.length+' occupant(s) - '+getSemKey(sem)+' - '+semDateRange(sem)+'</span></div>';
+    if(!rows.length){
+      html+='<div style="padding:20px;text-align:center;color:var(--muted);font-size:.85rem">Aucun occupant cette semaine</div>';
+    } else {
+      html+='<table><thead><tr><th>Chambre</th><th>Nom</th><th>Prenom</th><th>Statut</th><th>Promotion</th><th>Arrivee</th><th>Depart</th></tr></thead><tbody>';
+      rows.sort(function(a,b){return a.ch.num.localeCompare(b.ch.num);}).forEach(function(row){
+        var per=getPeriodeActive(row.p,sem);
+        var debut=per?semDateRange(per.semDebut).split('-')[0].trim():'?';
+        var fin=per?semDateRange(per.semDebut+per.duree-1).split('-')[1].trim():'?';
+        html+='<tr>'
+          +'<td style="font-family:monospace;font-weight:600">N&#176;'+row.ch.num+'</td>'
+          +'<td style="font-weight:600">'+row.a.nom+'</td>'
+          +'<td>'+row.a.prenom+'</td>'
+          +'<td><span class="'+(row.a.mineur?'badge-mineur':'badge-majeur')+'">'+(row.a.mineur?'Mineur':'Majeur')+'</span></td>'
+          +'<td style="font-size:.75rem;color:'+(row.p?row.p.color:'#888')+';font-weight:600">'+(row.p?row.p.nom:'---')+'</td>'
+          +'<td style="font-size:.75rem;font-family:monospace">'+debut+'</td>'
+          +'<td style="font-size:.75rem;font-family:monospace">'+fin+'</td>'
+          +'</tr>';
+      });
+      html+='</tbody></table>';
+    }
+    html+='</div>';
+  });
+  document.getElementById('extraction-content').innerHTML=html;
+}
+
+// PROMOTIONS
+function openModalPromo(){
+  var cp=document.getElementById('promo-color-picker');
+  cp.innerHTML=PROMO_COLORS.map(function(c,i){
+    return '<div style="width:22px;height:22px;border-radius:50%;background:'+c+';cursor:pointer;border:2px solid '+(i===0?'#000':'transparent')+';display:inline-block;margin:2px;transition:transform .1s" data-color="'+c+'" onclick="selectPromoColor(\''+c+'\',this)"></div>';
+  }).join('');
+  document.getElementById('p-color').value=PROMO_COLORS[0];
+  document.getElementById('p-preview').style.display='none';
+  document.getElementById('modal-promo').classList.add('open');
+}
+function selectPromoColor(c,el){
+  document.getElementById('p-color').value=c;
+  document.querySelectorAll('#promo-color-picker div').forEach(function(d){d.style.border='2px solid transparent';});
+  el.style.border='2px solid #000';
+}
+function presetSemaines(nb,dur){
+  var interval=Math.floor(50/nb); var sems=[]; var s=3;
+  for(var i=0;i<nb;i++){sems.push(s);s+=interval;if(s>50)break;}
+  document.getElementById('p-semaines').value=sems.join(', ');
+  document.getElementById('p-duree').value=dur;
+  previewPeriodes();
+}
+function previewPeriodes(){
+  var val=document.getElementById('p-semaines').value;
+  var dur=parseInt(document.getElementById('p-duree').value)||2;
+  var sems=val.split(',').map(function(s){return parseInt(s.trim());}).filter(function(s){return !isNaN(s)&&s>=1&&s<=52;}).sort(function(a,b){return a-b;});
+  var prev=document.getElementById('p-preview');
+  if(!sems.length){prev.style.display='none';return;}
+  prev.style.display='block';
+  prev.innerHTML='<strong>'+sems.length+' passages de '+dur+' semaine'+(dur>1?'s':'')+' :</strong><br>'
+    +sems.map(function(s,i){return '<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;background:var(--accent-lt);color:var(--accent);border-radius:10px;font-size:.74rem;font-weight:600">Passage '+(i+1)+' : '+getSemKey(s)+' - '+getSemKey(s+dur-1)+'</span>';}).join('');
+}
+function ajouterPromo(){
+  var nom=document.getElementById('p-nom').value.trim();
+  var dur=parseInt(document.getElementById('p-duree').value)||2;
+  var color=document.getElementById('p-color').value;
+  var metier=document.getElementById('p-metier').value;
+  var val=document.getElementById('p-semaines').value;
+  var sems=val.split(',').map(function(s){return parseInt(s.trim());}).filter(function(s){return !isNaN(s)&&s>=1&&s<=52;}).sort(function(a,b){return a-b;});
+  if(!nom){toast('Nom obligatoire');return;}
+  if(!sems.length){toast('Ajoute au moins une semaine');return;}
+  var periodes=sems.map(function(s){return {semDebut:s,duree:dur};});
+  log_promotions.push({id:'P'+Date.now(),nom:nom,metier:metier,color:color,periodes:periodes});
+  closeModal('modal-promo');
+  document.getElementById('p-nom').value='';
+  document.getElementById('p-semaines').value='';
+  document.getElementById('p-preview').style.display='none';
+  renderPromos(); renderPlanning();
+  toast('"'+nom+'" cree - '+periodes.length+' passages');
+}
+
+function renderPromos(){
+  var container=document.getElementById('promos-list');
+  var html='';
+  log_promotions.forEach(function(p){
+    var nb=log_apprentis.filter(function(a){return a.promo===p.id;}).length;
+    var periodes=p.periodes||[{semDebut:p.semDebut,duree:p.duree}];
+    var dur=periodes[0]?periodes[0].duree:2;
+    var periodesHtml='';
+    periodes.forEach(function(per,i){
+      periodesHtml+='<div style="background:'+p.color+'18;border:1px solid '+p.color+'44;border-radius:8px;padding:5px 10px;font-size:.74rem;display:inline-flex;align-items:center;gap:4px">'
+        +'<span style="font-weight:700;color:'+p.color+'">P'+(i+1)+'</span>'
+        +'<span style="color:var(--muted)">-</span>'
+        +'<span style="font-size:.72rem">'+getSemKey(per.semDebut)+' au '+getSemKey(per.semDebut+per.duree-1)+'</span>'
+        +'<span style="color:var(--muted);font-size:.68rem">('+semDateRange(per.semDebut)+')</span>'
+        +'<button style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:.8rem;padding:0 2px" data-promo="'+p.id+'" data-idx="'+i+'" onclick="supprimerPeriode(this.dataset.promo,parseInt(this.dataset.idx))">x</button>'
+        +'</div> ';
+    });
+    html+='<div style="background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px">'
+      +'<div style="padding:12px 16px;background:'+p.color+'15;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">'
+      +'<div style="width:12px;height:12px;border-radius:3px;background:'+p.color+';flex-shrink:0"></div>'
+      +'<div style="flex:1"><div style="font-weight:700;font-size:.95rem">'+p.nom+'</div>'
+      +'<div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+periodes.length+' passage'+(periodes.length>1?'s':'')+' de '+dur+' semaine'+(dur>1?'s':'')+' - '+nb+' apprenti'+(nb>1?'s':'')+'</div></div>'
+      +'<button class="btn btn-danger btn-sm" data-promo="'+p.id+'" onclick="supprimerPromo(this.dataset.promo)">Supprimer</button>'
+      +'</div>'
+      +'<div style="padding:12px 16px">'
+      +'<div style="font-size:.72rem;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase">Passages programmes</div>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:6px">'+periodesHtml
+      +'<button class="btn btn-ghost btn-sm" data-promo="'+p.id+'" onclick="ajouterPassage(this.dataset.promo)" style="font-size:.72rem">+ Ajouter un passage</button>'
+      +'</div></div></div>';
+  });
+  container.innerHTML=html;
+}
+
+function supprimerPeriode(promoId,idx){
+  var p=log_promotions.find(function(x){return x.id===promoId;});
+  if(!p||!p.periodes) return;
+  if(p.periodes.length===1){toast('Au moins un passage requis');return;}
+  p.periodes.splice(idx,1);
+  renderPromos(); renderPlanning();
+  toast('Passage supprime');
+}
+var log_ajouterPassagePromoId=null;
+function ajouterPassage(promoId){
+  log_ajouterPassagePromoId=promoId;
+  var p=log_promotions.find(function(x){return x.id===promoId;});
+  if(!p) return;
+  var dur=p.periodes&&p.periodes[0]?p.periodes[0].duree:2;
+  document.getElementById('ap-promo-nom').textContent=p.nom;
+  document.getElementById('ap-duree').value=dur;
+  document.getElementById('ap-semaine').value='';
+  document.getElementById('modal-ajouter-passage').classList.add('open');
+}
+function confirmerAjouterPassage(){
+  var s=parseInt(document.getElementById('ap-semaine').value);
+  var dur=parseInt(document.getElementById('ap-duree').value)||2;
+  if(isNaN(s)||s<1||s>52){toast('Semaine invalide (1-52)');return;}
+  var p=log_promotions.find(function(x){return x.id===ajouterPassagePromoId;});
+  if(!p) return;
+  if(!p.periodes) p.periodes=[{semDebut:p.semDebut,duree:p.duree}];
+  p.periodes.push({semDebut:s,duree:dur});
+  p.periodes.sort(function(a,b){return a.semDebut-b.semDebut;});
+  closeModal('modal-ajouter-passage');
+  renderPromos(); renderPlanning();
+  toast('Passage ajoute : '+getSemKey(s)+' ('+dur+' sem.)');
+}
+function supprimerPromo(id){
+  if(!confirm('Supprimer cette promotion ?')) return;
+  promotions=log_promotions.filter(function(p){return p.id!==id;});
+  renderPromos(); renderPlanning();
+  toast('Promotion supprimee');
+}
+
+
+// ============================================================
+// ITINERANTS
+// ============================================================
+var log_editItinerantId = null;
+var log_itPhotoDataURL = null;
+
+function previewItPhoto(input){
+  if(!input.files.length) return;
+  var r=new FileReader();
+  r.onload=function(e){
+    log_itPhotoDataURL=e.target.result;
+    document.getElementById('it-photo-img').src=itPhotoDataURL;
+    document.getElementById('it-photo-preview').style.display='block';
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+function openModalItinerant(id){
+  log_editItinerantId=id||null;
+  log_itPhotoDataURL=null;
+  document.getElementById('it-photo-preview').style.display='none';
+  document.getElementById('it-photo').value='';
+
+  // Remplir select chambres CFA (1 itinerant max par chambre)
+  var sel=document.getElementById('it-chambre');
+  var cfaChambres=chambres.filter(function(c){return c.batiment==='CFA';});
+  sel.innerHTML=cfaChambres.map(function(c){
+    var occupe=log_itinerants.find(function(it){return it.chambre===c.id&&it.id!==editItinerantId;});
+    return '<option value="'+c.id+'"'+(occupe?' disabled':'')+'>Chambre '+c.num+(occupe?' (occupee par '+occupe.prenom+')':'')+'</option>';
+  }).join('');
+
+  if(id){
+    var it=log_itinerants.find(function(x){return x.id===id;});
+    document.getElementById('modal-itin-title').textContent='Modifier itinerant';
+    document.getElementById('it-prenom').value=it.prenom;
+    document.getElementById('it-nom').value=it.nom;
+    sel.value=it.chambre;
+    if(it.photo){
+      log_itPhotoDataURL=it.photo;
+      document.getElementById('it-photo-img').src=it.photo;
+      document.getElementById('it-photo-preview').style.display='block';
+    }
+  } else {
+    document.getElementById('modal-itin-title').textContent='+ Nouvel itinerant';
+    document.getElementById('it-prenom').value='';
+    document.getElementById('it-nom').value='';
+    // Selectionner premiere chambre libre
+    var libre=cfaChambres.find(function(c){return !log_itinerants.find(function(it){return it.chambre===c.id;});});
+    if(libre) sel.value=libre.id;
+  }
+  document.getElementById('modal-itinerant').classList.add('open');
+}
+
+function sauvegarderItinerant(){
+  var prenom=document.getElementById('it-prenom').value.trim();
+  var nom=document.getElementById('it-nom').value.trim().toUpperCase();
+  var chambre=document.getElementById('it-chambre').value;
+  if(!prenom||!nom||!chambre){toast('Prenom, Nom et Chambre obligatoires');return;}
+
+  if(editItinerantId){
+    var it=log_itinerants.find(function(x){return x.id===editItinerantId;});
+    it.prenom=prenom; it.nom=nom; it.chambre=chambre;
+    if(itPhotoDataURL) it.photo=itPhotoDataURL;
+  } else {
+    log_itinerants.push({id:'IT'+(Date.now()%100000),prenom:prenom,nom:nom,chambre:chambre,type:'itinerant',photo:itPhotoDataURL});
+  }
+  closeModal('modal-itinerant');
+  renderItinerants();
+  renderHotel();
+  toast((editItinerantId?'Itinerant modifie':'Itinerant ajoute')+' : '+prenom+' '+nom);
+}
+
+function supprimerItinerant(id){
+  if(!confirm('Supprimer cet itinerant ?')) return;
+  itinerants=log_itinerants.filter(function(it){return it.id!==id;});
+  renderItinerants();
+  renderHotel();
+  toast('Itinerant supprime');
+}
+
+function renderItinerants(){
+  var container=document.getElementById('itinerants-list');
+  if(!container) return;
+
+  // Stats
+  var total=chambres.filter(function(c){return c.batiment==='CFA';}).length;
+  var occupees=log_itinerants.length;
+
+  var statsHtml='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px">'
+    +'<div class="stat-card"><label>Itinerants</label><div class="val">'+occupees+'</div><small>residents annuels</small></div>'
+    +'<div class="stat-card"><label>Chambres CFA</label><div class="val">'+total+'</div></div>'
+    +'<div class="stat-card"><label>Chambres libres</label><div class="val ok">'+(total-occupees)+'</div><small>sans itinerant</small></div>'
+    +'</div>';
+
+  var html=statsHtml;
+
+  if(!log_itinerants.length){
+    html+='<div style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">🏠</div><div>Aucun itinerant enregistre</div><div style="font-size:.82rem;margin-top:6px">Cliquez sur "+ Ajouter un itinerant"</div></div>';
+  } else {
+    html+='<div style="background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden">';
+    html+='<table><thead><tr><th>Photo</th><th>Nom</th><th>Chambre</th><th>Batiment</th><th>Actions</th></tr></thead><tbody>';
+    var sorted=[].concat(itinerants).sort(function(a,b){return a.chambre.localeCompare(b.chambre);});
+    sorted.forEach(function(it){
+      var ch=chambres.find(function(c){return c.id===it.chambre;});
+      var bat=ch?BATIMENTS[ch.batiment]:null;
+      html+='<tr>'
+        +'<td><div style="width:40px;height:40px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#1e3a5f;color:#fff;font-weight:700;font-size:.85rem">'
+        +(it.photo?'<img src="'+it.photo+'" style="width:100%;height:100%;object-fit:cover">':it.prenom[0]+it.nom[0])
+        +'</div></td>'
+        +'<td style="font-weight:600">'+it.prenom+' '+it.nom+'</td>'
+        +'<td style="font-family:monospace;font-weight:600">N&#176;'+(ch?ch.num:'?')+'</td>'
+        +'<td>'+(bat?'<span style="background:'+bat.color+';color:#fff;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:600">'+bat.label+'</span>':'?')+'</td>'
+        +'<td style="display:flex;gap:6px">'
+        +'<button class="btn btn-ghost btn-sm" data-id="'+it.id+'" onclick="openModalItinerant(this.dataset.id)">Modifier</button>'
+        +'<button class="btn btn-danger btn-sm" data-id="'+it.id+'" onclick="supprimerItinerant(this.dataset.id)">Supprimer</button>'
+        +'</td>'
+        +'</tr>';
+    });
+    html+='</tbody></table></div>';
+  }
+
+  // Chambres sans itinerant
+  var sansItin=chambres.filter(function(c){return c.batiment==='CFA'&&!log_itinerants.find(function(it){return it.chambre===c.id;});});
+  if(sansItin.length){
+    html+='<div style="margin-top:16px;background:var(--warn-lt);border:1.5px solid var(--warn);border-radius:10px;padding:12px 16px">'
+      +'<div style="font-weight:600;color:var(--warn);font-size:.85rem;margin-bottom:6px">Chambres CFA sans itinerant ('+sansItin.length+')</div>'
+      +'<div>'+sansItin.map(function(c){return '<span style="display:inline-block;margin:2px;padding:2px 8px;background:#fff;border:1px solid var(--warn);border-radius:8px;font-size:.76rem;font-family:monospace">N&#176;'+c.num+'</span>';}).join('')+'</div>'
+      +'</div>';
+  }
+
+  container.innerHTML=html;
+}
+
+// ============================================================
+// CONFIG CHAMBRES (nb lits)
+// ============================================================
+var log_chambreEditId = null;
+var log_chambreEditLits = 3;
+
+function openModalLits(chambreId){
+  log_chambreEditId=chambreId;
+  var ch=chambres.find(function(c){return c.id===chambreId;});
+  log_chambreEditLits=ch.maxOcc||3;
+  document.getElementById('modal-lits-num').textContent=ch.num;
+  document.getElementById('modal-lits-nb').textContent=chambreEditLits;
+  // Info itinerant
+  var itin=log_itinerants.find(function(it){return it.chambre===chambreId;});
+  document.getElementById('modal-lits-info').innerHTML=itin
+    ?'Itinerant : <strong>'+itin.prenom+' '+itin.nom+'</strong> (occupe 1 lit fixe)'
+    :'Aucun itinerant dans cette chambre';
+  document.getElementById('modal-lits').classList.add('open');
+}
+
+function changerLits(delta){
+  log_chambreEditLits=Math.max(1,Math.min(6,chambreEditLits+delta));
+  document.getElementById('modal-lits-nb').textContent=chambreEditLits;
+}
+
+function sauvegarderLits(){
+  var ch=chambres.find(function(c){return c.id===chambreEditId;});
+  if(!ch) return;
+  ch.maxOcc=chambreEditLits;
+  closeModal('modal-lits');
+  renderChambresConfig();
+  renderHotel();
+  toast('Chambre '+ch.num+' : '+chambreEditLits+' lits');
+}
+
+function renderChambresConfig(){
+  var container=document.getElementById('chambres-config-list');
+  if(!container) return;
+  var filterBat=document.getElementById('ch-filter-bat').value;
+  var filtered=chambres.filter(function(c){return !filterBat||c.batiment===filterBat;});
+
+  // Grouper par batiment
+  var groups={};
+  filtered.forEach(function(c){
+    if(!groups[c.batiment]) groups[c.batiment]=[];
+    groups[c.batiment].push(c);
+  });
+
+  var html='';
+  Object.keys(groups).forEach(function(batId){
+    var bat=BATIMENTS[batId];
+    var chs=groups[batId];
+    html+='<div style="background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px">'
+      +'<div style="padding:12px 18px;background:'+bat.color+'15;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">'
+      +'<span style="background:'+bat.color+';color:#fff;padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:700">'+bat.label+'</span>'
+      +'<span style="font-size:.78rem;color:var(--muted)">'+chs.length+' chambres</span>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1px;background:var(--border)">';
+
+    chs.forEach(function(ch){
+      var itin=log_itinerants.find(function(it){return it.chambre===ch.id;});
+      var maxOcc=ch.maxOcc||3;
+      var maxApp=batId==='CFA'?maxOcc-1:maxOcc;
+      html+='<div style="background:var(--surface);padding:12px;display:flex;flex-direction:column;gap:4px">'
+        +'<div style="font-family:monospace;font-weight:700;font-size:.85rem">N&#176;'+ch.num+'</div>'
+        +'<div style="font-size:.7rem;color:var(--muted)">'+maxOcc+' lit'+(maxOcc>1?'s':'')+' - '+maxApp+' apprenti'+(maxApp>1?'s':''+(itin?' + itinerant':''))+'</div>'
+        +(itin?'<div style="font-size:.68rem;color:#1e40af;background:#dbeafe;padding:2px 5px;border-radius:5px">&#128274; '+itin.prenom+'</div>':'<div style="font-size:.68rem;color:var(--muted)">Pas d itinerant</div>')
+        +'<button class="btn btn-ghost btn-sm" style="margin-top:4px;font-size:.7rem" data-id="'+ch.id+'" onclick="openModalLits(this.dataset.id)">Modifier lits</button>'
+        +'</div>';
+    });
+    html+='</div></div>';
+  });
+  container.innerHTML=html;
+}
+
+
+function toggleMenuGestion(e){
+  e.stopPropagation();
+  var m=document.getElementById('menu-gestion');
+  m.style.display=m.style.display==='none'?'block':'none';
+}
+function closeMenuGestion(){
+  document.getElementById('menu-gestion').style.display='none';
+}
+document.addEventListener('click',function(){closeMenuGestion();});
+
+// INIT LOGEMENT - appelé lors de l'ouverture de l'onglet
+function initLogement(){
+  allerSemaineActuelle();
+  renderHotel();
+}
+
+
+// ── INIT ─────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  if(token&&currentUser){
+    startApp();
+  }
+});
+</script>
+</body>
+</html>
