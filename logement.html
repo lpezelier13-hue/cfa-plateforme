@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestion Logement - CFA Compagnons du Devoir</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root {
+  --bg:#F7F6F3; --surface:#fff; --border:#E4E1DA; --text:#1C1A17; --muted:#8A8680;
+  --accent:#1B4FD8; --accent-lt:#EBF0FD;
+  --ok:#16A34A; --ok-lt:#DCFCE7;
+  --warn:#D97706; --warn-lt:#FEF3C7;
+  --danger:#DC2626; --danger-lt:#FEE2E2;
+  --cfa:#1B4FD8; --ys9:#7C3AED; --ys10:#0891B2;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+header{background:var(--text);color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:300;}
+.logo{display:flex;align-items:center;gap:9px;font-size:.88rem;font-weight:700;}
+.logo-icon{width:28px;height:28px;background:var(--accent);border-radius:6px;display:grid;place-items:center;font-size:.9rem;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.year-badge{font-size:.72rem;color:#aaa;font-family:'DM Mono',monospace;background:#2a2a2a;padding:3px 9px;border-radius:20px;}
+
+/* NAV */
+nav{background:var(--surface);border-bottom:1.5px solid var(--border);display:flex;padding:0 24px;position:sticky;top:56px;z-index:200;}
+.nav-tab{padding:13px 18px;font-size:.83rem;font-weight:600;cursor:pointer;border-bottom:2.5px solid transparent;color:var(--muted);transition:all .15s;white-space:nowrap;}
+.nav-tab:hover{color:var(--text);}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* MAIN */
+main{max-width:1400px;margin:0 auto;padding:24px 20px;}
+.page{display:none;} .page.active{display:block;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:7px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:opacity .15s,transform .1s;}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--text);}
+.btn-ok{background:var(--ok-lt);color:var(--ok);border:none;}
+.btn-warn{background:var(--warn-lt);color:var(--warn);border:none;}
+.btn-danger{background:var(--danger-lt);color:var(--danger);border:none;}
+.btn-sm{padding:4px 10px;font-size:.73rem;}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px;}
+.page-header h1{font-size:1.4rem;font-weight:700;}
+.page-header p{color:var(--muted);font-size:.83rem;margin-top:3px;}
+
+/* STATS BAND */
+.stats-band{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:14px 16px;}
+.stat-card label{font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:block;margin-bottom:4px;}
+.stat-card .val{font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:600;}
+.stat-card .val.ok{color:var(--ok);} .stat-card .val.warn{color:var(--warn);} .stat-card .val.danger{color:var(--danger);}
+.stat-card small{font-size:.7rem;color:var(--muted);}
+
+/* SEMAINE SELECTOR */
+.semaine-bar{background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.semaine-bar label{font-size:.8rem;font-weight:600;color:var(--muted);}
+.semaine-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:1rem;transition:all .15s;}
+.semaine-btn:hover{background:var(--accent-lt);border-color:var(--accent);}
+.semaine-display{font-family:'DM Mono',monospace;font-size:1rem;font-weight:700;min-width:80px;text-align:center;}
+.semaine-range{font-size:.78rem;color:var(--muted);}
+
+/* ALERTE RÈGLE */
+.alert-banner{background:var(--danger-lt);border:1.5px solid var(--danger);border-radius:9px;padding:10px 14px;margin-bottom:16px;font-size:.82rem;color:var(--danger);font-weight:600;display:none;align-items:center;gap:8px;}
+.alert-banner.show{display:flex;}
+
+/* -- VUE HÔTEL -- */
+.batiment-section{margin-bottom:28px;}
+.batiment-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.batiment-badge{padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:700;color:#fff;}
+.batiment-title{font-size:1rem;font-weight:700;}
+.batiment-stats{font-size:.78rem;color:var(--muted);margin-left:auto;}
+.etage-label{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;margin-top:12px;}
+.chambres-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}
+
+.chambre-card{border-radius:9px;padding:10px;cursor:pointer;transition:all .2s;position:relative;border:2px solid transparent;min-height:80px;}
+.chambre-card.libre{background:var(--ok-lt);border-color:#86efac;}
+.chambre-card.occupee{background:var(--accent-lt);border-color:#93c5fd;}
+.chambre-card.double-libre{background:#faf5ff;border-color:#c4b5fd;}
+.chambre-card.double-partiel{background:#fef3c7;border-color:#fcd34d;}
+.chambre-card.double-pleine{background:#fee2e2;border-color:#fca5a5;}
+.chambre-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1);}
+.chambre-card.alerte-mineur{border-color:var(--danger)!important;box-shadow:0 0 0 2px var(--danger)!important;}
+
+.chambre-num{font-family:'DM Mono',monospace;font-size:.75rem;font-weight:700;color:var(--muted);}
+.chambre-type{font-size:.62rem;color:var(--muted);margin-bottom:4px;}
+.chambre-occupant{font-size:.72rem;font-weight:600;margin-top:4px;line-height:1.3;}
+.chambre-promo{font-size:.62rem;color:var(--muted);}
+.mineur-badge{position:absolute;top:4px;right:4px;background:var(--danger);color:#fff;font-size:.55rem;padding:1px 5px;border-radius:10px;font-weight:700;}
+
+/* -- VUE PLANNING GANTT -- */
+.gantt-container{overflow-x:auto;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;}
+.gantt-header{display:grid;background:var(--text);color:#fff;border-radius:12px 12px 0 0;position:sticky;top:0;z-index:10;}
+.gantt-header-cell{padding:8px 6px;font-size:.68rem;font-weight:600;text-align:center;border-right:1px solid #333;}
+.gantt-row{display:grid;border-bottom:1px solid var(--border);transition:background .1s;}
+.gantt-row:hover{background:var(--bg);}
+.gantt-row:last-child{border-bottom:none;}
+.gantt-cell-label{padding:8px 10px;font-size:.75rem;font-weight:600;border-right:1px solid var(--border);background:var(--bg);position:sticky;left:0;z-index:5;white-space:nowrap;}
+.gantt-cell-bat{padding:4px 8px;font-size:.65rem;color:var(--muted);border-right:1px solid var(--border);background:var(--bg);position:sticky;left:80px;z-index:5;}
+.gantt-cell{border-right:1px solid var(--border);position:relative;height:36px;}
+.gantt-block{position:absolute;top:4px;bottom:4px;border-radius:5px;display:flex;align-items:center;padding:0 6px;font-size:.62rem;font-weight:600;color:#fff;overflow:hidden;white-space:nowrap;cursor:pointer;transition:opacity .15s;}
+.gantt-block:hover{opacity:.85;}
+.gantt-block.mineur-annexe{border:2px solid var(--danger)!important;box-shadow:0 0 0 1px var(--danger);}
+
+/* SEMAINE ACTUELLE */
+.semaine-courante{background:rgba(27,79,216,.08);}
+
+/* LÉGENDE */
+.legende{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:center;}
+.legende-item{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--muted);}
+.legende-dot{width:12px;height:12px;border-radius:3px;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;place-items:center;padding:16px;}
+.modal-bg.open{display:grid;}
+.modal{background:var(--surface);border-radius:14px;padding:24px;width:100%;max-width:500px;box-shadow:0 24px 60px rgba(0,0,0,.22);max-height:90vh;overflow-y:auto;}
+.modal h2{font-size:1rem;font-weight:700;margin-bottom:16px;}
+.form-row{margin-bottom:11px;}
+.form-row label{display:block;font-size:.72rem;font-weight:600;margin-bottom:3px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.form-row input,.form-row select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.83rem;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
+.form-row input:focus,.form-row select:focus{outline:none;border-color:var(--accent);}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+.historique-badge{background:var(--accent-lt);color:var(--accent);padding:6px 10px;border-radius:7px;font-size:.78rem;margin-bottom:12px;display:none;}
+.historique-badge.show{display:block;}
+
+/* EXTRACTION */
+.extraction-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.extraction-header{padding:14px 18px;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:space-between;}
+.extraction-header h3{font-size:.9rem;font-weight:700;}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:8px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border);background:var(--bg);}
+tbody td{padding:10px 12px;font-size:.81rem;border-bottom:1px solid var(--border);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--bg);}
+.badge-mineur{background:var(--warn-lt);color:var(--warn);padding:2px 7px;border-radius:10px;font-size:.68rem;font-weight:600;}
+.badge-majeur{background:var(--ok-lt);color:var(--ok);padding:2px 7px;border-radius:10px;font-size:.68rem;font-weight:600;}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;padding:10px 16px;border-radius:8px;font-size:.81rem;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);}
+.toast.show{transform:translateY(0);opacity:1;}
+
+
+/* VUE ÉTAGE DÉTAILLÉE */
+.chambre-detail-card{background:var(--surface);border:1.5px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:16px;transition:box-shadow .2s;}
+.chambre-detail-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.08);}
+.chambre-detail-header{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:var(--bg);}
+.chambre-detail-num{font-family:'DM Mono',monospace;font-size:1rem;font-weight:700;}
+.chambre-detail-type{font-size:.72rem;color:var(--muted);}
+.chambre-detail-status{margin-left:auto;font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:20px;}
+.lits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:none;}
+.lit-slot{padding:14px 12px;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:8px;min-height:120px;}
+.lit-slot:last-child{border-right:none;}
+.lit-slot.itinerant{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);}
+.lit-slot.apprenti{background:var(--surface);}
+.lit-slot.libre{background:var(--bg);border:2px dashed var(--border);margin:4px;border-radius:8px;}
+.lit-numero{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.lit-photo{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--border);}
+.lit-avatar{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:1.1rem;font-weight:700;color:#fff;border:2px solid rgba(0,0,0,.1);}
+.lit-nom{font-size:.75rem;font-weight:700;text-align:center;line-height:1.2;}
+.lit-prenom{font-size:.7rem;color:var(--muted);text-align:center;}
+.lit-promo{font-size:.62rem;padding:2px 6px;border-radius:10px;color:#fff;font-weight:600;text-align:center;}
+.lit-badge-it{font-size:.58rem;background:#dbeafe;color:#1e40af;padding:2px 6px;border-radius:10px;font-weight:700;}
+.lit-badge-mineur{font-size:.58rem;background:var(--warn-lt);color:var(--warn);padding:2px 6px;border-radius:10px;font-weight:700;}
+.lit-libre-label{font-size:.72rem;color:var(--muted);font-style:italic;}
+.lit-lock{font-size:1rem;color:#94a3b8;}
+.etage-section{margin-bottom:28px;}
+.etage-section-title{font-size:.88rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+
+@media(max-width:768px){main{padding:12px;}.chambres-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));}.lits-grid{grid-template-columns:1fr;}}
+@media(max-width:768px){main{padding:12px;}.chambres-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><div class="logo-icon">🏠</div>Logement - CFA Compagnons du Devoir</div>
+  <div class="header-right">
+    <span class="year-badge">2025-2026</span>
+    <button class="btn btn-ghost btn-sm" onclick="window.location.href='https://cfa-compagnons-troyes-v1.netlify.app'">← Plateforme</button>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-tab active" onclick="showPage('hotel',this)">🏨 Vue Hôtel</div>
+  <div class="nav-tab" onclick="showPage('etage',this)">🔍 Vue Étage</div>
+  <div class="nav-tab" onclick="showPage('planning',this)">📅 Planning</div>
+  <div class="nav-tab" onclick="showPage('extraction',this)">📄 Extraction</div>
+  <div class="nav-tab" onclick="showPage('promotions',this)">👥 Promotions</div>
+</nav>
+
+<main>
+
+<!-- ══ VUE ÉTAGE ══ -->
+<div class="page" id="page-etage">
+  <div class="page-header">
+    <div><h1>Vue Étage</h1><p>Détail des chambres avec photos et itinérants</p></div>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center">
+    <select id="etage-filter-bat" onchange="renderEtage()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:.83rem;background:var(--surface)">
+      <option value="CFA">Bâtiment CFA</option>
+      <option value="YS9">Yscoole Bât. 9</option>
+      <option value="YS10">Yscoole Bât. 10</option>
+    </select>
+    <select id="etage-filter-etage" onchange="renderEtage()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:.83rem;background:var(--surface)">
+      <option value="">Tous les étages</option>
+      <option value="Etage 1">Etage 1</option>
+      <option value="Etage 2">Etage 2</option>
+      <option value="Etage 3">Etage 3</option>
+      <option value="Etage 4">Etage 4</option>
+    </select>
+    <div class="semaine-bar" style="flex:1;margin:0;padding:10px 16px">
+      <label>Semaine :</label>
+      <button class="semaine-btn" onclick="changerSemaineEtage(-1)">‹</button>
+      <span class="semaine-display" id="etage-sem-display">S01</span>
+      <button class="semaine-btn" onclick="changerSemaineEtage(1)">›</button>
+      <span class="semaine-range" id="etage-sem-range"></span>
+    </div>
+  </div>
+  <div id="etage-content"></div>
+</div>
+
+<!-- ══ VUE HÔTEL ══ -->
+<div class="page active" id="page-hotel">
+  <div class="page-header">
+    <div><h1>Vue Hôtel</h1><p>Placement des apprentis par chambre - cliquer pour affecter</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-ok" onclick="affectationAuto()">⚡ Affectation auto</button>
+      <button class="btn btn-ghost" onclick="toutVider()">🗑 Vider la semaine</button>
+    </div>
+  </div>
+
+  <div class="semaine-bar">
+    <label>Semaine en cours :</label>
+    <button class="semaine-btn" onclick="changerSemaine(-1)">‹</button>
+    <span class="semaine-display" id="sem-display">S01</span>
+    <button class="semaine-btn" onclick="changerSemaine(1)">›</button>
+    <span class="semaine-range" id="sem-range"></span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn btn-ghost btn-sm" onclick="allerSemaineActuelle()">📍 Aujourd'hui</button>
+    </div>
+  </div>
+
+  <div class="alert-banner" id="alert-mineur">
+    ⚠️ Attention - Des mineurs sont affectés dans un bâtiment annexe ! Ceci est interdit par le règlement.
+  </div>
+
+  <div class="stats-band" id="stats-band"></div>
+
+  <div class="legende">
+    <span style="font-size:.76rem;font-weight:600;color:var(--muted)">Légende :</span>
+    <div class="legende-item"><div class="legende-dot" style="background:#dcfce7;border:1px solid #86efac"></div> Libre</div>
+    <div class="legende-item"><div class="legende-dot" style="background:#ebf0fd;border:1px solid #93c5fd"></div> Occupée</div>
+    <div class="legende-item"><div class="legende-dot" style="background:#fef3c7;border:1px solid #fcd34d"></div> Double partiel</div>
+    <div class="legende-item"><div class="legende-dot" style="background:#fee2e2;border:1px solid #fca5a5"></div> Double pleine</div>
+    <div class="legende-item"><div class="legende-dot" style="background:var(--danger);border-radius:50%"></div> ⚠️ Mineur en annexe</div>
+  </div>
+
+  <div id="hotel-content"></div>
+</div>
+
+<!-- ══ PLANNING PROMOTIONS ══ -->
+<div class="page" id="page-planning">
+  <div class="page-header">
+    <div><h1>Planning des promotions</h1><p>Vue rapide - quelles formations sont présentes chaque semaine</p></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="planning-annee" onchange="renderPlanning()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:.82rem;background:var(--surface)">
+        <option value="2025">Année 2025-2026</option>
+        <option value="2026">Année 2026-2027</option>
+      </select>
+      <button class="btn btn-ghost btn-sm" onclick="renderPlanning()">🔄 Actualiser</button>
+    </div>
+  </div>
+
+  <!-- Stats rapides semaine actuelle -->
+  <div id="planning-stats-semaine" style="margin-bottom:20px"></div>
+
+  <!-- Gantt promotions -->
+  <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <h2 style="font-size:.92rem;font-weight:700">📅 Présence des formations sur l'année</h2>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn btn-ghost btn-sm" onclick="scrollToSemaineActuelle()">📍 Aujourd'hui</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto" id="planning-gantt-wrap">
+      <div id="planning-gantt"></div>
+    </div>
+  </div>
+
+  <!-- Détail par semaine -->
+  <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+      <h2 style="font-size:.92rem;font-weight:700">🔍 Détail par semaine</h2>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="semaine-btn" onclick="changerSemainePlanning(-1)">‹</button>
+        <span class="semaine-display" id="planning-sem-display" style="font-size:.9rem">S01</span>
+        <button class="semaine-btn" onclick="changerSemainePlanning(1)">›</button>
+        <span id="planning-sem-range" style="font-size:.76rem;color:var(--muted)"></span>
+      </div>
+    </div>
+    <div id="planning-detail" style="padding:16px"></div>
+  </div>
+</div>
+
+<!-- ══ EXTRACTION ══ -->
+<div class="page" id="page-extraction">
+  <div class="page-header">
+    <div><h1>Extraction</h1><p>Liste des occupants par bâtiment pour les dames de service</p></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="ext-semaine" onchange="renderExtraction()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.82rem;background:var(--surface)">
+      </select>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimer</button>
+    </div>
+  </div>
+  <div id="extraction-content"></div>
+</div>
+
+<!-- ══ PROMOTIONS ══ -->
+<div class="page" id="page-promotions">
+  <div class="page-header">
+    <div><h1>Promotions & Planning</h1><p>Gérez les promotions et leurs périodes de séjour</p></div>
+    <button class="btn btn-primary" onclick="openModalPromo()">+ Nouvelle promotion</button>
+  </div>
+  <div id="promos-list"></div>
+</div>
+
+</main>
+
+<!-- MODAL AFFECTATION CHAMBRE -->
+<div class="modal-bg" id="modal-chambre" onclick="closeMBg(event,'modal-chambre')">
+  <div class="modal">
+    <h2 id="modal-chambre-title">🛏 Chambre -</h2>
+    <div class="historique-badge" id="historique-badge"></div>
+    <div id="modal-chambre-occupants"></div>
+    <div class="form-row" id="form-ajout-zone">
+      <label>Affecter un apprenti</label>
+      <select id="select-apprenti">
+        <option value="">- Choisir un apprenti -</option>
+      </select>
+    </div>
+    <div id="modal-chambre-warning" style="display:none;background:var(--danger-lt);color:var(--danger);padding:8px 12px;border-radius:7px;font-size:.8rem;margin-bottom:10px;font-weight:600"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-chambre')">Fermer</button>
+      <button class="btn btn-primary" onclick="affecterApprenti()">Affecter</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOUVELLE PROMOTION -->
+<div class="modal-bg" id="modal-promo" onclick="closeMBg(event,'modal-promo')">
+  <div class="modal" style="max-width:560px">
+    <h2>👥 Nouvelle promotion</h2>
+    <div class="form-row"><label>Nom de la promotion *</label><input type="text" id="p-nom" placeholder="Ex : BTS Élec 1ère année"></div>
+    <div class="form-grid-2">
+      <div class="form-row"><label>Métier</label>
+        <select id="p-metier">
+          <option value="elec">Électricité</option>
+          <option value="plomb">Plomberie</option>
+          <option value="menu">Menuiserie</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Durée de chaque passage (sem.)</label>
+        <input type="number" id="p-duree" min="1" max="8" placeholder="Ex : 2" value="2">
+      </div>
+    </div>
+    <div class="form-row"><label>Couleur</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px" id="promo-color-picker"></div>
+      <input type="hidden" id="p-color" value="#1B4FD8">
+    </div>
+    <div class="form-row">
+      <label>Semaines d'arrivée * <span style="color:var(--muted);font-weight:400;text-transform:none">(séparées par des virgules · ex : 4, 10, 18, 26, 34, 42, 48)</span></label>
+      <input type="text" id="p-semaines" placeholder="Ex : 4, 10, 18, 26, 34, 42, 48" oninput="previewPeriodes()">
+      <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+        <button type="button" class="btn btn-ghost btn-sm" onclick="presetSemaines(7,2)">7 passages × 2 sem. (CAP)</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="presetSemaines(11,2)">11 passages × 2 sem. (BTS)</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="presetSemaines(5,3)">5 passages × 3 sem.</button>
+      </div>
+    </div>
+    <div id="p-preview" style="margin-top:10px;display:none;background:var(--bg);border-radius:8px;padding:10px;font-size:.78rem;color:var(--muted)"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-promo')">Annuler</button>
+      <button class="btn btn-primary" onclick="ajouterPromo()">Créer</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal ajouter passage -->
+<div class="modal-bg" id="modal-ajouter-passage" onclick="closeMBg(event,'modal-ajouter-passage')">
+  <div class="modal" style="max-width:380px">
+    <h2>+ Ajouter un passage</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Formation : <strong id="ap-promo-nom"></strong></p>
+    <div class="form-row">
+      <label>Semaine d'arrivee *</label>
+      <input type="number" id="ap-semaine" min="1" max="52" placeholder="Ex : 43">
+    </div>
+    <div class="form-row">
+      <label>Duree (semaines)</label>
+      <input type="number" id="ap-duree" min="1" max="8" value="2">
+    </div>
+    <div id="ap-preview" style="margin-top:8px;font-size:.78rem;color:var(--muted)"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-ajouter-passage')">Annuler</button>
+      <button class="btn btn-primary" onclick="confirmerAjouterPassage()">Ajouter</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// DATA
+const BATIMENTS = {
+  CFA:  { label: 'Batiment CFA', color: '#1B4FD8', priority: 1, annexe: false,
+          etages: ['Etage 1','Etage 2','Etage 3','Etage 4'], chambresParEtage: 10 },
+  YS9:  { label: 'Yscoole Bat. 9', color: '#7C3AED', priority: 2, annexe: true, chambres: 10 },
+  YS10: { label: 'Yscoole Bat. 10', color: '#0891B2', priority: 3, annexe: true, chambres: 10 },
+};
+
+const PROMO_COLORS = ['#1B4FD8','#7C3AED','#0891B2','#D97706','#16A34A','#DC2626','#DB2777','#0D9488','#EA580C','#6366f1'];
+
+// Generer les chambres
+function genChambres() {
+  const ch = [];
+  for(let e=1;e<=4;e++) {
+    for(let n=1;n<=10;n++) {
+      const num = e+'0'+(n<=9?'0'+n:n);
+      ch.push({ id:'CFA-'+num, batiment:'CFA', etage:'Etage '+e, num:num, type:'triple', maxOcc:3, occupants:[] });
+    }
+  }
+  for(let n=1;n<=10;n++) {
+    ch.push({ id:'YS9-'+n, batiment:'YS9', etage:'', num:'9-'+n, type: n<=2?'double':'simple', occupants:[] });
+  }
+  for(let n=1;n<=10;n++) {
+    ch.push({ id:'YS10-'+n, batiment:'YS10', etage:'', num:'10-'+n, type: n<=2?'double':'simple', occupants:[] });
+  }
+  return ch;
+}
+
+let chambres = genChambres();
+
+// Promotions avec plusieurs periodes
+let promotions = [
+  { id:'P1', nom:'CAP Elec 1ere', metier:'elec', color:'#1B4FD8',
+    periodes:[ {semDebut:4,duree:2},{semDebut:10,duree:2},{semDebut:18,duree:2},{semDebut:26,duree:2},{semDebut:34,duree:2},{semDebut:42,duree:2},{semDebut:48,duree:2} ] },
+  { id:'P2', nom:'CAP Plomb 1ere', metier:'plomb', color:'#0891B2',
+    periodes:[ {semDebut:5,duree:2},{semDebut:11,duree:2},{semDebut:19,duree:2},{semDebut:27,duree:2},{semDebut:35,duree:2},{semDebut:43,duree:2},{semDebut:49,duree:2} ] },
+  { id:'P3', nom:'BTS Elec', metier:'elec', color:'#7C3AED',
+    periodes:[ {semDebut:3,duree:2},{semDebut:6,duree:2},{semDebut:9,duree:2},{semDebut:13,duree:2},{semDebut:17,duree:2},{semDebut:21,duree:2},{semDebut:25,duree:2},{semDebut:29,duree:2},{semDebut:33,duree:2},{semDebut:39,duree:2},{semDebut:45,duree:2} ] },
+  { id:'P4', nom:'CAP Menu 1ere', metier:'menu', color:'#D97706',
+    periodes:[ {semDebut:6,duree:2},{semDebut:12,duree:2},{semDebut:20,duree:2},{semDebut:28,duree:2},{semDebut:36,duree:2},{semDebut:44,duree:2},{semDebut:50,duree:2} ] },
+];
+
+// Itinerants (residents a l'annee - inamovibles)
+let itinerants = [
+  { id:'IT01', prenom:'Marc',      nom:'DUPUIS',   chambre:'CFA-10101', type:'itinerant', photo:null },
+  { id:'IT02', prenom:'Pierre',    nom:'MARTIN',   chambre:'CFA-10102', type:'itinerant', photo:null },
+  { id:'IT03', prenom:'Jean',      nom:'LEFORT',   chambre:'CFA-10103', type:'itinerant', photo:null },
+  { id:'IT04', prenom:'Andre',     nom:'SIMON',    chambre:'CFA-10104', type:'itinerant', photo:null },
+  { id:'IT05', prenom:'Michel',    nom:'BERNARD',  chambre:'CFA-10105', type:'itinerant', photo:null },
+  { id:'IT06', prenom:'Jacques',   nom:'THOMAS',   chambre:'CFA-10106', type:'itinerant', photo:null },
+  { id:'IT07', prenom:'Robert',    nom:'RICHARD',  chambre:'CFA-10107', type:'itinerant', photo:null },
+  { id:'IT08', prenom:'Henri',     nom:'PETIT',    chambre:'CFA-10108', type:'itinerant', photo:null },
+  { id:'IT09', prenom:'Louis',     nom:'MOREAU',   chambre:'CFA-10109', type:'itinerant', photo:null },
+  { id:'IT10', prenom:'Georges',   nom:'LAURENT',  chambre:'CFA-10110', type:'itinerant', photo:null },
+];
+
+let apprentis = [
+  { id:'A01', prenom:'Lucas',   nom:'MARTIN',  age:17, mineur:true,  promo:'P1', chambreHisto:'CFA-10101', photo:null },
+  { id:'A02', prenom:'Theo',    nom:'DUPONT',  age:19, mineur:false, promo:'P1', chambreHisto:'CFA-10102', photo:null },
+  { id:'A03', prenom:'Emma',    nom:'GIRARD',  age:16, mineur:true,  promo:'P1', chambreHisto:'CFA-10103', photo:null },
+  { id:'A04', prenom:'Noah',    nom:'RICHARD', age:18, mineur:false, promo:'P1', chambreHisto:'CFA-10104', photo:null },
+  { id:'A05', prenom:'Tom',     nom:'SIMON',   age:16, mineur:true,  promo:'P2', chambreHisto:'CFA-20201', photo:null },
+  { id:'A06', prenom:'Lea',     nom:'THOMAS',  age:17, mineur:true,  promo:'P2', chambreHisto:'CFA-20202', photo:null },
+  { id:'A07', prenom:'Hugo',    nom:'LEROY',   age:20, mineur:false, promo:'P2', chambreHisto:'CFA-20203', photo:null },
+  { id:'A08', prenom:'Jade',    nom:'PETIT',   age:18, mineur:false, promo:'P2', chambreHisto:'CFA-20204', photo:null },
+  { id:'A09', prenom:'Axel',    nom:'BERNARD', age:19, mineur:false, promo:'P3', chambreHisto:'CFA-30301', photo:null },
+  { id:'A10', prenom:'Ines',    nom:'MOREAU',  age:17, mineur:true,  promo:'P3', chambreHisto:'CFA-30302', photo:null },
+  { id:'A11', prenom:'Raphael', nom:'FOURNIER',age:20, mineur:false, promo:'P3', chambreHisto:'YS9-1',    photo:null },
+  { id:'A12', prenom:'Chloe',   nom:'LAMBERT', age:19, mineur:false, promo:'P3', chambreHisto:'YS9-2',    photo:null },
+  { id:'A13', prenom:'Maxime',  nom:'GARCIA',  age:18, mineur:false, promo:'P4', chambreHisto:'CFA-40401', photo:null },
+  { id:'A14', prenom:'Sarah',   nom:'DUBOIS',  age:17, mineur:true,  promo:'P4', chambreHisto:'CFA-40402', photo:null },
+  { id:'A15', prenom:'Antoine', nom:'ROUX',    age:20, mineur:false, promo:'P5', chambreHisto:'YS10-1',   photo:null },
+];
+
+let affectations = {};
+let semaineActuelle = 1;
+let semaineEtage = 1;
+let semainePlanning = 1;
+let chambreSelectionnee = null;
+
+// UTILS
+function toast(msg,d) {
+  d = d||3000;
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');}, d);
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeMBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+var fmt = function(v){return new Intl.NumberFormat('fr-FR').format(Math.round(v));};
+
+function getSemKey(s){ return 'S'+(s<10?'0':'')+s; }
+
+function getAffectations(sem){ return affectations[getSemKey(sem)] || {}; }
+function setAffectation(sem, chambreId, apprentiIds){
+  if(!affectations[getSemKey(sem)]) affectations[getSemKey(sem)] = {};
+  affectations[getSemKey(sem)][chambreId] = apprentiIds;
+}
+function getOccupants(sem, chambreId){
+  var ids = getAffectations(sem)[chambreId] || [];
+  return ids.map(function(id){return apprentis.find(function(a){return a.id===id;});}).filter(Boolean);
+}
+
+function semDateRange(s){
+  var start = new Date(2025, 8, 1);
+  var day = start.getDay();
+  var diff = day <= 1 ? 1 - day : 8 - day;
+  start.setDate(start.getDate() + diff + (s-1)*7);
+  var end = new Date(start); end.setDate(end.getDate()+6);
+  return (start.getDate())+'/'+(start.getMonth()+1)+' - '+(end.getDate())+'/'+(end.getMonth()+1);
+}
+
+function promoActifSemaine(p, s){
+  if(p.periodes) return p.periodes.some(function(per){return s>=per.semDebut && s<per.semDebut+per.duree;});
+  return s>=p.semDebut && s<p.semDebut+p.duree;
+}
+function getPeriodeActive(p, s){
+  if(p.periodes) return p.periodes.find(function(per){return s>=per.semDebut && s<per.semDebut+per.duree;})||null;
+  if(s>=p.semDebut && s<p.semDebut+p.duree) return {semDebut:p.semDebut,duree:p.duree};
+  return null;
+}
+function getProchainePeriode(p, s){
+  var all = p.periodes || [{semDebut:p.semDebut,duree:p.duree}];
+  var futures = all.filter(function(per){return per.semDebut>s;}).sort(function(a,b){return a.semDebut-b.semDebut;});
+  return futures[0]||null;
+}
+
+function apprentisEnSemaine(s){
+  return apprentis.filter(function(a){
+    var p = promotions.find(function(pr){return pr.id===a.promo;});
+    return p && promoActifSemaine(p,s);
+  });
+}
+
+function alerteMineurAnnexe(sem){
+  var aff = getAffectations(sem);
+  var keys = Object.keys(aff);
+  for(var i=0;i<keys.length;i++){
+    var ch = chambres.find(function(c){return c.id===keys[i];});
+    if(!ch || !BATIMENTS[ch.batiment].annexe) continue;
+    var ids = aff[keys[i]];
+    for(var j=0;j<ids.length;j++){
+      var a = apprentis.find(function(x){return x.id===ids[j];});
+      if(a && a.mineur) return true;
+    }
+  }
+  return false;
+}
+
+// NAVIGATION
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='planning'){ renderPlanning(); setTimeout(scrollToSemaineActuelle,100); }
+  if(id==='extraction') renderExtraction();
+  if(id==='promotions') renderPromos();
+  if(id==='etage'){
+    semaineEtage=semaineActuelle;
+    document.getElementById('etage-sem-display').textContent=getSemKey(semaineEtage);
+    document.getElementById('etage-sem-range').textContent=semDateRange(semaineEtage);
+    renderEtage();
+  }
+}
+
+// SEMAINE
+function changerSemaine(delta){
+  semaineActuelle=Math.max(1,Math.min(52,semaineActuelle+delta));
+  updateSemaineDisplay(); renderHotel();
+}
+function allerSemaineActuelle(){
+  var now=new Date(); var start=new Date(2025,8,1);
+  var diff=Math.floor((now-start)/(7*24*3600*1000));
+  semaineActuelle=Math.max(1,Math.min(52,diff+1));
+  updateSemaineDisplay(); renderHotel();
+}
+function updateSemaineDisplay(){
+  document.getElementById('sem-display').textContent=getSemKey(semaineActuelle);
+  document.getElementById('sem-range').textContent=semDateRange(semaineActuelle);
+}
+
+// VUE HOTEL
+function renderHotel(){
+  var sem=semaineActuelle;
+  var aff=getAffectations(sem);
+  var enSemaine=apprentisEnSemaine(sem);
+  var enSemaineIds={};
+  enSemaine.forEach(function(a){enSemaineIds[a.id]=true;});
+
+  var totalOcc=0,totalLibre=0,totalCFA=0,totalAnnexe=0;
+  chambres.forEach(function(ch){
+    var occs=(aff[ch.id]||[]).filter(function(id){return enSemaineIds[id];});
+    if(occs.length>0){totalOcc++;if(BATIMENTS[ch.batiment].annexe)totalAnnexe+=occs.length;else totalCFA+=occs.length;}
+    else totalLibre++;
+  });
+
+  var nonPlaces=enSemaine.length;
+  var allPlaces=[];
+  Object.values(aff).forEach(function(ids){ids.forEach(function(id){if(enSemaineIds[id])allPlaces.push(id);});});
+  nonPlaces-=allPlaces.length;
+
+  document.getElementById('stats-band').innerHTML =
+    '<div class="stat-card"><label>Apprentis presents</label><div class="val">'+enSemaine.length+'</div><small>cette semaine</small></div>'+
+    '<div class="stat-card"><label>Chambres occupees</label><div class="val warn">'+totalOcc+'</div><small>sur '+chambres.length+'</small></div>'+
+    '<div class="stat-card"><label>Chambres libres</label><div class="val ok">'+totalLibre+'</div></div>'+
+    '<div class="stat-card"><label>Au CFA</label><div class="val" style="color:var(--cfa)">'+totalCFA+'</div><small>apprentis</small></div>'+
+    '<div class="stat-card"><label>En annexe</label><div class="val" style="color:var(--ys9)">'+totalAnnexe+'</div><small>apprentis</small></div>'+
+    '<div class="stat-card"><label>Non places</label><div class="val danger">'+Math.max(0,nonPlaces)+'</div><small>a placer</small></div>';
+
+  var alertEl=document.getElementById('alert-mineur');
+  if(alerteMineurAnnexe(sem)) alertEl.classList.add('show'); else alertEl.classList.remove('show');
+
+  var html='';
+  var batKeys=Object.keys(BATIMENTS);
+  for(var bi=0;bi<batKeys.length;bi++){
+    var batId=batKeys[bi]; var bat=BATIMENTS[batId];
+    var batChambres=chambres.filter(function(c){return c.batiment===batId;});
+    var batOcc=batChambres.filter(function(c){return (aff[c.id]||[]).some(function(id){return enSemaineIds[id];});}).length;
+    html+='<div class="batiment-section">';
+    html+='<div class="batiment-header">';
+    html+='<span class="batiment-badge" style="background:'+bat.color+'">'+bat.label+'</span>';
+    html+=bat.annexe?'<span style="font-size:.72rem;background:var(--warn-lt);color:var(--warn);padding:2px 8px;border-radius:20px;font-weight:600">ANNEXE - 0 mineur</span>':'<span style="font-size:.72rem;background:var(--ok-lt);color:var(--ok);padding:2px 8px;border-radius:20px;font-weight:600">Prioritaire</span>';
+    html+='<span class="batiment-stats">'+batOcc+'/'+batChambres.length+' occupees</span>';
+    html+='</div>';
+
+    if(bat.etages){
+      bat.etages.forEach(function(etage){
+        var etChambres=batChambres.filter(function(c){return c.etage===etage;});
+        html+='<div class="etage-label">'+etage+'</div><div class="chambres-grid">';
+        etChambres.forEach(function(ch){html+=chambreCardHTML(ch,aff,enSemaineIds,bat);});
+        html+='</div>';
+      });
+    } else {
+      html+='<div class="chambres-grid">';
+      batChambres.forEach(function(ch){html+=chambreCardHTML(ch,aff,enSemaineIds,bat);});
+      html+='</div>';
+    }
+    html+='</div>';
+  }
+  document.getElementById('hotel-content').innerHTML=html;
+}
+
+function chambreCardHTML(ch,aff,enSemaineIds,bat){
+  var occs=(aff[ch.id]||[]).map(function(id){return apprentis.find(function(a){return a.id===id;});}).filter(function(a){return a&&enSemaineIds[a.id];});
+  var itin=itinerants.find(function(it){return it.chambre===ch.id;});
+  var hasMineur=occs.some(function(a){return a.mineur;});
+  var alerteMineur=bat.annexe&&hasMineur;
+  var maxApp=ch.batiment==='CFA'?2:(ch.type==='double'?2:1);
+  var maxTotal=ch.batiment==='CFA'?3:maxApp;
+  var totalOccs=occs.length+(itin?1:0);
+
+  var cardClass=occs.length===0?'libre':occs.length<maxApp?'double-partiel':'double-pleine';
+
+  var occupantsHTML='';
+  if(itin) occupantsHTML+='<div style="font-size:.68rem;color:#1e40af;font-weight:600">'+itin.prenom+' '+itin.nom[0]+'. <span style="font-size:.55rem;background:#dbeafe;color:#1e40af;padding:1px 4px;border-radius:6px">Itin.</span></div>';
+  occs.forEach(function(a){
+    var p=promotions.find(function(pr){return pr.id===a.promo;});
+    occupantsHTML+='<div class="chambre-occupant" style="color:'+(p?p.color:'#333')+'">'+a.prenom+' '+a.nom[0]+'.'+(a.mineur?' <span style="font-size:.58rem;background:var(--warn-lt);color:var(--warn);padding:1px 4px;border-radius:6px">-18</span>':'')+'</div>';
+  });
+
+  return '<div class="chambre-card '+cardClass+(alerteMineur?' alerte-mineur':'')+'" onclick="ouvrirChambre(\''+ch.id+'\')">'
+    +(alerteMineur?'<span class="mineur-badge">MINEUR</span>':'')
+    +'<div class="chambre-num">N&#176;'+ch.num+'</div>'
+    +'<div class="chambre-type">'+maxTotal+' lits - '+totalOccs+'/'+maxTotal+'</div>'
+    +(occupantsHTML||'<div style="font-size:.7rem;color:var(--muted);margin-top:4px">Libre</div>')
+    +'</div>';
+}
+
+// MODAL CHAMBRE
+function ouvrirChambre(chambreId){
+  chambreSelectionnee=chambreId;
+  var ch=chambres.find(function(c){return c.id===chambreId;});
+  var bat=BATIMENTS[ch.batiment];
+  var sem=semaineActuelle;
+  var aff=getAffectations(sem);
+  var enSemaine=apprentisEnSemaine(sem);
+  var enSemaineIds={};
+  enSemaine.forEach(function(a){enSemaineIds[a.id]=true;});
+  var occs=(aff[ch.id]||[]).map(function(id){return apprentis.find(function(a){return a.id===id;});}).filter(function(a){return a&&enSemaineIds[a.id];});
+  var maxApp=ch.batiment==='CFA'?2:(ch.type==='double'?2:1);
+  var itin=itinerants.find(function(it){return it.chambre===ch.id;});
+
+  document.getElementById('modal-chambre-title').textContent='Chambre '+ch.num+' - '+bat.label;
+
+  var histoApps=apprentis.filter(function(a){return a.chambreHisto===chambreId&&enSemaineIds[a.id];});
+  var histoBadge=document.getElementById('historique-badge');
+  if(histoApps.length>0){
+    histoBadge.className='historique-badge show';
+    histoBadge.innerHTML='Chambre habituelle de : '+histoApps.map(function(a){return '<strong>'+a.prenom+' '+a.nom+'</strong>';}).join(', ');
+  } else { histoBadge.className='historique-badge'; }
+
+  var occEl=document.getElementById('modal-chambre-occupants');
+  var occHTML='<div style="margin-bottom:12px"><div style="font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:6px">OCCUPANTS</div>';
+  if(itin){
+    occHTML+='<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#dbeafe;border-radius:7px;margin-bottom:5px;font-size:.83rem;border:1px solid #93c5fd">'
+      +'<span>&#128274; <strong>'+itin.prenom+' '+itin.nom+'</strong> <span style="font-size:.68rem;color:#1e40af;font-weight:600">(Itinerant - Resident annuel)</span></span>'
+      +'<span style="font-size:.72rem;color:#1e40af;font-weight:600">Inamovible</span>'
+      +'</div>';
+  }
+  occs.forEach(function(a){
+    occHTML+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--bg);border-radius:7px;margin-bottom:5px;font-size:.83rem">'
+      +'<span>'+(a.mineur?'<b>MINEUR</b> ':'')+' <strong>'+a.prenom+' '+a.nom+'</strong></span>'
+      +'<button class="btn btn-danger btn-sm" data-id="'+a.id+'" onclick="retirerApprenti(this.dataset.id)">Retirer</button>'
+      +'</div>';
+  });
+  if(!itin&&occs.length===0) occHTML+='<div style="font-size:.82rem;color:var(--muted);font-style:italic;padding:6px">Aucun occupant</div>';
+  occEl.innerHTML=occHTML+'</div>';
+
+  var formZone=document.getElementById('form-ajout-zone');
+  var warn=document.getElementById('modal-chambre-warning');
+  warn.style.display='none';
+
+  if(occs.length>=maxApp){
+    formZone.style.display='none';
+  } else {
+    formZone.style.display='block';
+    var dispo=enSemaine.filter(function(a){
+      var dejaPlace=Object.keys(aff).some(function(cId){return cId!==chambreId&&(aff[cId]||[]).indexOf(a.id)>=0;});
+      return !occs.find(function(o){return o.id===a.id;})&&!dejaPlace;
+    });
+    var sel=document.getElementById('select-apprenti');
+    sel.innerHTML='<option value="">-- Choisir un apprenti --</option>';
+    dispo.forEach(function(a){
+      var p=promotions.find(function(pr){return pr.id===a.promo;});
+      var opt=document.createElement('option');
+      opt.value=a.id;
+      opt.textContent=a.prenom+' '+a.nom+(a.mineur?' (mineur)':'')+' - '+(p?p.nom:'')+(a.chambreHisto===chambreId?' (habituel)':'');
+      sel.appendChild(opt);
+    });
+    sel.onchange=function(){verifierRegleMineur(sel.value,ch);};
+  }
+
+  document.getElementById('modal-chambre').classList.add('open');
+}
+
+function verifierRegleMineur(apprentiId,ch){
+  var warn=document.getElementById('modal-chambre-warning');
+  if(!apprentiId){warn.style.display='none';return;}
+  var a=apprentis.find(function(x){return x.id===apprentiId;});
+  var bat=BATIMENTS[ch.batiment];
+  if(a&&a.mineur&&bat.annexe){
+    warn.style.display='block';
+    warn.textContent='INTERDIT - Ce jeune est mineur. Il ne peut pas etre place en batiment annexe !';
+  } else { warn.style.display='none'; }
+}
+
+function affecterApprenti(){
+  var apprentiId=document.getElementById('select-apprenti').value;
+  if(!apprentiId){toast('Selectionne un apprenti');return;}
+  var ch=chambres.find(function(c){return c.id===chambreSelectionnee;});
+  var a=apprentis.find(function(x){return x.id===apprentiId;});
+  var bat=BATIMENTS[ch.batiment];
+  if(a.mineur&&bat.annexe){toast('INTERDIT - Mineur en batiment annexe !');return;}
+  var sem=semaineActuelle;
+  var aff=getAffectations(sem);
+  var current=aff[chambreSelectionnee]||[];
+  var maxApp=ch.batiment==='CFA'?2:(ch.type==='double'?2:1);
+  if(current.length>=maxApp){toast('Chambre complete');return;}
+  setAffectation(sem,chambreSelectionnee,[].concat(current,[apprentiId]));
+  a.chambreHisto=chambreSelectionnee;
+  closeModal('modal-chambre');
+  renderHotel();
+  toast(a.prenom+' '+a.nom+' place en chambre '+ch.num);
+}
+
+function retirerApprenti(apprentiId){
+  var sem=semaineActuelle;
+  var aff=getAffectations(sem);
+  var current=aff[chambreSelectionnee]||[];
+  setAffectation(sem,chambreSelectionnee,current.filter(function(id){return id!==apprentiId;}));
+  closeModal('modal-chambre');
+  renderHotel();
+  var a=apprentis.find(function(x){return x.id===apprentiId;});
+  toast((a?a.prenom:'')+' retire de la chambre');
+}
+
+// AFFECTATION AUTO
+function affectationAuto(){
+  var sem=semaineActuelle;
+  var enSemaine=apprentisEnSemaine(sem);
+  var aff=Object.assign({},getAffectations(sem));
+  Object.keys(aff).forEach(function(k){aff[k]=[].concat(aff[k]||[]);});
+  var dejaPlaces={};
+  Object.values(aff).forEach(function(ids){ids.forEach(function(id){dejaPlaces[id]=true;});});
+  var aAffecter=enSemaine.filter(function(a){return !dejaPlaces[a.id];});
+  if(!aAffecter.length){toast('Tous les apprentis sont deja places');return;}
+
+  var mineurs=aAffecter.filter(function(a){return a.mineur;});
+  var majeurs=aAffecter.filter(function(a){return !a.mineur;});
+
+  function getPlaces(ch){return (ch.batiment==='CFA'?2:(ch.type==='double'?2:1))-(aff[ch.id]||[]).length;}
+  var chambresLibresCFA=chambres.filter(function(c){return c.batiment==='CFA'&&getPlaces(c)>0;});
+  var chambresLibresAnnexe=chambres.filter(function(c){return c.batiment!=='CFA'&&getPlaces(c)>0;});
+
+  var placed=0;
+  function placer(liste,chambresDisp){
+    liste.forEach(function(a){
+      if(dejaPlaces[a.id]) return;
+      if(a.chambreHisto){
+        var histoCh=chambres.find(function(c){return c.id===a.chambreHisto;});
+        if(histoCh&&!(a.mineur&&BATIMENTS[histoCh.batiment].annexe)&&getPlaces(histoCh)>0){
+          if(!aff[histoCh.id]) aff[histoCh.id]=[];
+          aff[histoCh.id].push(a.id); dejaPlaces[a.id]=true; placed++; return;
+        }
+      }
+      for(var i=0;i<chambresDisp.length;i++){
+        var ch=chambresDisp[i];
+        if(a.mineur&&BATIMENTS[ch.batiment].annexe) continue;
+        if(getPlaces(ch)>0){
+          if(!aff[ch.id]) aff[ch.id]=[];
+          aff[ch.id].push(a.id); dejaPlaces[a.id]=true; placed++; return;
+        }
+      }
+    });
+  }
+  placer(mineurs,chambresLibresCFA);
+  placer(majeurs,chambresLibresCFA);
+  placer(majeurs.filter(function(a){return !dejaPlaces[a.id];}),chambresLibresAnnexe);
+
+  affectations[getSemKey(sem)]=aff;
+  renderHotel();
+  toast(placed+' apprenti(s) places automatiquement');
+}
+
+function toutVider(){
+  if(!confirm('Vider toutes les affectations de cette semaine ?')) return;
+  affectations[getSemKey(semaineActuelle)]={};
+  renderHotel();
+  toast('Semaine videe');
+}
+
+// VUE ETAGE
+function changerSemaineEtage(delta){
+  semaineEtage=Math.max(1,Math.min(52,semaineEtage+delta));
+  document.getElementById('etage-sem-display').textContent=getSemKey(semaineEtage);
+  document.getElementById('etage-sem-range').textContent=semDateRange(semaineEtage);
+  renderEtage();
+}
+
+function renderEtage(){
+  var batId=document.getElementById('etage-filter-bat').value;
+  var etageFilter=document.getElementById('etage-filter-etage').value;
+  var bat=BATIMENTS[batId];
+  var sem=semaineEtage;
+  var aff=getAffectations(sem);
+  var enSemaine=apprentisEnSemaine(sem);
+  var enSemaineIds={};
+  enSemaine.forEach(function(a){enSemaineIds[a.id]=true;});
+
+  var etSel=document.getElementById('etage-filter-etage');
+  etSel.style.display=batId==='CFA'?'':'none';
+
+  var filteredChambres=chambres.filter(function(c){return c.batiment===batId;});
+  if(etageFilter&&batId==='CFA') filteredChambres=filteredChambres.filter(function(c){return c.etage===etageFilter;});
+
+  var etages={};
+  filteredChambres.forEach(function(ch){
+    var key=ch.etage||bat.label;
+    if(!etages[key]) etages[key]=[];
+    etages[key].push(ch);
+  });
+
+  var html='';
+  Object.keys(etages).forEach(function(etageNom){
+    var chs=etages[etageNom];
+    html+='<div class="etage-section">'
+      +'<div class="etage-section-title"><span style="width:4px;height:16px;background:'+bat.color+';border-radius:2px;display:inline-block"></span>'+etageNom+'</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px">';
+
+    chs.forEach(function(ch){
+      var itin=itinerants.find(function(it){return it.chambre===ch.id;});
+      var appIds=aff[ch.id]||[];
+      var appOccs=appIds.map(function(id){return apprentis.find(function(a){return a.id===id;});}).filter(function(a){return a&&enSemaineIds[a.id];});
+      var lits=[
+        {type:'itinerant',personne:itin},
+        {type:'apprenti',personne:appOccs[0]||null},
+        {type:'apprenti',personne:appOccs[1]||null},
+      ];
+      var nbOccs=(itin?1:0)+appOccs.length;
+      var hasMineurAnnexe=bat.annexe&&appOccs.some(function(a){return a.mineur;});
+      var statusColor=nbOccs===3?'var(--danger-lt)':nbOccs>0?'var(--warn-lt)':'var(--ok-lt)';
+      var statusTC=nbOccs===3?'var(--danger)':nbOccs>0?'var(--warn)':'var(--ok)';
+      var statusLabel=nbOccs===3?'Complete':nbOccs>0?((3-nbOccs)+' lit(s) libre(s)'):'Libre';
+
+      html+='<div class="chambre-detail-card'+(hasMineurAnnexe?' alerte-mineur':'')+'">'
+        +'<div class="chambre-detail-header">'
+        +'<div><div class="chambre-detail-num">Chambre '+ch.num+'</div><div class="chambre-detail-type">3 lits - '+bat.label+'</div></div>'
+        +(hasMineurAnnexe?'<span style="background:var(--danger-lt);color:var(--danger);font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:20px">MINEUR EN ANNEXE</span>':'')
+        +'<span class="chambre-detail-status" style="background:'+statusColor+';color:'+statusTC+'">'+statusLabel+'</span>'
+        +'</div>'
+        +'<div class="lits-grid">';
+
+      lits.forEach(function(lit,i){
+        if(lit.type==='itinerant'){
+          var it=lit.personne;
+          if(it){
+            html+='<div class="lit-slot itinerant">'
+              +'<div class="lit-numero">&#128274; Lit '+(i+1)+' - Itinerant</div>'
+              +(it.photo?'<img class="lit-photo" src="'+it.photo+'" alt="'+it.prenom+'" style="border-color:#1e40af">':'<div class="lit-avatar" style="background:#1e3a5f">'+it.prenom[0]+it.nom[0]+'</div>')
+              +'<div class="lit-nom">'+it.nom+'</div>'
+              +'<div class="lit-prenom">'+it.prenom+'</div>'
+              +'<span class="lit-badge-it">&#127968; Resident annuel</span>'
+              +'</div>';
+          } else {
+            html+='<div class="lit-slot libre" data-ch="'+ch.id+'" onclick="semaineActuelle=semaineEtage;ouvrirChambre(this.dataset.ch);renderHotel();">'
+              +'<div class="lit-numero">Lit '+(i+1)+'</div>'
+              +'<div class="lit-lock">&#128275;</div>'
+              +'<div class="lit-libre-label">Pas d\'itinerant</div>'
+              +'</div>';
+          }
+        } else {
+          var a=lit.personne;
+          if(a){
+            var p=promotions.find(function(pr){return pr.id===a.promo;});
+            html+='<div class="lit-slot apprenti" data-ch="'+ch.id+'" onclick="semaineActuelle=semaineEtage;ouvrirChambre(this.dataset.ch);renderHotel();" style="cursor:pointer">'
+              +'<div class="lit-numero">Lit '+(i+1)+'</div>'
+              +(a.photo?'<img class="lit-photo" src="'+a.photo+'" alt="'+a.prenom+'" style="border-color:'+(p?p.color:'#888')+'">':'<div class="lit-avatar" style="background:'+(p?p.color:'#888')+'">'+a.prenom[0]+a.nom[0]+'</div>')
+              +'<div class="lit-nom">'+a.nom+'</div>'
+              +'<div class="lit-prenom">'+a.prenom+'</div>'
+              +(a.mineur?'<span class="lit-badge-mineur">Mineur</span>':'')
+              +(p?'<span class="lit-promo" style="background:'+p.color+'">'+p.nom+'</span>':'')
+              +'</div>';
+          } else {
+            html+='<div class="lit-slot libre" data-ch="'+ch.id+'" onclick="semaineActuelle=semaineEtage;ouvrirChambre(this.dataset.ch);renderHotel();" style="cursor:pointer">'
+              +'<div class="lit-numero">Lit '+(i+1)+'</div>'
+              +'<div style="font-size:1.5rem;color:var(--border)">+</div>'
+              +'<div class="lit-libre-label">Cliquer pour affecter</div>'
+              +'</div>';
+          }
+        }
+      });
+      html+='</div></div>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('etage-content').innerHTML=html;
+}
+
+// PLANNING
+function changerSemainePlanning(delta){
+  semainePlanning=Math.max(1,Math.min(52,semainePlanning+delta));
+  document.getElementById('planning-sem-display').textContent=getSemKey(semainePlanning);
+  document.getElementById('planning-sem-range').textContent=semDateRange(semainePlanning);
+  renderPlanningDetail(semainePlanning);
+}
+
+function scrollToSemaineActuelle(){
+  semainePlanning=semaineActuelle;
+  document.getElementById('planning-sem-display').textContent=getSemKey(semainePlanning);
+  document.getElementById('planning-sem-range').textContent=semDateRange(semainePlanning);
+  renderPlanningDetail(semainePlanning);
+  var wrap=document.getElementById('planning-gantt-wrap');
+  if(wrap) wrap.scrollLeft=200+(semaineActuelle-3)*44;
+}
+
+function renderPlanning(){
+  renderPlanningGantt();
+  semainePlanning=semaineActuelle;
+  document.getElementById('planning-sem-display').textContent=getSemKey(semainePlanning);
+  document.getElementById('planning-sem-range').textContent=semDateRange(semainePlanning);
+  renderPlanningDetail(semainePlanning);
+  renderPlanningStats();
+}
+
+function renderPlanningStats(){
+  var promosSem=promotions.filter(function(p){return promoActifSemaine(p,semaineActuelle);});
+  var nbApp=apprentisEnSemaine(semaineActuelle).length;
+  var el=document.getElementById('planning-stats-semaine');
+  if(!el) return;
+  var prochaine=null;
+  promotions.forEach(function(p){
+    var pp=getProchainePeriode(p,semaineActuelle);
+    if(pp&&(!prochaine||pp.semDebut<prochaine.sem)){prochaine={sem:pp.semDebut,nom:p.nom};}
+  });
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">'
+    +'<div class="stat-card"><label>Semaine actuelle</label><div class="val" style="font-size:1.2rem">'+getSemKey(semaineActuelle)+'</div><small>'+semDateRange(semaineActuelle)+'</small></div>'
+    +'<div class="stat-card"><label>Formations presentes</label><div class="val warn">'+promosSem.length+'</div></div>'
+    +'<div class="stat-card"><label>Apprentis attendus</label><div class="val">'+nbApp+'</div></div>'
+    +'<div class="stat-card"><label>Prochaine arrivee</label><div class="val ok" style="font-size:1rem">'+(prochaine?getSemKey(prochaine.sem)+' - '+prochaine.nom.slice(0,15):'---')+'</div></div>'
+    +'</div>';
+}
+
+function renderPlanningGantt(){
+  var CELL_W=44; var LABEL_W=200; var NB_SEM=52;
+  var html='<div style="min-width:'+(LABEL_W+NB_SEM*CELL_W)+'px">';
+
+  // Header semaines
+  html+='<div style="display:flex;background:var(--text);color:#fff;position:sticky;top:0;z-index:10">';
+  html+='<div style="width:'+LABEL_W+'px;flex-shrink:0;padding:10px 14px;font-size:.72rem;font-weight:600;border-right:1px solid #444">Formation</div>';
+  for(var s=1;s<=NB_SEM;s++){
+    var isCur=s===semaineActuelle;
+    var nb=promotions.filter(function(p){return promoActifSemaine(p,s);}).length;
+    html+='<div style="width:'+CELL_W+'px;flex-shrink:0;padding:6px 2px;font-size:.62rem;font-weight:'+(isCur?700:600)+';text-align:center;border-right:1px solid #444;background:'+(isCur?'#1B4FD8':'#1C1A17')+';color:'+(nb?'#fff':'#666')+';cursor:pointer" data-s="'+s+'" onclick="semainePlanning=parseInt(this.dataset.s);document.getElementById(\'planning-sem-display\').textContent=getSemKey(semainePlanning);document.getElementById(\'planning-sem-range\').textContent=semDateRange(semainePlanning);renderPlanningDetail(semainePlanning);" title="'+semDateRange(s)+'">'+(isCur?'*':String(s<10?'0'+s:s))+(nb>0?'<div style="font-size:.5rem;color:#aaa">'+nb+'p</div>':'')+'</div>';
+  }
+  html+='</div>';
+
+  // Lignes promotions
+  promotions.forEach(function(p){
+    var nbApp=apprentis.filter(function(a){return a.promo===p.id;}).length;
+    var periodes=p.periodes||[{semDebut:p.semDebut,duree:p.duree}];
+    html+='<div style="display:flex;border-bottom:1px solid var(--border);min-height:44px">';
+    html+='<div style="width:'+LABEL_W+'px;flex-shrink:0;padding:8px 14px;border-right:1px solid var(--border);background:var(--bg);display:flex;align-items:center;gap:8px;position:sticky;left:0;z-index:5">';
+    html+='<div style="width:10px;height:10px;border-radius:2px;flex-shrink:0;background:'+p.color+'"></div>';
+    html+='<div><div style="font-size:.79rem;font-weight:600">'+p.nom+'</div><div style="font-size:.64rem;color:var(--muted)">'+nbApp+' apprenti'+(nbApp>1?'s':'')+'</div></div>';
+    html+='</div>';
+    for(var s=1;s<=NB_SEM;s++){
+      var per=periodes.find(function(per){return s>=per.semDebut&&s<per.semDebut+per.duree;});
+      var isCur=s===semaineActuelle;
+      var isD=per&&s===per.semDebut; var isF=per&&s===per.semDebut+per.duree-1;
+      var idx=per?periodes.indexOf(per):0;
+      html+='<div style="width:'+CELL_W+'px;flex-shrink:0;border-right:1px solid var(--border);position:relative;background:'+(isCur?'rgba(27,79,216,.05)':'')+'">';
+      if(per){
+        var br=isD&&isF?'6px':isD?'6px 0 0 6px':isF?'0 6px 6px 0':'0';
+        html+='<div style="position:absolute;top:6px;bottom:6px;left:'+(isD?3:0)+'px;right:'+(isF?3:0)+'px;background:'+p.color+';border-radius:'+br+';opacity:.88;display:flex;align-items:center;justify-content:center" title="'+p.nom+' - '+semDateRange(s)+' (Passage '+(idx+1)+'/'+periodes.length+')">';
+        if(isD) html+='<span style="font-size:.56rem;color:#fff;font-weight:700;padding:0 3px;white-space:nowrap;overflow:hidden">'+(idx+1)+'</span>';
+        html+='</div>';
+      }
+      html+='</div>';
+    }
+    html+='</div>';
+  });
+
+  // Ligne synthese
+  html+='<div style="display:flex;border-top:2px solid var(--border);background:var(--bg)">';
+  html+='<div style="width:'+LABEL_W+'px;flex-shrink:0;padding:8px 14px;border-right:1px solid var(--border);font-size:.74rem;font-weight:700;color:var(--muted);position:sticky;left:0;z-index:5;background:var(--bg)">Total formations/sem.</div>';
+  for(var s=1;s<=NB_SEM;s++){
+    var nb=promotions.filter(function(p){return promoActifSemaine(p,s);}).length;
+    var isCur=s===semaineActuelle;
+    var bg=isCur?'rgba(27,79,216,.06)':nb===0?'':nb>=3?'var(--danger-lt)':nb>=2?'var(--warn-lt)':'var(--ok-lt)';
+    var col=nb===0?'var(--border)':nb>=3?'var(--danger)':nb>=2?'var(--warn)':'var(--ok)';
+    html+='<div style="width:'+CELL_W+'px;flex-shrink:0;padding:8px 2px;text-align:center;font-size:.72rem;font-weight:700;border-right:1px solid var(--border);color:'+col+';background:'+bg+'">'+(nb||'')+'</div>';
+  }
+  html+='</div></div>';
+
+  document.getElementById('planning-gantt').innerHTML=html;
+}
+
+function renderPlanningDetail(sem){
+  var promosSem=promotions.filter(function(p){return promoActifSemaine(p,sem);});
+  var enSemaine=apprentisEnSemaine(sem);
+  var el=document.getElementById('planning-detail');
+  if(!el) return;
+
+  if(!promosSem.length){
+    el.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">ZZZ</div><div style="font-weight:600">Aucune formation presente</div><div style="font-size:.82rem;margin-top:4px">'+semDateRange(sem)+'</div></div>';
+    return;
+  }
+
+  var cardsHtml='';
+  promosSem.forEach(function(p){
+    var appList=apprentis.filter(function(a){return a.promo===p.id;});
+    var mineurs=appList.filter(function(a){return a.mineur;}).length;
+    var per=getPeriodeActive(p,sem);
+    var periodes=p.periodes||[{semDebut:p.semDebut,duree:p.duree}];
+    var numPer=per?periodes.indexOf(per)+1:1;
+    var semR=per?per.semDebut+per.duree-sem:0;
+    var isD=per&&sem===per.semDebut; var isF=per&&sem===per.semDebut+per.duree-1;
+    var prochaine=getProchainePeriode(p,sem);
+    var statut=isD?'Arrivee cette semaine':isF?'Depart cette semaine':'En cours';
+    var semDL=per?getSemKey(per.semDebut):'-';
+    var semFL=per?getSemKey(per.semDebut+per.duree-1):'-';
+    var mBadge=mineurs>0?'<div style="background:var(--warn-lt);color:var(--warn);padding:5px 8px;border-radius:6px;font-size:.72rem;font-weight:600;margin-bottom:8px">'+mineurs+' mineur'+(mineurs>1?'s':'')+' - Logement CFA uniquement</div>':'';
+    var pBadge=prochaine?'<div style="background:var(--accent-lt);color:var(--accent);padding:5px 8px;border-radius:6px;font-size:.72rem;font-weight:600;margin-bottom:8px">Prochain passage : '+getSemKey(prochaine.semDebut)+' ('+semDateRange(prochaine.semDebut)+')</div>':'';
+    var badges='';
+    appList.slice(0,5).forEach(function(a){badges+='<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 7px;background:'+p.color+'22;color:'+p.color+';border-radius:10px;font-weight:600">'+a.prenom+' '+a.nom[0]+'.</span>';});
+    if(appList.length>5) badges+='<span style="color:var(--muted);font-size:.72rem">+'+(appList.length-5)+' autres</span>';
+
+    cardsHtml+='<div style="background:var(--surface);border:1.5px solid '+p.color+';border-radius:11px;overflow:hidden">'
+      +'<div style="background:'+p.color+';color:#fff;padding:10px 14px">'
+      +'<div style="font-weight:700;font-size:.92rem">'+p.nom+'</div>'
+      +'<div style="font-size:.72rem;opacity:.85;margin-top:2px">'+statut+' - Passage '+numPer+'/'+periodes.length+' - '+semDL+' au '+semFL+'</div>'
+      +'</div>'
+      +'<div style="padding:10px 14px">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:10px">'
+      +'<div style="text-align:center"><div style="font-size:1.1rem;font-weight:700">'+appList.length+'</div><div style="font-size:.62rem;color:var(--muted)">Apprentis</div></div>'
+      +'<div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:var(--warn)">'+mineurs+'</div><div style="font-size:.62rem;color:var(--muted)">Mineurs</div></div>'
+      +'<div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:var(--ok)">'+semR+'</div><div style="font-size:.62rem;color:var(--muted)">Sem. restantes</div></div>'
+      +'<div style="text-align:center"><div style="font-size:1.1rem;font-weight:700">'+periodes.length+'</div><div style="font-size:.62rem;color:var(--muted)">Passages/an</div></div>'
+      +'</div>'
+      +mBadge+pBadge
+      +'<div style="font-size:.75rem">'+badges+'</div>'
+      +'</div></div>';
+  });
+
+  el.innerHTML='<div style="margin-bottom:12px;font-size:.82rem;color:var(--muted);font-weight:600">'+getSemKey(sem)+' - '+semDateRange(sem)+' - '+promosSem.length+' formation'+(promosSem.length>1?'s':'')+' - '+enSemaine.length+' apprenti'+(enSemaine.length>1?'s':'')+'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">'+cardsHtml+'</div>';
+}
+
+// EXTRACTION
+function renderExtraction(){
+  var sel=document.getElementById('ext-semaine');
+  if(sel.options.length===0){
+    for(var s=1;s<=52;s++){
+      var opt=document.createElement('option');
+      opt.value=s; opt.textContent=getSemKey(s)+' - '+semDateRange(s);
+      if(s===semaineActuelle) opt.selected=true;
+      sel.appendChild(opt);
+    }
+  }
+  var sem=parseInt(sel.value)||semaineActuelle;
+  var aff=getAffectations(sem);
+  var enSemaine=apprentisEnSemaine(sem);
+  var enSemaineIds={};
+  enSemaine.forEach(function(a){enSemaineIds[a.id]=true;});
+
+  var html='';
+  Object.keys(BATIMENTS).forEach(function(batId){
+    var bat=BATIMENTS[batId];
+    var batChambres=chambres.filter(function(c){return c.batiment===batId;});
+    var rows=[];
+    batChambres.forEach(function(ch){
+      var occs=(aff[ch.id]||[]).map(function(id){return apprentis.find(function(a){return a.id===id;});}).filter(function(a){return a&&enSemaineIds[a.id];});
+      occs.forEach(function(a){
+        var p=promotions.find(function(pr){return pr.id===a.promo;});
+        rows.push({ch:ch,a:a,p:p});
+      });
+    });
+
+    html+='<div class="extraction-card">'
+      +'<div class="extraction-header"><h3>'+bat.label+(bat.annexe?' - ANNEXE':'')+'</h3>'
+      +'<span style="font-size:.78rem;opacity:.8">'+rows.length+' occupant(s) - '+getSemKey(sem)+' - '+semDateRange(sem)+'</span></div>';
+    if(!rows.length){
+      html+='<div style="padding:20px;text-align:center;color:var(--muted);font-size:.85rem">Aucun occupant cette semaine</div>';
+    } else {
+      html+='<table><thead><tr><th>Chambre</th><th>Nom</th><th>Prenom</th><th>Statut</th><th>Promotion</th><th>Arrivee</th><th>Depart</th></tr></thead><tbody>';
+      rows.sort(function(a,b){return a.ch.num.localeCompare(b.ch.num);}).forEach(function(row){
+        var per=getPeriodeActive(row.p,sem);
+        var debut=per?semDateRange(per.semDebut).split('-')[0].trim():'?';
+        var fin=per?semDateRange(per.semDebut+per.duree-1).split('-')[1].trim():'?';
+        html+='<tr>'
+          +'<td style="font-family:monospace;font-weight:600">N&#176;'+row.ch.num+'</td>'
+          +'<td style="font-weight:600">'+row.a.nom+'</td>'
+          +'<td>'+row.a.prenom+'</td>'
+          +'<td><span class="'+(row.a.mineur?'badge-mineur':'badge-majeur')+'">'+(row.a.mineur?'Mineur':'Majeur')+'</span></td>'
+          +'<td style="font-size:.75rem;color:'+(row.p?row.p.color:'#888')+';font-weight:600">'+(row.p?row.p.nom:'---')+'</td>'
+          +'<td style="font-size:.75rem;font-family:monospace">'+debut+'</td>'
+          +'<td style="font-size:.75rem;font-family:monospace">'+fin+'</td>'
+          +'</tr>';
+      });
+      html+='</tbody></table>';
+    }
+    html+='</div>';
+  });
+  document.getElementById('extraction-content').innerHTML=html;
+}
+
+// PROMOTIONS
+function openModalPromo(){
+  var cp=document.getElementById('promo-color-picker');
+  cp.innerHTML=PROMO_COLORS.map(function(c,i){
+    return '<div style="width:22px;height:22px;border-radius:50%;background:'+c+';cursor:pointer;border:2px solid '+(i===0?'#000':'transparent')+';display:inline-block;margin:2px;transition:transform .1s" data-color="'+c+'" onclick="selectPromoColor(\''+c+'\',this)"></div>';
+  }).join('');
+  document.getElementById('p-color').value=PROMO_COLORS[0];
+  document.getElementById('p-preview').style.display='none';
+  document.getElementById('modal-promo').classList.add('open');
+}
+function selectPromoColor(c,el){
+  document.getElementById('p-color').value=c;
+  document.querySelectorAll('#promo-color-picker div').forEach(function(d){d.style.border='2px solid transparent';});
+  el.style.border='2px solid #000';
+}
+function presetSemaines(nb,dur){
+  var interval=Math.floor(50/nb); var sems=[]; var s=3;
+  for(var i=0;i<nb;i++){sems.push(s);s+=interval;if(s>50)break;}
+  document.getElementById('p-semaines').value=sems.join(', ');
+  document.getElementById('p-duree').value=dur;
+  previewPeriodes();
+}
+function previewPeriodes(){
+  var val=document.getElementById('p-semaines').value;
+  var dur=parseInt(document.getElementById('p-duree').value)||2;
+  var sems=val.split(',').map(function(s){return parseInt(s.trim());}).filter(function(s){return !isNaN(s)&&s>=1&&s<=52;}).sort(function(a,b){return a-b;});
+  var prev=document.getElementById('p-preview');
+  if(!sems.length){prev.style.display='none';return;}
+  prev.style.display='block';
+  prev.innerHTML='<strong>'+sems.length+' passages de '+dur+' semaine'+(dur>1?'s':'')+' :</strong><br>'
+    +sems.map(function(s,i){return '<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;background:var(--accent-lt);color:var(--accent);border-radius:10px;font-size:.74rem;font-weight:600">Passage '+(i+1)+' : '+getSemKey(s)+' - '+getSemKey(s+dur-1)+'</span>';}).join('');
+}
+function ajouterPromo(){
+  var nom=document.getElementById('p-nom').value.trim();
+  var dur=parseInt(document.getElementById('p-duree').value)||2;
+  var color=document.getElementById('p-color').value;
+  var metier=document.getElementById('p-metier').value;
+  var val=document.getElementById('p-semaines').value;
+  var sems=val.split(',').map(function(s){return parseInt(s.trim());}).filter(function(s){return !isNaN(s)&&s>=1&&s<=52;}).sort(function(a,b){return a-b;});
+  if(!nom){toast('Nom obligatoire');return;}
+  if(!sems.length){toast('Ajoute au moins une semaine');return;}
+  var periodes=sems.map(function(s){return {semDebut:s,duree:dur};});
+  promotions.push({id:'P'+Date.now(),nom:nom,metier:metier,color:color,periodes:periodes});
+  closeModal('modal-promo');
+  document.getElementById('p-nom').value='';
+  document.getElementById('p-semaines').value='';
+  document.getElementById('p-preview').style.display='none';
+  renderPromos(); renderPlanning();
+  toast('"'+nom+'" cree - '+periodes.length+' passages');
+}
+
+function renderPromos(){
+  var container=document.getElementById('promos-list');
+  var html='';
+  promotions.forEach(function(p){
+    var nb=apprentis.filter(function(a){return a.promo===p.id;}).length;
+    var periodes=p.periodes||[{semDebut:p.semDebut,duree:p.duree}];
+    var dur=periodes[0]?periodes[0].duree:2;
+    var periodesHtml='';
+    periodes.forEach(function(per,i){
+      periodesHtml+='<div style="background:'+p.color+'18;border:1px solid '+p.color+'44;border-radius:8px;padding:5px 10px;font-size:.74rem;display:inline-flex;align-items:center;gap:4px">'
+        +'<span style="font-weight:700;color:'+p.color+'">P'+(i+1)+'</span>'
+        +'<span style="color:var(--muted)">-</span>'
+        +'<span style="font-size:.72rem">'+getSemKey(per.semDebut)+' au '+getSemKey(per.semDebut+per.duree-1)+'</span>'
+        +'<span style="color:var(--muted);font-size:.68rem">('+semDateRange(per.semDebut)+')</span>'
+        +'<button style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:.8rem;padding:0 2px" data-promo="'+p.id+'" data-idx="'+i+'" onclick="supprimerPeriode(this.dataset.promo,parseInt(this.dataset.idx))">x</button>'
+        +'</div> ';
+    });
+    html+='<div style="background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px">'
+      +'<div style="padding:12px 16px;background:'+p.color+'15;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">'
+      +'<div style="width:12px;height:12px;border-radius:3px;background:'+p.color+';flex-shrink:0"></div>'
+      +'<div style="flex:1"><div style="font-weight:700;font-size:.95rem">'+p.nom+'</div>'
+      +'<div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+periodes.length+' passage'+(periodes.length>1?'s':'')+' de '+dur+' semaine'+(dur>1?'s':'')+' - '+nb+' apprenti'+(nb>1?'s':'')+'</div></div>'
+      +'<button class="btn btn-danger btn-sm" data-promo="'+p.id+'" onclick="supprimerPromo(this.dataset.promo)">Supprimer</button>'
+      +'</div>'
+      +'<div style="padding:12px 16px">'
+      +'<div style="font-size:.72rem;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase">Passages programmes</div>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:6px">'+periodesHtml
+      +'<button class="btn btn-ghost btn-sm" data-promo="'+p.id+'" onclick="ajouterPassage(this.dataset.promo)" style="font-size:.72rem">+ Ajouter un passage</button>'
+      +'</div></div></div>';
+  });
+  container.innerHTML=html;
+}
+
+function supprimerPeriode(promoId,idx){
+  var p=promotions.find(function(x){return x.id===promoId;});
+  if(!p||!p.periodes) return;
+  if(p.periodes.length===1){toast('Au moins un passage requis');return;}
+  p.periodes.splice(idx,1);
+  renderPromos(); renderPlanning();
+  toast('Passage supprime');
+}
+var ajouterPassagePromoId=null;
+function ajouterPassage(promoId){
+  ajouterPassagePromoId=promoId;
+  var p=promotions.find(function(x){return x.id===promoId;});
+  if(!p) return;
+  var dur=p.periodes&&p.periodes[0]?p.periodes[0].duree:2;
+  document.getElementById('ap-promo-nom').textContent=p.nom;
+  document.getElementById('ap-duree').value=dur;
+  document.getElementById('ap-semaine').value='';
+  document.getElementById('modal-ajouter-passage').classList.add('open');
+}
+function confirmerAjouterPassage(){
+  var s=parseInt(document.getElementById('ap-semaine').value);
+  var dur=parseInt(document.getElementById('ap-duree').value)||2;
+  if(isNaN(s)||s<1||s>52){toast('Semaine invalide (1-52)');return;}
+  var p=promotions.find(function(x){return x.id===ajouterPassagePromoId;});
+  if(!p) return;
+  if(!p.periodes) p.periodes=[{semDebut:p.semDebut,duree:p.duree}];
+  p.periodes.push({semDebut:s,duree:dur});
+  p.periodes.sort(function(a,b){return a.semDebut-b.semDebut;});
+  closeModal('modal-ajouter-passage');
+  renderPromos(); renderPlanning();
+  toast('Passage ajoute : '+getSemKey(s)+' ('+dur+' sem.)');
+}
+function supprimerPromo(id){
+  if(!confirm('Supprimer cette promotion ?')) return;
+  promotions=promotions.filter(function(p){return p.id!==id;});
+  renderPromos(); renderPlanning();
+  toast('Promotion supprimee');
+}
+
+// INIT
+allerSemaineActuelle();
+renderHotel();
+</script>
+</body>
+</html>
